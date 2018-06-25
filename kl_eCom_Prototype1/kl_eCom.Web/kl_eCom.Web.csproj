@@ -201,8 +201,10 @@
     <Compile Include="Areas\Vendors\Controllers\StoreController.cs" />
     <Compile Include="Areas\Vendors\Controllers\VendorController.cs" />
     <Compile Include="Areas\Vendors\Models\CategoryViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\HomeViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\ProductViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\StoreViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\VendorViewModels.cs" />
     <Compile Include="Areas\Vendors\VendorsAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CartController.cs" />
@@ -242,6 +244,18 @@
     <Compile Include="Migrations\201806241248520_CartModelEdited.Designer.cs">
       <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806250812020_Removed_VendorRegistration_Details.cs" />
+    <Compile Include="Migrations\201806250812020_Removed_VendorRegistration_Details.Designer.cs">
+      <DependentUpon>201806250812020_Removed_VendorRegistration_Details.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806250814020_Added_VendorRegistration_Details.cs" />
+    <Compile Include="Migrations\201806250814020_Added_VendorRegistration_Details.Designer.cs">
+      <DependentUpon>201806250814020_Added_VendorRegistration_Details.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806250852469_Added_VendorRegistration.cs" />
+    <Compile Include="Migrations\201806250852469_Added_VendorRegistration.Designer.cs">
+      <DependentUpon>201806250852469_Added_VendorRegistration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -256,6 +270,7 @@
     <Compile Include="Utilities\CategoryAttribute.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
+    <Compile Include="Utilities\VendorDetails.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -289,6 +304,8 @@
     <Content Include="Areas\Vendors\Views\Shared\Error.cshtml" />
     <Content Include="Areas\Vendors\Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Areas\Vendors\Views\Home\Register.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Details.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -375,6 +392,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806241248520_CartModelEdited.resx">
       <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806250812020_Removed_VendorRegistration_Details.resx">
+      <DependentUpon>201806250812020_Removed_VendorRegistration_Details.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806250814020_Added_VendorRegistration_Details.resx">
+      <DependentUpon>201806250814020_Added_VendorRegistration_Details.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806250852469_Added_VendorRegistration.resx">
+      <DependentUpon>201806250852469_Added_VendorRegistration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

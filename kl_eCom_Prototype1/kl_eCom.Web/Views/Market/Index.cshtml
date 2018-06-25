@@ -1,0 +1,12 @@
+﻿@model kl_eCom.Web.Models.MarketIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Vendors List</h2>
+
+@foreach (var vendor in Model.Vendors.Keys)
+{
+    @Html.ActionLink(Model.Vendors[vendor], "Shops", new { vendorId = vendor })
+    <br />
+}

@@ -1,0 +1,65 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.ProductIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Products</h2>
+
+@Html.ActionLink("+ Create Product", "Create", new { catId = ViewBag.catId })
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.Label("Id")
+        </th>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Description")
+        </th>
+        <th>
+            @Html.Label("Vendor")
+        </th>
+        <th>
+            @Html.Label("Category")
+        </th>
+        <th>
+            @Html.Label("Specifications")
+        </th>
+        <th>
+        </th>
+    </tr>
+    @foreach (var item in Model.Products)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.Category.Name)
+            </td>
+            <td>
+                <ul>
+                    @foreach (var atr in Model.Attributes)
+                    {
+                        <li>
+                            @Html.DisplayFor(m => atr)
+                            -
+                            @Html.DisplayFor(m => item.SpecificationsDict[atr].Value)
+                        </li>
+                    }
+                </ul>
+            </td>
+            <td>
+                @Html.ActionLink("Add Stock", "Stock", new { prodId = item.Id, storeId = ViewBag.storeId })
+            </td>
+        </tr>
+    }
+</table>

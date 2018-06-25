@@ -1,0 +1,18 @@
+﻿@model kl_eCom.Web.Models.ShopIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Catalog</h2>
+
+@foreach (var cat in Model.Categories)
+{
+    if (Model.IsLeafDict[cat])
+    {
+        @Html.ActionLink(cat.Name, "Products", new { storeId = ViewBag.storeId, catId = cat.Id })
+    }
+    else
+    {
+        @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })
+    }
+}

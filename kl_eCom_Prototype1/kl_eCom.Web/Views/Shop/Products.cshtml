@@ -1,0 +1,53 @@
+﻿@model kl_eCom.Web.Models.ShopProductsViewModel
+@{
+    /**/
+
+    ViewBag.Title = "Products";
+}
+
+<div class="col-sm-offset-10 col-sm-2">
+    @Html.ActionLink("Go To Cart", "Index", controllerName: "Cart")
+</div>
+
+<h2>Products</h2>
+
+@foreach (var stock in Model.Stocks)
+{
+    using (Html.BeginForm(new { stockId = stock.Id }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div>
+            @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
+        </div>
+
+        <div>
+            @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+        </div>
+
+        var inStock = true;
+        var stockList = new List<int> { };
+        if (stock.CurrentStock == 0)
+        {
+            inStock = false;
+        }
+        else
+        {
+            for (int i = 1; i <= stock.CurrentStock; i++)
+            {
+                stockList.Add(i);
+            }
+        }
+        var qtyList = new SelectList(stockList);
+
+        if (!inStock)
+        {
+            @Html.Label("Out Of Stock")
+        }
+        else
+        {
+            @Html.DropDownListFor(m => m.Qty, qtyList)
+            <input type="submit" value="Add To Cart" />
+        }
+    }
+}

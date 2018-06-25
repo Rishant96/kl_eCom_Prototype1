@@ -1,0 +1,60 @@
+﻿@model List<kl_eCom.Web.Entities.Category>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Categories -</h2>
+
+@Html.ActionLink("+ Create Category", "Create", new { storeId = ViewBag.storeId, catId = null as int? })
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.Label("Id")
+        </th>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Attributes")
+        </th>
+        <th>
+            @Html.Label("Parent")
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.Id)
+            </td>
+            <td>
+                @Html.ActionLink(item.Name, "Details", new { storeId = ViewBag.StoreId, catId = item.Id })
+            </td>
+            <td>
+                <ul>
+                    @foreach (var attr in item.Attributes)
+                    {
+                        <li>@Html.DisplayFor(m => attr.Name)</li>
+                    }
+                </ul>
+            </td>
+            <td>
+                @if (item.Parent == null)
+                {
+                    @Html.Label("-")
+                }
+                else
+                {
+                    @Html.DisplayFor(m => item.Parent.Name)
+                }
+            </td>
+        </tr>
+    }
+
+</table>

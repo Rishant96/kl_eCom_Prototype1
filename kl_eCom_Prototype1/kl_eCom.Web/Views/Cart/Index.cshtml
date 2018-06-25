@@ -1,0 +1,70 @@
+﻿@model kl_eCom.Web.Models.CartIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>My Cart</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Qty")
+        </th>
+        <th>
+            @Html.Label("Cost")
+        </th>
+        <th>
+
+        </th>
+   </tr>
+   @if (Model.Cart.CartItems == null)
+   {
+       Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
+   }
+   @foreach (var itm in Model.Cart.CartItems)
+   {
+      <tr>
+          <td>
+              @Html.DisplayFor(m => Model.ProductNames[itm])
+          </td>
+           <td>
+                @*@{
+                    var stockList = new List<int> { };
+                    for (int i = 0; i <= itm.Stock.CurrentStock; i++)
+                    {
+                        stockList.Add(i);
+                    }
+                    var qtyList = new SelectList(stockList);
+                    qtyList.First(m => m.Value == itm.Qty.ToString()).Selected = true;
+                    @Html.DropDownListFor(m => itm.Qty, qtyList, new { id = "QtyList" })
+                }*@
+              @Html.DisplayFor(m => itm.Qty)
+          </td>
+          <td>
+              <text>@Model.Prices[itm].ToString()</text>
+          </td>
+          <td>
+              @Html.ActionLink("Remove", "Delete", new { id = itm.Id })
+          </td>
+        </tr>
+    }
+</table>
+
+<div class="row">
+    <div class="col-md-2 text-right">
+        @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
+    </div>
+    <div class="col-md-4 text-center">
+        @Html.Label("Total Cost: ")
+        @Html.DisplayFor(m => m.TotalCost)
+    </div>
+    <div class="col-md-6 text-center">
+        @Html.ActionLink("Checkout", "Checkout", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+
+@Html.ActionLink("Continue Shopping", "Index", controllerName: "Market")

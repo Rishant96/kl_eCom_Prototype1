@@ -1,0 +1,132 @@
+﻿using kl_eCom.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data.Entity;
+using kl_eCom.Web.Areas.Vendors.Models;
+using kl_eCom.Web.Utilities;
+using kl_eCom.Web.Entities;
+
+namespace kl_eCom.Web.Areas.Vendors.Controllers
+{
+    [Authorize(Roles = "Vendor")]
+    public class CategoryController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: Vendors/Category
+        public ActionResult Index(int? id)
+        {
+            if (id == null) return RedirectToAction("Index", controllerName: "Home");
+            ViewBag.storeId = (int)id;
+            var model = db.Categories.Where(m => m.StoreId == (int)id).Include(m => m.Attributes).ToList();
+            return View(model);
+        }
+
+        public ActionResult AddAttributePartial(int? id)
+        {
+            var model = new AddAttributeViewModel() { };
+            ViewBag.count = id;
+            return PartialView("AddAttributePartial", model);
+        }
+
+        public ActionResult Create(int? storeId, int? catId)
+        {
+            TempData["storeId"] = storeId;
+            TempData["catId"] = catId;
+            ViewBag.StoreId = storeId;
+            return View(new CategoryCreateViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CategoryCreateViewModel model)
+        {
+            int? storeId = TempData["storeId"] as int?;
+            int? catId = TempData["catId"] as int?;
+            if (storeId == null) return RedirectToAction("Index", controllerName: "Home");
+
+            if(ModelState.IsValid)
+            {
+                List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
+                var nameStr = Request.Form["AtrbName"];
+                if (nameStr is null) nameStr = "";
+                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToList() as List<string>;
+                if (atrbNames is null) atrbNames = new List<string>();
+
+                foreach (var atrbName in atrbNames)
+                {
+                    if (atrbName != "")
+                        catAttrs.Add(new CategoryAttribute() { Name = atrbName });
+                }
+
+                foreach (var atrb in catAttrs)
+                {
+                    if (model.Attributes == null) model.Attributes = new List<CategoryAttribute>();
+                    model.Attributes.Add(atrb);
+                }
+                
+                var cat = new Category
+                {
+                    Name = model.Name,
+                    IsBase = (catId == null) ? true : false,
+                    Description = model.Description,
+                    Attributes = model.Attributes,
+                    CategoryId = catId,
+                    StoreId = (int)storeId
+                };
+
+                db.Categories.Add(cat);
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+                {
+                    Exception raise = dbEx;
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            string message = string.Format("{0}:{1}",
+                                validationErrors.Entry.Entity.ToString(),
+                                validationError.ErrorMessage);
+                            // raise a new exception nesting
+                            // the current instance as InnerException
+                            raise = new InvalidOperationException(message, raise);
+                        }
+                    }
+                    throw raise;
+                }
+
+                return RedirectToAction("Index", "Category", new { id = storeId });
+            }
+
+            TempData["storeId"] = storeId;
+            TempData["catId"] = catId;
+            return View(model);
+        }
+
+        public ActionResult Details(int? storeId, int? catId)
+        {
+            if (storeId == null || catId == null) return RedirectToAction("Index", controllerName: "Home");
+            ViewBag.storeId = storeId;  
+            var cat = db.Categories.Include(m => m.Attributes)
+                .FirstOrDefault(m => m.Id == (int)catId);
+            cat.ChildCategories = db.Categories.Where(m => m.CategoryId == cat.Id).ToList();
+            if(cat.ChildCategories == null || cat.ChildCategories.Count == 0)
+            {
+                ViewBag.isLeaf = true;
+            }
+            else
+            {
+                ViewBag.isLeaf = false;
+            }
+            if (cat == null) return RedirectToAction("Index", controllerName: "Home");
+            return View(cat);
+        }
+    }
+}

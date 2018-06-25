@@ -1,0 +1,35 @@
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace kl_eCom.Web.Areas.Vendors.Models
+{
+    public class ProductIndexViewModel
+    {
+        public List<Product> Products { get; set; }
+        public List<string> Attributes { get; set; }
+    }
+
+    public class ProductCreateViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+        public string Manufacturer { get; set; }
+        public string Description { get; set; }
+        public List<string> Attributes { get; set; }
+        public Dictionary<string, string> Specifications { get; set; } 
+    }
+
+    public class ProductStockViewModel
+    {
+        public Product Product { get; set; }
+        [Required]
+        public int Stock { get; set; }
+        [Required]
+        public float Price { get; set; }
+    }
+}

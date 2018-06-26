@@ -182,7 +182,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 try
                 {
                     db.SaveChanges();
-                    // UpdateProducts(model.Id);
+                    if(model.ReflectChange) UpdateProducts(model.Id, atrbs.ToList());
                 }
                 catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
                 {
@@ -222,9 +222,79 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return RedirectToAction("Index", new { id = model.StoreId });
         }
 
-        private void UpdateProducts(int id)
+        private void UpdateProducts(int id, List<CategoryAttribute> oldAttrs)
         {
-            throw new NotImplementedException();
+            var cat = db.Categories
+                .Include(m =>m.Attributes)
+                .FirstOrDefault(m => m.Id == id);
+            if (cat == null) return;
+            
+            var newAtrs = AttrsToBeAdded(cat.Attributes.ToList(), oldAttrs);
+            var oldAtrs = AttrsToBeRemoved(cat.Attributes.ToList(), oldAttrs);
+
+            var prodCats = new List<Category>();
+            var catQueue = new Queue<Category>();
+            catQueue.Enqueue(cat);
+            while(catQueue.Count != 0)
+            {
+                var frontCat = catQueue.Dequeue();
+                var children = db.Categories.Where(m => m.CategoryId == frontCat.Id).ToList();
+                if(children.Count == 0)
+                {
+                    prodCats.Add(frontCat);
+                }
+                else
+                {
+                    foreach(var childCat in children)
+                    {
+                        catQueue.Enqueue(childCat);
+                    }
+                }
+            }
+
+            var prods = new List<Product>();
+            foreach(var pCat in prodCats)
+            {
+                foreach(var p in db.Products.Include(p => p.Specifications).Where(m => m.CategoryId == pCat.Id).ToList())
+                {
+                    prods.Add(p);
+                }
+            }
+            
+            foreach (var prod in prods)
+            {
+                foreach (var newAtr in newAtrs)
+                {
+                    prod.Specifications.Add(db.Specifications.Add(new Specification { Name = newAtr, Value = "", ProductId = prod.Id }));
+                }
+                foreach (var oldAtr in oldAtrs)
+                {
+                    db.Specifications.Remove(db.Specifications.FirstOrDefault(m => m.ProductId == prod.Id
+                        && m.Name == oldAtr));
+                }
+                db.Entry(prod).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        
+        private List<string> AttrsToBeAdded(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
+        {
+            var newAtrs = new List<string>();
+            foreach(var atr in attrs)
+            {
+                if (oldAttrs.Where(m => m.Name == atr.Name).FirstOrDefault() == null) newAtrs.Add(atr.Name);
+            }
+            return newAtrs;
+        }
+
+        private List<string> AttrsToBeRemoved(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
+        {
+            var dltAtrs = new List<string>();
+            foreach (var atr in oldAttrs)
+            {
+                if (attrs.Where(m => m.Name == atr.Name).FirstOrDefault() == null) dltAtrs.Add(atr.Name);
+            }
+            return dltAtrs;
         }
     }
 }

@@ -42,21 +42,21 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 .ToList();
             if (prod == null) return RedirectToAction("Index", controllerName: "Home"); 
 
-            var model = new ProductIndexViewModel { Products = prod, Attributes = getAllAttributes((int)id) };
-            var atrs = model.Attributes;
+            var model = new ProductIndexViewModel { Products = prod };
 
-            for (int j=0; j < model.Products.Count; j++)
-            { 
-                for (int i = 0; i < atrs.Count; i++)
-                {
-                    if (model.Products.ElementAt(j).SpecificationsDict == null)
-                        model.Products.ElementAt(j).SpecificationsDict = new Dictionary<string, Specification>();
-                    model.Products.ElementAt(j).SpecificationsDict.Add(
-                        atrs.ElementAt(i),
-                        model.Products.ElementAt(j).Specifications.ElementAt(i)
-                    );
-                }
-            }
+            //for (int j=0; j < model.Products.Count; j++)
+            //{ 
+            //    for (int i = 0; i < atrs.Count; i++)
+            //    {
+            //        if (model.Products.ElementAt(j).SpecificationsDict == null)
+            //            model.Products.ElementAt(j).SpecificationsDict = new Dictionary<string, Specification>();
+            //        model.Products.ElementAt(j).SpecificationsDict.Add(
+            //            atrs.ElementAt(i),
+            //            model.Products.ElementAt(j).Specifications.ElementAt(i)
+            //        );
+            //    }
+            //}
+            
             ViewBag.catId = id;
             ViewBag.storeId = (db.Categories.FirstOrDefault(m => m.Id == id)).StoreId;
             return View(model);
@@ -99,9 +99,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     CategoryId = (int)catId,
                     Specifications = new List<Specification>()
                 };
-                foreach(var spec in model.Specifications.Values)
+
+                foreach(var atr in model.Specifications.Keys)
                 {
-                    prod.Specifications.Add(new Specification { Value = spec });
+                    prod.Specifications.Add(new Specification { Name = atr, Value = model.Specifications[atr] });
                 }
 
                 db.Products.Add(prod);
@@ -117,6 +118,107 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 model.Attributes.Add(spec);
             }
             return View(model);
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null) return View("Error");
+
+            var prod = db.Products
+                .Include(m => m.Category)
+                .Include(m => m.Specifications)
+                .FirstOrDefault(m => m.Id == id);
+            if (prod == null) return View("Error");
+
+            var model = new ProductEditViewModel
+            {
+                Id = prod.Id,
+                Attributes = getAllAttributes(prod.CategoryId),
+                Name = prod.Name,
+                Manufacturer = prod.Manufacturer,
+                Description = prod.Description,
+                Specifications = new Dictionary<string, string>()
+            };
+
+            foreach(var atr in model.Attributes)
+            {
+                var spec = prod.Specifications.Where(m => m.Name == atr).FirstOrDefault();
+                if (spec != null)
+                {
+                    model.Specifications.Add(spec.Name, spec.Value);
+                }
+                else
+                {
+                    model.Specifications.Add(atr, "");
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ProductEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var specs = db.Specifications.Where(m => m.ProductId == model.Id).ToList();
+                foreach(var spec in specs)
+                {
+                    db.Specifications.Remove(spec);
+                }
+
+                var prod = db.Products.FirstOrDefault(m => m.Id == model.Id);
+                prod.Name = model.Name;
+                prod.Manufacturer = model.Manufacturer;
+                prod.Description = model.Description;
+                prod.Specifications = new List<Specification>();
+
+                if (prod == null) return View("Error");
+
+                foreach (var atr in model.Specifications.Keys)
+                {
+                    var spec = db.Specifications.Add(
+                        new Specification {
+                            Name = atr,
+                            Value = model.Specifications[atr],
+                            ProductId = prod.Id
+                        });
+                    prod.Specifications.Add(spec);
+                }
+
+                db.Entry(prod).State = EntityState.Modified;
+                db.SaveChanges();
+                
+                return RedirectToAction("Details", new { id = model.Id });
+            }
+            return View(model);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null) return View("Error");
+            var model = db.Products
+                .Include(m => m.Category)
+                .FirstOrDefault(m => m.Id == id);
+            if (model == null) return View("Error");
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(Product model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Products.Remove(model);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { id = model.CategoryId });
+            }
+            else
+            {
+                return View("Error");
+            }
         }
 
         public ActionResult Stock(int? prodId, int? storeId)
@@ -171,6 +273,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
+            return View(model);
+        }
+
+        public ActionResult Details(int? id)
+        {
+            if (id == null) return View("Error");
+            var model = db.Products
+                .Include(m => m.Category)
+                .Include(m => m.Specifications)
+                .FirstOrDefault(m => m.Id == id);
+            if (model == null) return View("Error");
             return View(model);
         }
     }

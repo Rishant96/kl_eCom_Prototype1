@@ -26,7 +26,7 @@ namespace kl_eCom.Web.Entities
 
         public virtual ICollection<Specification> Specifications { get; set; }
 
-        [NotMapped]
-        public virtual Dictionary<string, Specification> SpecificationsDict { get; set; }
+        //[NotMapped]
+        //public virtual Dictionary<string, Specification> SpecificationsDict { get; set; }
     }
 }

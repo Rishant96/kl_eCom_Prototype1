@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Areas.Vendors.Models
 {
@@ -42,5 +43,22 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public int Stock { get; set; }
         [Required]
         public float Price { get; set; }
+    }
+
+    public class ProductChangeCategoryViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Current Category")]
+        public string CurrentCategory { get; set; }
+        public List<Category> AvailableCategories { get; set; }
+        public Category SelectedCategory { get; set; }
+    }
+
+    public class ProductAllViewModel
+    {
+        public List<Product> Products { get; set; }
+        public Dictionary<Product, Stock> Inventory { get; set; }
+        public Dictionary<Product, bool> HasListing { get; set; }
     }
 }

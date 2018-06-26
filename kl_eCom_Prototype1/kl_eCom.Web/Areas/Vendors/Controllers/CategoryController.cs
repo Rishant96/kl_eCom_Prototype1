@@ -24,9 +24,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var model = db.Categories.Where(m => m.StoreId == (int)id).Include(m => m.Attributes).ToList();
             return View(model);
         }
-
+        
         public ActionResult AddAttributePartial(int? id)
         {
+            if (id == null) return View("Error");
             var model = new AddAttributeViewModel() { };
             return PartialView("AddAttributePartial", model);
         }

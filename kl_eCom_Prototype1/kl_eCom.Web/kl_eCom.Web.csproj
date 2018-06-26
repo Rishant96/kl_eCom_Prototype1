@@ -306,6 +306,11 @@
     <Content Include="Areas\Vendors\Views\Home\Register.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\Edit.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\Details.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Details.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Category\Delete.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

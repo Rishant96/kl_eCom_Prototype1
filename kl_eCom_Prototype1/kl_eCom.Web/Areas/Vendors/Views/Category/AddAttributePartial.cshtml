@@ -1,12 +1,11 @@
 ﻿@model kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel
 
 @{
-    var urlId = ViewBag.count;
+    var urlId = Model.Count;
 }
 
-@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 <div class="form-group" id="divAtrbNew" style="margin: 10px 0px;">
-    @Html.LabelFor(model => model.AtrbName, htmlAttributes: new { @class = "control-label col-md-2", style = "width: auto; padding-left: 5px;" })
+    @Html.Label( "Name:", htmlAttributes: new { @class = "control-label col-md-2", style = "width: auto; padding-left: 5px;" })
     <div class="col-md-10" style="display:flex">
         @Html.EditorFor(model => model.AtrbName, new { htmlAttributes = new { name = "txtAtrbNew" + urlId, @class = "form-control", style = "display: inline-block;" } })
         @Html.Label("Delete", new { id = "dltAtrbNew" + urlId, @class = "col-md-2 btn btn-link", style = "width: auto" })

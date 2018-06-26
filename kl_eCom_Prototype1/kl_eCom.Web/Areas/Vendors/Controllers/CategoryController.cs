@@ -28,7 +28,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult AddAttributePartial(int? id)
         {
             var model = new AddAttributeViewModel() { };
-            ViewBag.count = id;
             return PartialView("AddAttributePartial", model);
         }
 
@@ -127,6 +126,99 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             }
             if (cat == null) return RedirectToAction("Index", controllerName: "Home");
             return View(cat);
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null) return View("Error");
+            var cat = db.Categories
+                .Include(m => m.Attributes)
+                .FirstOrDefault(m => m.Id == id);
+            if (cat == null) return View("Error");
+            if (cat.Attributes == null) cat.Attributes = new List<CategoryAttribute>();
+            return View(new CategoryEditViewModel {
+                Id = cat.Id,
+                Name = cat.Name,
+                Description = cat.Description,
+                Attributes = cat.Attributes.ToList()
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(CategoryEditViewModel model)
+        {
+            if (model == null) return View("Error");
+            if (ModelState.IsValid)
+            {
+                var atrbs = db.Attributes.ToList().Where(s => s.CategoryId == model.Id);
+                foreach (var attrb in atrbs)
+                {
+                    db.Attributes.Remove(attrb);
+                }   
+                db.SaveChanges();
+
+                List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
+                var nameStr = Request.Form["AtrbName"];
+                if (nameStr is null) nameStr = "";
+                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToList() as List<string>;
+                if (atrbNames is null) atrbNames = new List<string>();
+
+                foreach (var atrbName in atrbNames)
+                {
+                    if (atrbName != "")
+                        catAttrs.Add(new CategoryAttribute() { Name = atrbName, CategoryId = model.Id });
+                }
+
+                foreach (var atrb in catAttrs)
+                {
+                    if (model.Attributes == null) model.Attributes = new List<CategoryAttribute>();
+                    db.Attributes.Add(atrb);
+                    (db.Categories.FirstOrDefault(m => m.Id == model.Id)).Attributes.Add(atrb);
+                }
+                
+                db.Entry(db.Categories.FirstOrDefault(m => m.Id == model.Id)).State = EntityState.Modified;
+                
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+                {
+                    Exception raise = dbEx;
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            string message = string.Format("{0}:{1}",
+                                validationErrors.Entry.Entity.ToString(),
+                                validationError.ErrorMessage);
+                            // raise a new exception nesting
+                            // the current instance as InnerException
+                            raise = new InvalidOperationException(message, raise);
+                        }
+                    }
+                    throw raise;
+                }
+
+                return RedirectToAction("Details", "Category", new { storeId = model.StoreId, catId = model.Id });
+            }
+            return View(model);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if(id == null) return View("Error");
+            return View(db.Categories.FirstOrDefault(m => m.Id == id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(Category model)
+        {
+            db.Categories.Remove(model);
+            db.SaveChanges();
+            return RedirectToAction("Index", new { id = model.StoreId });
         }
     }
 }

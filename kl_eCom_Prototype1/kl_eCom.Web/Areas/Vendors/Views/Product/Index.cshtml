@@ -37,7 +37,7 @@
                 @Html.DisplayFor(m => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(m => item.Name)
+                @Html.ActionLink(item.Name, "Details", new { id = item.Id })
             </td>
             <td>
                 @Html.DisplayFor(m => item.Description)
@@ -47,12 +47,12 @@
             </td>
             <td>
                 <ul>
-                    @foreach (var atr in Model.Attributes)
+                    @foreach (var spec in item.Specifications)
                     {
                         <li>
-                            @Html.DisplayFor(m => atr)
+                            @Html.DisplayFor(m => spec.Name)
                             -
-                            @Html.DisplayFor(m => item.SpecificationsDict[atr].Value)
+                            @Html.DisplayFor(m => spec.Value)
                         </li>
                     }
                 </ul>

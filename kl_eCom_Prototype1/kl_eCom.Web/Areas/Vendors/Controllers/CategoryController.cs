@@ -182,6 +182,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 try
                 {
                     db.SaveChanges();
+                    // UpdateProducts(model.Id);
                 }
                 catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
                 {
@@ -219,6 +220,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             db.Categories.Remove(model);
             db.SaveChanges();
             return RedirectToAction("Index", new { id = model.StoreId });
+        }
+
+        private void UpdateProducts(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

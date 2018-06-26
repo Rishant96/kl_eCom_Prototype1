@@ -11,7 +11,6 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class ProductIndexViewModel
     {
         public List<Product> Products { get; set; }
-        public List<string> Attributes { get; set; }
     }
 
     public class ProductCreateViewModel
@@ -22,6 +21,18 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Description { get; set; }
         public List<string> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; } 
+    }
+
+    public class ProductEditViewModel
+    {
+        [Required]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string Manufacturer { get; set; }
+        public string Description { get; set; }
+        public List<string> Attributes { get; set; }
+        public Dictionary<string, string> Specifications { get; set; }
     }
 
     public class ProductStockViewModel

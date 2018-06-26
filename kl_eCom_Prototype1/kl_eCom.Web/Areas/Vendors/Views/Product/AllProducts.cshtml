@@ -1,0 +1,49 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.ProductAllViewModel
+@{
+    ViewBag.Title = "All Products";
+}
+
+<h2>All Products</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Store")
+        </th>
+        <th>
+            @Html.Label("Category")
+        </th>
+        <th>
+            @Html.Label("Listable")
+        </th>
+    </tr>
+    @foreach (var prod in Model.Products)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(prod.Name, "Details", new { id = prod.Id })
+            </td>
+            <td>
+                @if (Model.Inventory[prod] is kl_eCom.Web.Entities.Stock stock)
+                {
+                    @Html.DisplayFor(m => stock.Store.Name)
+                }
+                else
+                {
+                    @Html.Label("-")
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(m => prod.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })
+            </td>
+        </tr>
+    }
+</table>
+
+@Html.ActionLink("Go to Stores List", "Index", controllerName: "Store")

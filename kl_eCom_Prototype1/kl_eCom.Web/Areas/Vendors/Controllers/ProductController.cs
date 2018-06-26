@@ -8,6 +8,7 @@ using System.Data.Entity;
 using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
+using Microsoft.AspNet.Identity;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -268,7 +269,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 }
 
                 db.SaveChanges();
-                return RedirectToAction("Index", controllerName: "Home");
+                return RedirectToAction("Index", controllerName: "Store");
             }
 
             TempData["prodId"] = prodId;
@@ -284,6 +285,81 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 .Include(m => m.Specifications)
                 .FirstOrDefault(m => m.Id == id);
             if (model == null) return View("Error");
+            return View(model);
+        }
+
+        public ActionResult ChangeCategory(int? id)
+        {
+            if (id == null) return View("Error");
+            var prod = db.Products
+                .Include(m => m.Category)
+                .FirstOrDefault(m => m.Id == id);
+            if (prod == null) return View("Error");
+            var possibleCats = db.Categories
+                .Where(m => db.Categories.Where(p => p.CategoryId == m.Id).FirstOrDefault() == null)
+                .ToList();
+            
+            return View(new ProductChangeCategoryViewModel
+            {
+                Id = prod.Id,
+                Name = prod.Name,
+                CurrentCategory = prod.Category.Name,
+                AvailableCategories = possibleCats
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeCategory(ProductChangeCategoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var prod = db.Products.FirstOrDefault(m => m.Id == model.Id);
+                if (prod == null) return View("Error");
+
+                prod.CategoryId = model.SelectedCategory.Id;
+                prod.Category = model.SelectedCategory;
+
+                db.Entry(prod).State = EntityState.Modified;
+
+                db.SaveChanges();
+
+                return RedirectToAction("Details", new { id = model.Id });
+            }
+
+            return View(model);
+        }
+
+        public ActionResult AllProducts()
+        {
+            var userId = User.Identity.GetUserId();
+            var prods = db.Products
+                .Include(m => m.Category)
+                .Include(m => m.Category.Store)
+                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .ToList();
+
+            var model = new ProductAllViewModel { Products = prods,
+                            Inventory = new Dictionary<Product, Stock>(),
+                            HasListing = new Dictionary<Product, bool>() };
+
+            foreach (var prod in prods)
+            {
+                model.Inventory.Add(prod,
+                    db.Stocks
+                    .Include(m => m.Store)
+                    .Where(m => m.ProductId == prod.Id)
+                    .FirstOrDefault());
+
+                if(db.Categories.FirstOrDefault(m => m.CategoryId == prod.CategoryId) == null)
+                {
+                    model.HasListing.Add(prod, true);
+                }
+                else
+                {
+                    model.HasListing.Add(prod, false);
+                }
+            }
             return View(model);
         }
     }

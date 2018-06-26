@@ -56,6 +56,9 @@
         }
     </dl>
 </div>
+
+<p>@Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id })
+
 <p>
     @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) |
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) | 

@@ -46,7 +46,7 @@
                     @Html.DisplayFor(m => stkProd.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Product.Name)
+                    @Html.ActionLink(stkProd.Product.Name, "Stock", "Product", new { prodId = stkProd.ProductId, storeId = stkProd.StoreId }, null)
                 </td>
                 <td>
                     @Html.DisplayFor(m => stkProd.Product.Description)

@@ -35,5 +35,10 @@ namespace kl_eCom.Web.Entities
 
         [NotMapped]
         public List<Category> ChildCategories { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -23,6 +23,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public List<CategoryAttribute> Attributes { get; set; }
+        [Display(Name = "Reflect Changes in Products")]
+        [Required]
+        public bool ReflectChange { get; set; }
     }
 
     public class AddAttributeViewModel

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
+using Microsoft.AspNet.Identity;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -17,13 +18,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Vendors/Store
-        public ActionResult Index(string id)
+        public ActionResult Index()
         {
+            string id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
             ViewBag.VendorId = id;
             var stores = db.Stores.Where(m => m.ApplicationUserId == id).ToList();
-            var model = new StoreIndexViewModel { Stores = stores,
-                Stocks = new Dictionary<Entities.Store, List<Entities.Stock>>() };
+            var model = new StoreIndexViewModel
+            {
+                Stores = stores,
+                Stocks = new Dictionary<Entities.Store, List<Entities.Stock>>()
+            };
             foreach (var store in stores)
             {
                 model.Stocks.Add(store,
@@ -49,9 +54,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Create(StoreCreateViewModel model)
         {
             string vendorId = TempData["vendorId"] as string;
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var storeAddr = new StoreAddress {
+                var storeAddr = new StoreAddress
+                {
                     Line1 = model.Line1,
                     Line2 = model.Line2,
                     Line3 = model.Line3,
@@ -59,7 +65,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     State = model.State,
                     Country = model.Country
                 };
-                var store = new Store {
+                var store = new Store
+                {
                     Name = model.Name,
                     Address = storeAddr,
                     ApplicationUserId = vendorId
@@ -70,6 +77,94 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             }
             TempData["vendorId"] = vendorId;
             return View(model);
+        }
+
+        public ActionResult Details(int? id)
+        {
+            var store = db.Stores
+                .Include(m => m.Vendor)
+                .Include(m => m.Categories)
+                .Include(m => m.Address)
+                .FirstOrDefault(m => m.Id == id);
+
+            if (store is null) return RedirectToAction("Index");
+
+            return View(new StoreDetailsViewModel
+            {
+                Id = store.Id,
+                Name = store.Name,
+                Address = store.Address,
+                Vendor = store.Vendor,
+                Categories = store.Categories
+            });
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            var store = db.Stores
+                .Include(m => m.Address)
+                .FirstOrDefault(m => m.Id == id);
+
+            if (store is null) return RedirectToAction("Index");
+
+            return View(new StoreEditViewModel {
+                Id = store.Id,
+                Name = store.Name,
+                AddrName = store.Address.Name,
+                Line1 = store.Address.Line1,
+                Line2 = store.Address.Line2,
+                Line3 = store.Address.Line3,
+                Zip = store.Address.Zip,
+                State = store.Address.State,
+                Country = store.Address.Country
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(StoreEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var store = db.Stores
+                    .Include(m => m.Address)
+                    .FirstOrDefault(m => m.Id == model.Id);
+
+                if (store == null) return View("Error");
+                store.Name = model.Name;
+                store.Address.Name = model.AddrName;
+                store.Address.Line1 = model.Line1;
+                store.Address.Line2 = model.Line2;
+                store.Address.Line3 = model.Line3;
+                store.Address.Zip = model.Zip;
+                store.Address.State = model.State;
+                store.Address.Country = model.Country;
+
+                db.Entry(store).State = EntityState.Modified;
+                db.Entry(store.Address).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+        
+        public ActionResult Delete(int? id)
+        {
+            if (id == null) return View("Error");
+            var store = db.Stores.FirstOrDefault(m => m.Id == id);
+            return View(store);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(Store store)
+        {
+            if (store == null) return View("Error");
+            if (store.Id == 0) return View("Error");
+            db.Stores.Remove(store);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

@@ -11,6 +11,7 @@
 {
     <br /><br />
     <text>Store: </text>@Html.ActionLink(store.Name, "Index", controllerName: "Category", routeValues: new { id = store.Id }, htmlAttributes: null)
+    <text> (</text>@Html.ActionLink("Details", "Details", new { id = store.Id })<text>)</text>
     <table class="table">
         <tr>
             <th>
@@ -59,6 +60,7 @@
                 <td>
                     @Html.DisplayFor(m => stkProd.Price)
                 </td>
+                <td></td>
             </tr>
         }
     </table>

@@ -46,7 +46,13 @@ namespace kl_eCom.Web.Controllers
             else
             {
                 var cart = GetCart();
-                cart.CartItems.Remove(cart.CartItems.FirstOrDefault(m => m.Id == id));
+                var cartItm = db.CartItems.FirstOrDefault(m => m.Id == id);
+                var entry = db.Entry(cartItm);
+                if (entry.State == EntityState.Detached)
+                    db.CartItems.Attach(cartItm);
+                db.CartItems.Remove(cartItm);
+                db.SaveChanges();
+
                 if (User.Identity.IsAuthenticated)
                 {
                     db.Entry(cart).State = EntityState.Modified;

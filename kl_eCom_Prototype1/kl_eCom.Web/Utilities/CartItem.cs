@@ -14,12 +14,11 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public int Qty { get; set; }
-
+        
         [Required]
         public int StockId { get; set; }
         public Stock Stock { get; set; }
-
-        [Required]
+        
         public int CartId { get; set; }
         public Cart Cart { get; set; }
     }

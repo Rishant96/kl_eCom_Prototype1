@@ -57,7 +57,11 @@
     </dl>
 </div>
 
-<p>@Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id })
+<p>
+    @Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id })
+     | 
+    @Html.ActionLink("Add Stock", "Stock", new { prodId = Model.Id, storeId = Model.Category.StoreId })
+</p>
 
 <p>
     @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) |

@@ -10,6 +10,7 @@ namespace kl_eCom.Web.Entities
     public class Stock
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -24,8 +25,6 @@ namespace kl_eCom.Web.Entities
         public virtual Product Product { get; set; }
         
         [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [DataType(DataType.DateTime)]
         public DateTime StockingDate { get; set; }
 
         [Required]

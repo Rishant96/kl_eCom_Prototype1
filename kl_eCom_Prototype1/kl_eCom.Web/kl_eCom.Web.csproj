@@ -47,6 +47,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -102,6 +111,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivator, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -193,6 +205,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
@@ -220,49 +233,22 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806230948081_Init.cs" />
-    <Compile Include="Migrations\201806230948081_Init.Designer.cs">
-      <DependentUpon>201806230948081_Init.cs</DependentUpon>
+    <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
+    <Compile Include="Migrations\201806270834015_NewInit.cs" />
+    <Compile Include="Migrations\201806270834015_NewInit.Designer.cs">
+      <DependentUpon>201806270834015_NewInit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806231529422_intNullableParentCat.cs" />
-    <Compile Include="Migrations\201806231529422_intNullableParentCat.Designer.cs">
-      <DependentUpon>201806231529422_intNullableParentCat.cs</DependentUpon>
+    <Compile Include="Migrations\201806270850265_Product_AutoGen.cs" />
+    <Compile Include="Migrations\201806270850265_Product_AutoGen.Designer.cs">
+      <DependentUpon>201806270850265_Product_AutoGen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806231535179_intNullableParentCat2.cs" />
-    <Compile Include="Migrations\201806231535179_intNullableParentCat2.Designer.cs">
-      <DependentUpon>201806231535179_intNullableParentCat2.cs</DependentUpon>
+    <Compile Include="Migrations\201806270858424_Product_AutoGen_2.cs" />
+    <Compile Include="Migrations\201806270858424_Product_AutoGen_2.Designer.cs">
+      <DependentUpon>201806270858424_Product_AutoGen_2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806241144302_CartModelsAdded.cs" />
-    <Compile Include="Migrations\201806241144302_CartModelsAdded.Designer.cs">
-      <DependentUpon>201806241144302_CartModelsAdded.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806241221268_CartModelsEdited.cs" />
-    <Compile Include="Migrations\201806241221268_CartModelsEdited.Designer.cs">
-      <DependentUpon>201806241221268_CartModelsEdited.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806241248520_CartModelEdited.cs" />
-    <Compile Include="Migrations\201806241248520_CartModelEdited.Designer.cs">
-      <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806250812020_Removed_VendorRegistration_Details.cs" />
-    <Compile Include="Migrations\201806250812020_Removed_VendorRegistration_Details.Designer.cs">
-      <DependentUpon>201806250812020_Removed_VendorRegistration_Details.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806250814020_Added_VendorRegistration_Details.cs" />
-    <Compile Include="Migrations\201806250814020_Added_VendorRegistration_Details.Designer.cs">
-      <DependentUpon>201806250814020_Added_VendorRegistration_Details.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806250852469_Added_VendorRegistration.cs" />
-    <Compile Include="Migrations\201806250852469_Added_VendorRegistration.Designer.cs">
-      <DependentUpon>201806250852469_Added_VendorRegistration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806260621317_Added_AttrName_in_Spec.cs" />
-    <Compile Include="Migrations\201806260621317_Added_AttrName_in_Spec.Designer.cs">
-      <DependentUpon>201806260621317_Added_AttrName_in_Spec.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.cs" />
-    <Compile Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.Designer.cs">
-      <DependentUpon>201806270649107_SortFilter_ModelSupport_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201806270904023_StockModel_Date_Changed.cs" />
+    <Compile Include="Migrations\201806270904023_StockModel_Date_Changed.Designer.cs">
+      <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -325,6 +311,7 @@
     <Content Include="Areas\Vendors\Views\Product\AllProducts.cshtml" />
     <Content Include="Areas\Vendors\Views\Product\ChangeCategory.cshtml" />
     <Content Include="Areas\Vendors\Views\Category\ImportProduct.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\DeleteStock.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -378,6 +365,7 @@
     <Content Include="Views\Cart\Checkout.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Abstract\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
@@ -394,38 +382,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201806230948081_Init.resx">
-      <DependentUpon>201806230948081_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201806270834015_NewInit.resx">
+      <DependentUpon>201806270834015_NewInit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806231529422_intNullableParentCat.resx">
-      <DependentUpon>201806231529422_intNullableParentCat.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201806270850265_Product_AutoGen.resx">
+      <DependentUpon>201806270850265_Product_AutoGen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806231535179_intNullableParentCat2.resx">
-      <DependentUpon>201806231535179_intNullableParentCat2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201806270858424_Product_AutoGen_2.resx">
+      <DependentUpon>201806270858424_Product_AutoGen_2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241144302_CartModelsAdded.resx">
-      <DependentUpon>201806241144302_CartModelsAdded.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241221268_CartModelsEdited.resx">
-      <DependentUpon>201806241221268_CartModelsEdited.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241248520_CartModelEdited.resx">
-      <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806250812020_Removed_VendorRegistration_Details.resx">
-      <DependentUpon>201806250812020_Removed_VendorRegistration_Details.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806250814020_Added_VendorRegistration_Details.resx">
-      <DependentUpon>201806250814020_Added_VendorRegistration_Details.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806250852469_Added_VendorRegistration.resx">
-      <DependentUpon>201806250852469_Added_VendorRegistration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806260621317_Added_AttrName_in_Spec.resx">
-      <DependentUpon>201806260621317_Added_AttrName_in_Spec.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.resx">
-      <DependentUpon>201806270649107_SortFilter_ModelSupport_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201806270904023_StockModel_Date_Changed.resx">
+      <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

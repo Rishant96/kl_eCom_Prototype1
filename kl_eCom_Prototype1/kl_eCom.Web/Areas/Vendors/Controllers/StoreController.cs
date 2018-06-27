@@ -166,5 +166,28 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public ActionResult DeleteStock(int? id)
+        {
+            if (id == null) return View("Error");
+            var model = db.Stocks
+                .Include(m => m.Product)
+                .Include(m => m.Store)
+                .FirstOrDefault(m => m.Id == id);
+            if (model == null) return View("Error");
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteStock(Stock model)
+        {
+            var entry = db.Entry(model);
+            if (entry.State == EntityState.Detached)
+                db.Stocks.Attach(model);
+            db.Stocks.Remove(model);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

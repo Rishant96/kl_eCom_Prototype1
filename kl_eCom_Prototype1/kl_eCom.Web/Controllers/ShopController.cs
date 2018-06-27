@@ -123,6 +123,7 @@ namespace kl_eCom.Web.Controllers
             if (stock is null) return -1;
 
             var isPresent = false;
+            if (cart.CartItems == null) cart.CartItems = new List<CartItem>();
             foreach (CartItem itm in cart.CartItems)
             {
                 if (itm.StockId == model.StockId)

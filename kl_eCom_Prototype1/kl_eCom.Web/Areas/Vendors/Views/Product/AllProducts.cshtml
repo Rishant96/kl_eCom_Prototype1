@@ -29,15 +29,16 @@
             <td>
                 @if (Model.Inventory[prod] is kl_eCom.Web.Entities.Stock stock)
                 {
-                    @Html.DisplayFor(m => stock.Store.Name)
+                    @Html.ActionLink(stock.Store.Name, "Stock", "Product", new { prodId = prod.Id, storeId = stock.StoreId }, null)
                 }
                 else
                 {
-                    @Html.Label("-")
+                    @Html.Label("Not Stocked")<br />
+                    <text>(</text>@Html.ActionLink("Add Stock", "Stock", "Product", new { prodId = prod.Id, storeId = prod.Category.StoreId }, null)<text>)</text>
                 }
             </td>
             <td>
-                @Html.ActionLink(prod.Category.Name, "Details", "Category", new { id = prod.Category.Id }, null)
+                @Html.ActionLink(prod.Category.Name, "Details", "Category", new { storeId = prod.Category.StoreId, catId = prod.Category.Id }, null)
             </td>
             <td>
                 @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })

@@ -48,11 +48,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class ProductChangeCategoryViewModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        [Display(Name = "Current Category")]
-        public string CurrentCategory { get; set; }
-        public List<Category> AvailableCategories { get; set; }
-        public Category SelectedCategory { get; set; }
+        [Required]
+        public string SelectedCategory { get; set; }
+        [Required]
+        [Display(Name = "Reflect Changes in Produt Specifications")]
+        public bool ReflectChange { get; set; }
     }
 
     public class ProductAllViewModel

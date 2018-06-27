@@ -58,13 +58,16 @@
 </div>
 <p>
     @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Id })<br />
+
+    @Html.ActionLink("Back to List", "Index") | 
     @if (ViewBag.isLeaf == true)
     {
-        @Html.ActionLink("Products", "Index", "Product", new { id = Model.Id }, null)<br />
+        @Html.ActionLink("Products", "Index", "Product", new { id = Model.Id }, null)
+        <text> | </text>
+        @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Id })
+        <text> | </text>
     }
-    @Html.ActionLink("Back to List", "Index")
-     | 
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
-     |
+    |
     @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
 </p>

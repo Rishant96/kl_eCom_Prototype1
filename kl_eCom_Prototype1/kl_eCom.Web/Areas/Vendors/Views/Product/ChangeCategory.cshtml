@@ -11,26 +11,33 @@
 
 <div class="form-horizontal">
     <div class="form-group">
-        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.LabelFor(m => m.Name)
+            @ViewBag.Name
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.CurrentCategory, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Current Category", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.LabelFor(m => m.CurrentCategory)
+            @ViewBag.Current
         </div>
     </div>
 
-    @{ 
-        var selectList = new SelectList(Model.AvailableCategories);
-    }
     <div class="form-group">
-        @Html.LabelFor(m => m.AvailableCategories, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Availabel Categories", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.SelectedCategory, selectList)
+            @{
+                var selectList = new SelectList(ViewBag.Cats);
+            }
+            @Html.DropDownListFor(m => m.SelectedCategory, selectList, optionLabel: "Please select a category")
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor( m => m.ReflectChange, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.ReflectChange, new { htmlAttributes = new { @class = "checkbox" } })
         </div>
     </div>
 

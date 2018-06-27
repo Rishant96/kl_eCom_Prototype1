@@ -23,8 +23,7 @@ namespace kl_eCom.Web.Entities
         
         public int? CategoryId { get; set; }
         public virtual Category Parent { get; set; }
-
-        [Required]
+        
         public ICollection<CategoryAttribute> Attributes { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }

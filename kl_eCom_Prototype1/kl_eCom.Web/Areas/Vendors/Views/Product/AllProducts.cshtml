@@ -37,7 +37,7 @@
                 }
             </td>
             <td>
-                @Html.DisplayFor(m => prod.Category.Name)
+                @Html.ActionLink(prod.Category.Name, "Details", "Category", new { id = prod.Category.Id }, null)
             </td>
             <td>
                 @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })

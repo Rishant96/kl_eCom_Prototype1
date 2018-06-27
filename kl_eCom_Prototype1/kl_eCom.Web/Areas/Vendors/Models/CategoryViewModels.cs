@@ -1,9 +1,11 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Areas.Vendors.Models
 {
@@ -25,6 +27,16 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public List<CategoryAttribute> Attributes { get; set; }
         [Display(Name = "Reflect Changes in Products")]
         [Required]
+        public bool ReflectChange { get; set; }
+    }
+    
+    public class CategoryImportProductViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        public string ProductName { get; set; }
+        [Required]
+        [Display(Name = "Reflect Change in product Specifications")]
         public bool ReflectChange { get; set; }
     }
 

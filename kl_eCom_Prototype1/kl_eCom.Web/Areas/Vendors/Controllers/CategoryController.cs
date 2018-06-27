@@ -223,6 +223,85 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return RedirectToAction("Index", new { id = model.StoreId });
         }
 
+        public ActionResult ImportProduct(int? id)
+        {
+            if (id == null) return View("Error");
+
+            var cat = db.Categories
+                .FirstOrDefault(m => m.Id == id);
+            if (cat == null) return View("Error");
+
+            var prods = db.Products
+                .Include(m => m.Category)
+                .ToList();
+            prods = prods.Where(m => m.Category.StoreId == cat.StoreId).ToList();
+
+            var possibleProds = prods
+                .Where(m => m.CategoryId != cat.Id)
+                .Select(m => m.Name)
+                .ToList();
+
+            var currentProds = prods
+                .Where(m => m.CategoryId == cat.Id)
+                .Select(m => m.Name)
+                .ToList();
+
+            ViewBag.Name = cat.Name;
+            ViewBag.StoreId = cat.StoreId;
+            ViewBag.CurrProds = currentProds;
+            ViewBag.AvlblProds = possibleProds;
+
+            return View(new CategoryImportProductViewModel {
+                Id = cat.Id
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ImportProduct(CategoryImportProductViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var cat = db.Categories
+                    .Include(m => m.Attributes)
+                    .FirstOrDefault(m => m.Id == model.Id);
+
+                if (cat == null) return View("Error");
+
+                var prod = db.Products
+                    .Include(m => m.Specifications)
+                    .FirstOrDefault(m => m.Name == model.ProductName);
+
+                if (prod == null) return View("Error");
+                
+                prod.CategoryId = cat.Id;
+                prod.Category = cat;
+
+                db.Entry(prod).State = EntityState.Modified;
+
+                db.SaveChanges();
+                if (model.ReflectChange)
+                {
+                    foreach (var spec in db.Specifications.Where(m => m.ProductId == prod.Id).ToList())
+                    {
+                        db.Specifications.Remove(spec);
+                    }
+                    foreach (var atr in cat.Attributes)
+                    {
+                        db.Specifications.Add(new Specification
+                        {
+                            Name = atr.Name,
+                            Value = "",
+                            ProductId = prod.Id
+                        });
+                    }
+                    db.SaveChanges();
+                }
+            }
+            return RedirectToAction("ImportProduct", new { id = model.Id });
+        }
+
         private void UpdateProducts(int id, List<CategoryAttribute> oldAttrs)
         {
             var cat = db.Categories

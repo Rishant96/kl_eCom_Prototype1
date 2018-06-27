@@ -28,5 +28,10 @@ namespace kl_eCom.Web.Entities
 
         //[NotMapped]
         //public virtual Dictionary<string, Specification> SpecificationsDict { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

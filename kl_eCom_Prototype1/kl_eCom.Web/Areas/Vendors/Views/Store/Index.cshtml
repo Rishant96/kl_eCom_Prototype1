@@ -10,8 +10,10 @@
 @foreach (var store in Model.Stores)
 {
     <br /><br />
-    <text>Store: </text>@Html.ActionLink(store.Name, "Index", controllerName: "Category", routeValues: new { id = store.Id }, htmlAttributes: null)
-    <text> (</text>@Html.ActionLink("Details", "Details", new { id = store.Id })<text>)</text>
+    <text>Store: </text>@Html.DisplayFor(m => store.Name)
+    <text> (</text>@Html.ActionLink("Details", "Details", new { id = store.Id })
+    <text> | </text>@Html.ActionLink("Catalog", "Index", "Category", new { id = store.Id }, null)
+    <text>)</text>
     <table class="table">
         <tr>
             <th>

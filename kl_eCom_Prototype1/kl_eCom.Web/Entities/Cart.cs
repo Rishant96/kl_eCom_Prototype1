@@ -12,7 +12,7 @@ namespace kl_eCom.Web.Entities
     {
         [Key]
         public int Id { get; set; }
-
+        
         [Required]
         public string ApplicationUserId { get; set; }
         public ApplicationUser Owner { get; set; }

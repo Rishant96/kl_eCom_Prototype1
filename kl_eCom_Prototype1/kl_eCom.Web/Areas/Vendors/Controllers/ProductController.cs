@@ -98,7 +98,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     Description = model.Description,
                     Manufacturer = model.Manufacturer,
                     CategoryId = (int)catId,
-                    Specifications = new List<Specification>()
+                    Specifications = new List<Specification>(),
+                    DateAdded = DateTime.Now
                 };
 
                 if (model.Specifications == null) model.Specifications = new Dictionary<string, string>();
@@ -248,18 +249,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             int? storeId = TempData["storeId"] as int?;
             if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Home");
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
-
             if (ModelState.IsValid)
             {
                 if (oldStock is null)
                 {
-                    db.Stocks.Add(
+                    var stock = db.Stocks.Add(
                         new Stock
                         {
                             CurrentStock = model.Stock,
                             Price = model.Price,
                             ProductId = (int)prodId,
                             StoreId = (int)storeId,
+                            StockingDate = DateTime.Now
                         }
                     );
                 }
@@ -344,7 +345,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     {
                         db.Specifications.Remove(spec);
                     }
-                    foreach(var atr in cat.Attributes)
+                    var allAtrs = cat.Attributes.ToList();
+                    allAtrs.Reverse();
+                    var parent = db.Categories
+                        .Include(m => m.Attributes)
+                        .FirstOrDefault(m => cat.CategoryId == m.Id);
+
+                    while(parent != null)
+                    {
+                        var newAtrs = parent.Attributes.ToList();
+                        newAtrs.Reverse();
+                        foreach (var atr in newAtrs)
+                            allAtrs.Add(atr);
+                        parent = db.Categories
+                        .Include(m => m.Attributes)
+                        .FirstOrDefault(m => parent.CategoryId == m.Id);
+                    }
+                    allAtrs.Reverse();
+                    foreach(var atr in allAtrs)
                     {
                         db.Specifications.Add(new Specification
                         {

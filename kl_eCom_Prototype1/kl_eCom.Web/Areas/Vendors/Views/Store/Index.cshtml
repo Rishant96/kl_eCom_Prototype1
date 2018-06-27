@@ -11,7 +11,7 @@
 {
     <br /><br />
     <text>Store: </text>@Html.DisplayFor(m => store.Name)
-    <text> (</text>@Html.ActionLink("Details", "Details", new { id = store.Id })
+    <text> (</text> @Html.ActionLink("Details", "Details", new { id = store.Id })
     <text> | </text>@Html.ActionLink("Catalog", "Index", "Category", new { id = store.Id }, null)
     <text>)</text>
     <table class="table">
@@ -62,9 +62,12 @@
                 <td>
                     @Html.DisplayFor(m => stkProd.Price)
                 </td>
-                <td></td>
+                <td>
+                    @Html.ActionLink("Delete", "DeleteStock", new { id = stkProd.Id })
+                </td>
             </tr>
         }
     </table>
-    <br />
 }
+<br />
+@Html.ActionLink("Go Back", "Index", controllerName: "Vendor")

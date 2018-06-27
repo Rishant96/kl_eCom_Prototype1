@@ -91,7 +91,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     UserManager.AddToRole(vendor.Id, "Vendor");
                     SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", controllerName: "Vendor");
                 }
                 AddErrors(result);
             }

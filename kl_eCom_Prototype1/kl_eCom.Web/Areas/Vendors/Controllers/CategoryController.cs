@@ -112,7 +112,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     throw raise;
                 }
 
-                return RedirectToAction("Index", "Category", new { id = storeId });
+                return RedirectToAction("Index", new { id = storeId });
             }
 
             TempData["storeId"] = storeId;
@@ -244,6 +244,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Category model)
         {
+            var entry = db.Entry(model);
+            if (entry.State == EntityState.Detached)
+                db.Categories.Attach(model);
             db.Categories.Remove(model);
             db.SaveChanges();
             return RedirectToAction("Index", new { id = model.StoreId });

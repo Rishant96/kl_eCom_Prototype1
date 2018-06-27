@@ -12,6 +12,7 @@ namespace kl_eCom.Web.Entities
     public class Product
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -22,6 +23,10 @@ namespace kl_eCom.Web.Entities
         public float Rating { get; set; }
 
         // public bool HasVariants { get; set; }
+
+
+        [Required]
+        public DateTime DateAdded { get; set; }
 
         [Required]
         public int CategoryId { get; set; }

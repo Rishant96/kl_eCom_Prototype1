@@ -59,7 +59,7 @@
 <p>
     @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Id })<br />
 
-    @Html.ActionLink("Back to List", "Index") | 
+    @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) | 
     @if (ViewBag.isLeaf == true)
     {
         @Html.ActionLink("Products", "Index", "Product", new { id = Model.Id }, null)

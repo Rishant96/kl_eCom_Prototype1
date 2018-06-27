@@ -48,6 +48,7 @@ namespace kl_eCom.Web.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<CategoryAttribute> Attributes { get; set; }
         public DbSet<Specification> Specifications { get; set; }
 

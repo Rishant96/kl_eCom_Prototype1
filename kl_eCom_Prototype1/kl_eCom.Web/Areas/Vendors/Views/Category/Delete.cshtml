@@ -41,7 +41,8 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Go Back", "Details", routeValues: new { storeId = Model.StoreId, catId = Model.CategoryId })
+            @Html.ActionLink("Go Back", "Details", 
+                    routeValues: new { storeId = Model.StoreId, catId = Model.CategoryId })
         </div>
     }
 </div>

@@ -11,10 +11,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
     public class VendorController : Controller
     {
         // GET: Vendors/Vendor
-        public ActionResult Index(string id)
+        public ActionResult Index()
         {
-            if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
-            ViewBag.VendorId = id;
             return View();
         }
 

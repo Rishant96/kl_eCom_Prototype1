@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -10,6 +11,7 @@ namespace kl_eCom.Web.Entities
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
         [Display(Name = "Stock")]
         public int CurrentStock { get; set; }
@@ -20,6 +22,11 @@ namespace kl_eCom.Web.Entities
         [Required]
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
+        
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DataType(DataType.DateTime)]
+        public DateTime StockingDate { get; set; }
 
         [Required]
         public int StoreId { get; set; }

@@ -18,12 +18,15 @@ namespace kl_eCom.Web.Entities
         public string Manufacturer { get; set; }
         public string Description { get; set; }
 
+        [Range(0.0, 5.0)]
+        public float Rating { get; set; }
+
         // public bool HasVariants { get; set; }
-        
+
         [Required]
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
-
+        
         public virtual ICollection<Specification> Specifications { get; set; }
 
         //[NotMapped]

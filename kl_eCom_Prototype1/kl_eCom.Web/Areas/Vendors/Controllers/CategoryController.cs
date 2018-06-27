@@ -28,7 +28,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult AddAttributePartial(int? id)
         {
             if (id == null) return View("Error");
-            var model = new AddAttributeViewModel() { };
+            var model = new AddAttributeViewModel() { Type = InformationType.Other };
             return PartialView("AddAttributePartial", model);
         }
 
@@ -52,14 +52,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
                 var nameStr = Request.Form["AtrbName"];
-                if (nameStr is null) nameStr = "";
-                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToList() as List<string>;
-                if (atrbNames is null) atrbNames = new List<string>();
+                var typesStr = Request.Form["Type"];
 
-                foreach (var atrbName in atrbNames)
+                if (nameStr is null) nameStr = "";
+                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (atrbNames is null) atrbNames = new string[] { };
+
+                if (typesStr is null) typesStr = "";
+                var typeNames = typesStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (typeNames is null) typeNames = new string[] { };
+
+                for (int i = 0; i < atrbNames.Count(); i++)
                 {
-                    if (atrbName != "")
-                        catAttrs.Add(new CategoryAttribute() { Name = atrbName });
+                    if (atrbNames[i] != "")
+                        catAttrs.Add(new CategoryAttribute()
+                        {
+                            Name = atrbNames[i],
+                            InfoType = (InformationType)Enum.Parse(typeof(InformationType), typeNames[i])
+                        });
                 }
 
                 foreach (var atrb in catAttrs)
@@ -161,15 +171,31 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
                 var nameStr = Request.Form["AtrbName"];
-                if (nameStr is null) nameStr = "";
-                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToList() as List<string>;
-                if (atrbNames is null) atrbNames = new List<string>();
+                var typesStr = Request.Form["Type"];
 
-                foreach (var atrbName in atrbNames)
+                if (nameStr is null) nameStr = "";
+                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (atrbNames is null) atrbNames = new string[] { };
+
+                if (typesStr is null) typesStr = "";
+                var typeNames = typesStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (typeNames is null) typeNames = new string[] { };
+                
+                for (int i=0; i<atrbNames.Count(); i++)
                 {
-                    if (atrbName != "")
-                        catAttrs.Add(new CategoryAttribute() { Name = atrbName, CategoryId = model.Id });
+                    if (atrbNames[i] != "")
+                        catAttrs.Add(new CategoryAttribute() {
+                            Name = atrbNames[i],
+                            InfoType = (InformationType) Enum.Parse(typeof(InformationType), typeNames[i]),
+                            CategoryId = model.Id });
                 }
+
+
+                //foreach (var typeName in typeNames)
+                //{
+                //    if (typeName != "")
+                //        catAttrs.Add(new CategoryAttribute() { Name = atrbName, CategoryId = model.Id });
+                //}
 
                 foreach (var atrb in catAttrs)
                 {

@@ -49,6 +49,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string AtrbName { get; set; }
 
         [Required]
+        public InformationType Type { get; set; }
+
+        [Required]
         public int Count { get; private set; }
 
         public AddAttributeViewModel()

@@ -260,6 +260,10 @@
     <Compile Include="Migrations\201806260621317_Added_AttrName_in_Spec.Designer.cs">
       <DependentUpon>201806260621317_Added_AttrName_in_Spec.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.cs" />
+    <Compile Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.Designer.cs">
+      <DependentUpon>201806270649107_SortFilter_ModelSupport_Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -419,6 +423,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806260621317_Added_AttrName_in_Spec.resx">
       <DependentUpon>201806260621317_Added_AttrName_in_Spec.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806270649107_SortFilter_ModelSupport_Added.resx">
+      <DependentUpon>201806270649107_SortFilter_ModelSupport_Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

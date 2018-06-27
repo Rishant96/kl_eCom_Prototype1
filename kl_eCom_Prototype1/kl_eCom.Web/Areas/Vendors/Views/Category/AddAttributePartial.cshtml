@@ -5,11 +5,19 @@
 }
 
 <div class="form-group" id="divAtrbNew" style="margin: 10px 0px;">
-    @Html.Label( "Name:", htmlAttributes: new { @class = "control-label col-md-2", style = "width: auto; padding-left: 5px;" })
-    <div class="col-md-10" style="display:flex">
+    @Html.Label("Name:", htmlAttributes: new { @class = "control-label col-md-2", style = "width: auto; padding-left: 5px;" })
+    <div class="col-md-3" style="display:flex">
         @Html.EditorFor(model => model.AtrbName, new { htmlAttributes = new { name = "txtAtrbNew" + urlId, @class = "form-control", style = "display: inline-block;" } })
-        @Html.Label("Delete", new { id = "dltAtrbNew" + urlId, @class = "col-md-2 btn btn-link", style = "width: auto" })
         @*@Html.Label("Undo", new { id = "undoDltSongNew" + urlId, @class = "col-md-2 btn btn-link", style = "width: auto" })*@
+    </div>
+    <div class="col-md-offset-1"></div>
+    @Html.Label("Type:", htmlAttributes: new { @class = "control-label col-md-2", style = "width: auto; padding-left: 5px;" })
+    <div class="col-md-3">
+        @Html.DropDownList("Type", EnumHelper.GetSelectList(typeof(kl_eCom.Web.Utilities.InformationType), Model.Type),
+                    htmlAttributes: new { @class = "form-control" })   
+    </div>
+    <div class="col-md-1">
+        @Html.Label("Delete", new { id = "dltAtrbNew" + urlId, @class = "col-md-2 btn btn-link", style = "width: auto" })
     </div>
 </div>
 

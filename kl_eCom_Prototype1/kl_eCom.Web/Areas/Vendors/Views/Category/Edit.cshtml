@@ -32,7 +32,7 @@
     <div id="divAddAttributes" class="col-md-offset-2">
         @foreach (var atr in Model.Attributes)
         {
-            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name })
+            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name, Type = atr.InfoType })
         }
     </div>
 

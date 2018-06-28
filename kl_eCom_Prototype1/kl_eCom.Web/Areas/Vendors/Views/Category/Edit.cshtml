@@ -21,7 +21,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.Description, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "width: 280px; height: 110px;" })
             @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -33,7 +33,7 @@
     <div id="divAddAttributes" class="col-md-offset-2">
         @foreach (var atr in Model.Attributes)
         {
-            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name, Type = atr.InfoType })
+            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name, Default = atr.Default, Type = atr.InfoType })
         }
     </div>
 

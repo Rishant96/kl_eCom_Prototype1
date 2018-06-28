@@ -20,6 +20,9 @@ namespace kl_eCom.Web.Entities
 
         [Required]
         public bool IsBase { get; set; }
+
+        public byte[] ThumbnailData { get; set; }
+        public string ThumbnailMimeType { get; set; }
         
         public int? CategoryId { get; set; }
         public virtual Category Parent { get; set; }

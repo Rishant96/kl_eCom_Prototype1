@@ -189,5 +189,5 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-    }
+    } 
 }

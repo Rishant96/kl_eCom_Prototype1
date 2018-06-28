@@ -250,6 +250,18 @@
     <Compile Include="Migrations\201806270904023_StockModel_Date_Changed.Designer.cs">
       <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806280429036_catAtrDefault.cs" />
+    <Compile Include="Migrations\201806280429036_catAtrDefault.Designer.cs">
+      <DependentUpon>201806280429036_catAtrDefault.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806280812100_catAtrDefault2.cs" />
+    <Compile Include="Migrations\201806280812100_catAtrDefault2.Designer.cs">
+      <DependentUpon>201806280812100_catAtrDefault2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806281015503_Product_and_Category_Images_Added.cs" />
+    <Compile Include="Migrations\201806281015503_Product_and_Category_Images_Added.Designer.cs">
+      <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -262,6 +274,7 @@
     <Compile Include="Utilities\Address.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
+    <Compile Include="Utilities\ProductImage.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
     <Compile Include="Utilities\VendorDetails.cs" />
@@ -393,6 +406,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806270904023_StockModel_Date_Changed.resx">
       <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806280429036_catAtrDefault.resx">
+      <DependentUpon>201806280429036_catAtrDefault.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806280812100_catAtrDefault2.resx">
+      <DependentUpon>201806280812100_catAtrDefault2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806281015503_Product_and_Category_Images_Added.resx">
+      <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

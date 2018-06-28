@@ -28,7 +28,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult AddAttributePartial(int? id)
         {
             if (id == null) return View("Error");
-            var model = new AddAttributeViewModel() { Type = InformationType.Other };
+            var model = new AddAttributeViewModel() { Type = InformationType.Other, Default = "" };
             return PartialView("AddAttributePartial", model);
         }
 
@@ -53,6 +53,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
                 var nameStr = Request.Form["AtrbName"];
                 var typesStr = Request.Form["Type"];
+                var defaultStr = Request.Form["Default"];
 
                 if (nameStr is null) nameStr = "";
                 var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
@@ -62,12 +63,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var typeNames = typesStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
                 if (typeNames is null) typeNames = new string[] { };
 
+                if (defaultStr is null) defaultStr = "";
+                var dfltNames = defaultStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (dfltNames is null) dfltNames = new string[] { };
+
                 for (int i = 0; i < atrbNames.Count(); i++)
                 {
+                    if (string.IsNullOrEmpty(dfltNames[i])) dfltNames[i] = "";
                     if (atrbNames[i] != "")
                         catAttrs.Add(new CategoryAttribute()
                         {
                             Name = atrbNames[i],
+                            Default = dfltNames[i],
                             InfoType = (InformationType)Enum.Parse(typeof(InformationType), typeNames[i])
                         });
                 }
@@ -172,6 +179,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
                 var nameStr = Request.Form["AtrbName"];
                 var typesStr = Request.Form["Type"];
+                var defaultStr = Request.Form["Default"];
 
                 if (nameStr is null) nameStr = "";
                 var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
@@ -180,13 +188,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 if (typesStr is null) typesStr = "";
                 var typeNames = typesStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
                 if (typeNames is null) typeNames = new string[] { };
-                
+
+                if (defaultStr is null) defaultStr = "";
+                var dfltNames = defaultStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (dfltNames is null) dfltNames = new string[] { };
+
                 for (int i=0; i<atrbNames.Count(); i++)
                 {
                     if (atrbNames[i] != "")
                         catAttrs.Add(new CategoryAttribute() {
                             Name = atrbNames[i],
                             InfoType = (InformationType) Enum.Parse(typeof(InformationType), typeNames[i]),
+                            Default = dfltNames[i],
                             CategoryId = model.Id });
                 }
 
@@ -291,7 +304,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var cat = db.Categories
                     .Include(m => m.Attributes)
                     .FirstOrDefault(m => m.Id == model.Id);
@@ -303,7 +315,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     .FirstOrDefault(m => m.Name == model.ProductName);
 
                 if (prod == null) return View("Error");
-                
+
                 prod.CategoryId = cat.Id;
                 prod.Category = cat;
 
@@ -321,7 +333,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         db.Specifications.Add(new Specification
                         {
                             Name = atr.Name,
-                            Value = "",
+                            Value = atr.Default,
                             ProductId = prod.Id
                         });
                     }
@@ -374,34 +386,40 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 foreach (var newAtr in newAtrs)
                 {
-                    prod.Specifications.Add(db.Specifications.Add(new Specification { Name = newAtr, Value = "", ProductId = prod.Id }));
+                    prod.Specifications.Add(db.Specifications.Add(new Specification { Name = newAtr.Name, Value = newAtr.Default, ProductId = prod.Id }));
                 }
                 foreach (var oldAtr in oldAtrs)
                 {
                     db.Specifications.Remove(db.Specifications.FirstOrDefault(m => m.ProductId == prod.Id
-                        && m.Name == oldAtr));
+                        && m.Name == oldAtr.Name));
                 }
                 db.Entry(prod).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }
         
-        private List<string> AttrsToBeAdded(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
+        private List<CategoryAttribute> AttrsToBeAdded(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
         {
-            var newAtrs = new List<string>();
+            var newAtrs = new List<CategoryAttribute>();
             foreach(var atr in attrs)
             {
-                if (oldAttrs.Where(m => m.Name == atr.Name).FirstOrDefault() == null) newAtrs.Add(atr.Name);
+                var oldAtrb = oldAttrs.Where(m => m.Name == atr.Name).FirstOrDefault();
+                if (oldAtrb == null) newAtrs.Add(atr);
+                else if(oldAtrb.Default != atr.Default)
+                    newAtrs.Add(atr);
             }
             return newAtrs;
         }
 
-        private List<string> AttrsToBeRemoved(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
+        private List<CategoryAttribute> AttrsToBeRemoved(List<CategoryAttribute> attrs, List<CategoryAttribute> oldAttrs)
         {
-            var dltAtrs = new List<string>();
+            var dltAtrs = new List<CategoryAttribute>();
             foreach (var atr in oldAttrs)
             {
-                if (attrs.Where(m => m.Name == atr.Name).FirstOrDefault() == null) dltAtrs.Add(atr.Name);
+                var atrb = attrs.Where(m => m.Name == atr.Name).FirstOrDefault();
+                if (atrb == null) dltAtrs.Add(atr);
+                else if (atrb.Default != atr.Default)
+                    dltAtrs.Add(atr);
             }
             return dltAtrs;
         }

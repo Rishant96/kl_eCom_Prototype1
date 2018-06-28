@@ -22,6 +22,11 @@ namespace kl_eCom.Web.Entities
         [Range(0.0, 5.0)]
         public float Rating { get; set; }
 
+        public byte[] ThumbnailData { get; set; }
+        public string ThumbnailMimeType { get; set; }
+
+        public ICollection<ProductImage> ProductImages { get; set; }
+
         // public bool HasVariants { get; set; }
 
 

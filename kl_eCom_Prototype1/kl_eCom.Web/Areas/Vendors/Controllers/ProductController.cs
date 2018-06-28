@@ -57,9 +57,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             //        );
             //    }
             //}
-
+            var store = (db.Categories.FirstOrDefault(m => m.Id == id));
+            int storeID = 0;
+            if (store != null) storeID = store.StoreId;
             ViewBag.catId = id;
-            ViewBag.storeId = (db.Categories.FirstOrDefault(m => m.Id == id)).StoreId;
+            ViewBag.storeId = storeID;
             return View(model);
         }
 
@@ -69,17 +71,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             TempData["catId"] = catId;
             var parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == catId);
             var model = new ProductCreateViewModel { Specifications = new Dictionary<string, string>() };
-            model.Attributes = new List<string>();
+            model.Attributes = new Dictionary<string, int>();
             while (parent != null)
             {
                 foreach (var atr in parent.Attributes.Reverse())
                 {
-                    model.Attributes.Add(atr.Name);
-                    model.Specifications.Add(atr.Name, "");
+                    model.Attributes.Add(atr.Name, atr.Id);
+                    model.Specifications.Add(atr.Name, atr.Default);
                 }
                 parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == parent.CategoryId);
             }
-            model.Attributes.Reverse();
+            model.AttributeNames = model.Attributes.Keys.ToList();
+            model.AttributeNames.Reverse();
             return View(model);
         }
 
@@ -115,11 +118,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             }
 
             TempData["catId"] = catId;
-            model.Attributes = new List<string>();
-            foreach (var spec in model.Specifications.Keys)
-            {
-                model.Attributes.Add(spec);
-            }
             return View(model);
         }
 
@@ -136,24 +134,29 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var model = new ProductEditViewModel
             {
                 Id = prod.Id,
-                Attributes = getAllAttributes(prod.CategoryId),
                 Name = prod.Name,
-                Manufacturer = prod.Manufacturer,
                 Description = prod.Description,
+                Manufacturer = prod.Manufacturer,
+                AttributeNames = new List<string>(),
+                Attributes = new Dictionary<string, int>(),
                 Specifications = new Dictionary<string, string>()
             };
 
-            foreach (var atr in model.Attributes)
+            var catIds = new List<int>();
+            var cat = prod.Category;
+            while(cat != null)
             {
-                var spec = prod.Specifications.Where(m => m.Name == atr).FirstOrDefault();
-                if (spec != null)
-                {
-                    model.Specifications.Add(spec.Name, spec.Value);
-                }
-                else
-                {
-                    model.Specifications.Add(atr, "");
-                }
+                catIds.Add(cat.Id);
+                cat = db.Categories.Include(m => m.Parent).FirstOrDefault(m => m.Id == cat.CategoryId);
+            }
+            
+            foreach(var spec in prod.Specifications)
+            {
+                var atr = db.Attributes.FirstOrDefault(m => catIds.Contains(m.CategoryId) && m.Name == spec.Name);
+                if (atr == null) return View("Error");
+                model.AttributeNames.Add(atr.Name);
+                model.Attributes.Add(atr.Name, atr.Id);
+                model.Specifications.Add(spec.Name, spec.Value);
             }
 
             return View(model);
@@ -179,8 +182,13 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 if (prod == null) return View("Error");
 
-                foreach (var atr in model.Specifications.Keys)
+                var keys = model.Specifications.Keys.ToList();
+                foreach (var atr in keys)
                 {
+                    if(string.IsNullOrEmpty(model.Specifications[atr]))
+                    {
+                        model.Specifications[atr] = "";
+                    }
                     var spec = db.Specifications.Add(
                         new Specification
                         {
@@ -213,8 +221,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Product model)
         {
-            if (ModelState.IsValid)
+            if (model.Id != 0)
             {
+                var entry = db.Entry(model);
+                if (entry.State == EntityState.Detached)
+                    db.Products.Attach(model);
                 db.Products.Remove(model);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { id = model.CategoryId });
@@ -367,7 +378,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         db.Specifications.Add(new Specification
                         {
                             Name = atr.Name,
-                            Value = "",
+                            Value = atr.Default,
                             ProductId = prod.Id
                         });
                     }

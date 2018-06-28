@@ -38,12 +38,7 @@
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.ReflectChange, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.ReflectChange, new { htmlAttributes = new { @class = "checkbox" } })
-        </div>
-    </div>
+    @Html.HiddenFor(m => m.ReflectChange)
 
     <input type="submit" class="btn btn-primary col-md-offset-2" value="Import" />
 </div>

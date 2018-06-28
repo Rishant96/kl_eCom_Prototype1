@@ -20,7 +20,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
-        public List<string> Attributes { get; set; }
+        public List<string> AttributeNames { get; set; }
+        public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; } 
     }
 
@@ -32,7 +33,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
-        public List<string> Attributes { get; set; }
+        public List<string> AttributeNames { get; set; }
+        public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; }
     }
 

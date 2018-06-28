@@ -39,6 +39,8 @@
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
+        @Html.HiddenFor(m => m.StoreId)
+
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
             @Html.ActionLink("Go Back", "Details", 

@@ -37,7 +37,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string ProductName { get; set; }
         [Required]
         [Display(Name = "Reflect Change in product Specifications")]
-        public bool ReflectChange { get; set; }
+        public bool ReflectChange { get { return true; } }
     }
 
     public class AddAttributeViewModel
@@ -47,6 +47,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [Display(Name = "Attribute Name")]
         public string AtrbName { get; set; }
+        
+        public string Default { get; set; }
 
         [Required]
         public InformationType Type { get; set; }

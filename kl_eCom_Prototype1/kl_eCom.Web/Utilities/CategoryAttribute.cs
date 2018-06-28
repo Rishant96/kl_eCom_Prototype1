@@ -15,6 +15,8 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public string Name { get; set; }
+        
+        public string Default { get; set; }
 
         public InformationType InfoType { get; set; }
 

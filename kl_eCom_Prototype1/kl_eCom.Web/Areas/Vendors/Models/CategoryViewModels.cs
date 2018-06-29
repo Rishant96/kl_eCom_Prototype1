@@ -3,6 +3,7 @@ using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -28,6 +29,12 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Display(Name = "Reflect Changes in Products")]
         [Required]
         public bool ReflectChange { get; set; }
+    }
+
+    public class CategoryDetailsViewModel
+    {
+        public Category Category { get; set; }
+        public bool HasThumbnail { get; set; }
     }
     
     public class CategoryImportProductViewModel

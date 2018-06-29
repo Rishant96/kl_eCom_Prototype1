@@ -8,6 +8,7 @@ using System.Data.Entity;
 using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
+using System.IO;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -143,7 +144,20 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 ViewBag.isLeaf = false;
             }
             if (cat == null) return RedirectToAction("Index", controllerName: "Home");
-            return View(cat);
+
+            return View(new CategoryDetailsViewModel
+            {
+                Category = cat,
+                HasThumbnail = (cat.ThumbnailData != null && cat.ThumbnailMimeType != null) ? true : false
+            });
+        }
+
+        public FileContentResult GetThumbnail(int? id)
+        {
+            if (id == null) return null;
+            Category cat = db.Categories.FirstOrDefault(m => m.Id == id);
+            if (cat == null) return null;
+            return File(cat.ThumbnailData, cat.ThumbnailMimeType);
         }
 
         public ActionResult Edit(int? id)
@@ -169,12 +183,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (model == null) return View("Error");
             if (ModelState.IsValid)
             {
-                var atrbs = db.Attributes.ToList().Where(s => s.CategoryId == model.Id);
+                var atrbs = db.Attributes.Where(s => s.CategoryId == model.Id).ToList();
                 foreach (var attrb in atrbs)
                 {
                     db.Attributes.Remove(attrb);
                 }   
-                db.SaveChanges();
 
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
                 var nameStr = Request.Form["AtrbName"];
@@ -210,19 +223,39 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 //        catAttrs.Add(new CategoryAttribute() { Name = atrbName, CategoryId = model.Id });
                 //}
 
+                var cat = db.Categories.FirstOrDefault(m => m.Id == model.Id);
+                if (cat == null) return View("Error");
+
+
+
                 foreach (var atrb in catAttrs)
                 {
                     if (model.Attributes == null) model.Attributes = new List<CategoryAttribute>();
                     db.Attributes.Add(atrb);
-                    (db.Categories.FirstOrDefault(m => m.Id == model.Id)).Attributes.Add(atrb);
+                    cat.Attributes.Add(atrb);
                 }
+
+                cat.Name = model.Name;
+                cat.Description = model.Description;
                 
-                db.Entry(db.Categories.FirstOrDefault(m => m.Id == model.Id)).State = EntityState.Modified;
+                if(Request.Files.Count > 0)
+                {
+                    if (Request.Files.Count != 1) return View("Error");
+                    HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                    if (hpf != null && hpf.ContentLength != 0)
+                    {
+                        cat.ThumbnailMimeType = hpf.ContentType;
+                        cat.ThumbnailData = new byte[hpf.ContentLength];
+                        hpf.InputStream.Read(cat.ThumbnailData, 0, hpf.ContentLength);
+                    }
+                }
+
+                db.Entry(cat).State = EntityState.Modified;
                 
                 try
                 {
                     db.SaveChanges();
-                    if(model.ReflectChange) UpdateProducts(model.Id, atrbs.ToList());
+                    if(true) UpdateProducts(model.Id, atrbs.ToList());
                 }
                 catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
                 {
@@ -322,7 +355,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 db.Entry(prod).State = EntityState.Modified;
 
                 db.SaveChanges();
-                if (model.ReflectChange)
+                if (true)
                 {
                     foreach (var spec in db.Specifications.Where(m => m.ProductId == prod.Id).ToList())
                     {
@@ -386,12 +419,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 foreach (var newAtr in newAtrs)
                 {
-                    prod.Specifications.Add(db.Specifications.Add(new Specification { Name = newAtr.Name, Value = newAtr.Default, ProductId = prod.Id }));
+                    if (prod.Specifications.FirstOrDefault(m => m.Name == newAtr.Name) == null)
+                    {
+                        prod.Specifications.Add(db.Specifications.Add(new Specification { Name = newAtr.Name, Value = newAtr.Default, ProductId = prod.Id }));
+                    }
                 }
                 foreach (var oldAtr in oldAtrs)
                 {
-                    db.Specifications.Remove(db.Specifications.FirstOrDefault(m => m.ProductId == prod.Id
-                        && m.Name == oldAtr.Name));
+                    var atrb = db.Specifications.FirstOrDefault(m => m.ProductId == prod.Id
+                        && m.Name == oldAtr.Name);
+                    if (atrb != null) db.Specifications.Remove(atrb);
                 }
                 db.Entry(prod).State = EntityState.Modified;
                 db.SaveChanges();

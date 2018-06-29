@@ -162,7 +162,19 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (store == null) return View("Error");
             if (store.Id == 0) return View("Error");
-            db.Stores.Remove(store);
+            var entry = db.Entry(store);
+            if (entry.State == EntityState.Detached)
+            {
+                db.Stores.Attach(store);
+            }
+            try
+            {
+                db.Stores.Remove(store);
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }

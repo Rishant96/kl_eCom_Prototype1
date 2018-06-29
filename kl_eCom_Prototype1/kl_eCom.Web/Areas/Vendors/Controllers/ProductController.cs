@@ -181,8 +181,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 prod.Specifications = new List<Specification>();
 
                 if (prod == null) return View("Error");
-
-                var keys = model.Specifications.Keys.ToList();
+                
+                List<string> keys;
+                if (model.Specifications == null || model.Specifications.Keys == null)
+                {
+                    keys = new List<string>();
+                }
+                else
+                {
+                    keys = model.Specifications.Keys.ToList();
+                }
                 foreach (var atr in keys)
                 {
                     if(string.IsNullOrEmpty(model.Specifications[atr]))
@@ -199,12 +207,32 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     prod.Specifications.Add(spec);
                 }
 
+                if (Request.Files.Count > 0)
+                {
+                    if (Request.Files.Count != 1) return View("Error");
+                    HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                    if (hpf.ContentLength != 0)
+                    {
+                        prod.ThumbnailMimeType = hpf.ContentType;
+                        prod.ThumbnailData = new byte[hpf.ContentLength];
+                        hpf.InputStream.Read(prod.ThumbnailData, 0, hpf.ContentLength);
+                    }
+                }
+
                 db.Entry(prod).State = EntityState.Modified;
                 db.SaveChanges();
 
                 return RedirectToAction("Details", new { id = model.Id });
             }
             return View(model);
+        }
+
+        public FileContentResult GetThumbnail(int? id)
+        {
+            if (id == null) return null;
+            Product prod = db.Products.FirstOrDefault(m => m.Id == id);
+            if (prod == null) return null;
+            return File(prod.ThumbnailData, prod.ThumbnailMimeType);
         }
 
         public ActionResult Delete(int? id)
@@ -226,6 +254,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var entry = db.Entry(model);
                 if (entry.State == EntityState.Detached)
                     db.Products.Attach(model);
+                var stock = db.Stocks.FirstOrDefault(m => m.ProductId == model.Id);
+                if(stock != null)
+                {
+                    var stockEntry = db.Entry(stock);
+                    if (stockEntry.State == EntityState.Detached)
+                        db.Stocks.Attach(stock);
+                    db.Stocks.Remove(stock);
+                }
                 db.Products.Remove(model);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { id = model.CategoryId });
@@ -350,7 +386,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 db.Entry(prod).State = EntityState.Modified;
 
                 db.SaveChanges();
-                if (model.ReflectChange)
+                if (true)
                 {
                     foreach(var spec in db.Specifications.Where(m => m.ProductId == prod.Id).ToList())
                     {

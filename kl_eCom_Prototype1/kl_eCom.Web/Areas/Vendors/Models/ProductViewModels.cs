@@ -49,6 +49,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public Dictionary<string, int> Stores { get; set; }
         //[Required]
         public int SelectedStoreId { get; set; }
+        public StockStatus Status { get; set; }
     }
 
     public class ProductChangeCategoryViewModel

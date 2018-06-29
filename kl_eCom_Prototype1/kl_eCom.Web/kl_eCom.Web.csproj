@@ -262,6 +262,10 @@
     <Compile Include="Migrations\201806281015503_Product_and_Category_Images_Added.Designer.cs">
       <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806290946519_StockModel_Status_Added.cs" />
+    <Compile Include="Migrations\201806290946519_StockModel_Status_Added.Designer.cs">
+      <DependentUpon>201806290946519_StockModel_Status_Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -415,6 +419,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806281015503_Product_and_Category_Images_Added.resx">
       <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806290946519_StockModel_Status_Added.resx">
+      <DependentUpon>201806290946519_StockModel_Status_Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

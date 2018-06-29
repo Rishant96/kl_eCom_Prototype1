@@ -18,6 +18,8 @@ namespace kl_eCom.Web.Entities
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
+        public bool IsCategoryListable { get; set; }
+        public bool HasStock { get; set; }
 
         [Range(0.0, 5.0)]
         public float Rating { get; set; }

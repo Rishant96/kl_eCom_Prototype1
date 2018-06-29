@@ -45,6 +45,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
+            if (db.Stores.FirstOrDefault(m => m.ApplicationUserId == id) != null) return View("MultipleStores");
             TempData["vendorId"] = id;
             return View(new StoreCreateViewModel() { });
         }
@@ -52,7 +53,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(StoreCreateViewModel model)
-        {
+        {   
             string vendorId = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(vendorId)) return View("Error");
             if (ModelState.IsValid)

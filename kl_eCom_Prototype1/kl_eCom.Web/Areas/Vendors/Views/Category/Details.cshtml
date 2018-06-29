@@ -1,4 +1,4 @@
-﻿@model kl_eCom.Web.Entities.Category
+﻿@model kl_eCom.Web.Areas.Vendors.Models.CategoryDetailsViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -10,31 +10,50 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Category.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Category.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Category.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Category.Description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IsBase)
+            @Html.DisplayNameFor(model => model.Category.IsBase)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsBase)
+            @Html.DisplayFor(model => model.Category.IsBase)
+        </dd>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.Description)
+        </dd>
+
+        <dt>
+            @Html.Label("Thumbnail")
+        </dt>
+
+        <dd>
+            @if (Model.HasThumbnail)
+            {
+                <text>
+                <img class="img-thumbnail" width="75" height="75"
+                     src="@Url.Action("GetThumbnail", "Category",
+                            new { Model.Category.Id })" />
+                </text>
+            }
         </dd>
 
         @Html.Label("Attributes", new { style = "display:block" })
-        @foreach (var attr in Model.Attributes)
+        @foreach (var attr in Model.Category.Attributes)
         {
             <dd>
                 @Html.DisplayFor(m => attr.Name)
@@ -43,7 +62,7 @@
 
 
         @Html.Label("Sub Categories", new { style = "display:block" })
-        @foreach (var sub in Model.ChildCategories)
+        @foreach (var sub in Model.Category.ChildCategories)
         {
             <dt>
                 @Html.DisplayNameFor(m => sub.Name)
@@ -57,17 +76,17 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Id })<br />
+    @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Category.Id })<br />
 
     @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) | 
     @if (ViewBag.isLeaf == true)
     {
-        @Html.ActionLink("Products", "Index", "Product", new { id = Model.Id }, null)
+        @Html.ActionLink("Products", "Index", "Product", new { id = Model.Category.Id }, null)
         <text> | </text>
-        @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Id })
+        @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Category.Id })
         <text> | </text>
     }
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-success" })
     |
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-danger" })
 </p>

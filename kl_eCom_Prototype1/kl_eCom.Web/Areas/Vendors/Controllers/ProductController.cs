@@ -36,12 +36,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Product
         public ActionResult Index(int? id)
         {
-            if (id == null) return RedirectToAction("Index", controllerName: "Home");
+            if (id == null) return RedirectToAction("Index", controllerName: "Store");
             var prod = db.Products
                 .Where(m => m.CategoryId == (int)id)
                 .Include(m => m.Specifications)
                 .ToList();
-            if (prod == null) return RedirectToAction("Index", controllerName: "Home");
+            if (prod == null) return RedirectToAction("Index", controllerName: "Store");
 
             var model = new ProductIndexViewModel { Products = prod };
 
@@ -67,7 +67,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Create(int? catId)
         {
-            if (catId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (catId == null) return RedirectToAction("Index", controllerName: "Store");
             TempData["catId"] = catId;
             var parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == catId);
             var model = new ProductCreateViewModel { Specifications = new Dictionary<string, string>() };
@@ -91,7 +91,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Create(ProductCreateViewModel model)
         {
             int? catId = TempData["catId"] as int?;
-            if (catId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (catId == null) return RedirectToAction("Index", controllerName: "Store");
 
             if (ModelState.IsValid)
             {
@@ -274,7 +274,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Stock(int? prodId, int? storeId)
         {
-            if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Store");
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
@@ -284,7 +284,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 model.Price = oldStock.Price;
                 model.Stock = oldStock.CurrentStock;
             }
-            if (model.Product == null) return RedirectToAction("Index", controllerName: "Home");
+            if (model.Product == null) return RedirectToAction("Index", controllerName: "Store");
             return View(model);
         }
 
@@ -294,7 +294,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             int? prodId = TempData["prodId"] as int?;
             int? storeId = TempData["storeId"] as int?;
-            if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Store");
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
             if (ModelState.IsValid)
             {

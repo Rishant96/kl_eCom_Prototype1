@@ -22,7 +22,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             string id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
-            ViewBag.VendorId = id;
             var stores = db.Stores.Where(m => m.ApplicationUserId == id).ToList();
             var model = new StoreIndexViewModel
             {
@@ -42,8 +41,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View(model);
         }
 
-        public ActionResult Create(string id)
+        public ActionResult Create()
         {
+            var id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
             TempData["vendorId"] = id;
             return View(new StoreCreateViewModel() { });
@@ -53,7 +53,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(StoreCreateViewModel model)
         {
-            string vendorId = TempData["vendorId"] as string;
+            string vendorId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(vendorId)) return View("Error");
             if (ModelState.IsValid)
             {
                 var storeAddr = new StoreAddress
@@ -73,9 +74,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 };
                 db.Stores.Add(store);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { id = vendorId });
+                return RedirectToAction("Index");
             }
-            TempData["vendorId"] = vendorId;
             return View(model);
         }
 

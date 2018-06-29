@@ -40,11 +40,15 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
     public class ProductStockViewModel
     {
+        [Required]
         public Product Product { get; set; }
         [Required]
         public int Stock { get; set; }
         [Required]
         public float Price { get; set; }
+        public Dictionary<string, int> Stores { get; set; }
+        //[Required]
+        public int SelectedStoreId { get; set; }
     }
 
     public class ProductChangeCategoryViewModel

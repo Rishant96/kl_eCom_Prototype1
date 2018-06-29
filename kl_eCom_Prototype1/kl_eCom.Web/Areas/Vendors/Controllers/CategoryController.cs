@@ -20,7 +20,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Category
         public ActionResult Index(int? id)
         {
-            if (id == null) return RedirectToAction("Index", controllerName: "Home");
+            if (id == null) return RedirectToAction("Index", controllerName: "Store");
             ViewBag.storeId = (int)id;
             var model = db.Categories.Where(m => m.StoreId == (int)id).Include(m => m.Attributes).ToList();
             return View(model);
@@ -47,7 +47,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             int? storeId = TempData["storeId"] as int?;
             int? catId = TempData["catId"] as int?;
-            if (storeId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (storeId == null) return RedirectToAction("Index", controllerName: "Store");
 
             if(ModelState.IsValid)
             {
@@ -143,7 +143,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 ViewBag.isLeaf = false;
             }
-            if (cat == null) return RedirectToAction("Index", controllerName: "Home");
+            if (cat == null) return RedirectToAction("Index", controllerName: "Store");
 
             return View(new CategoryDetailsViewModel
             {

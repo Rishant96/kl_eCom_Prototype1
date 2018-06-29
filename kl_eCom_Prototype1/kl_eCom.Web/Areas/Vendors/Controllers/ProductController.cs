@@ -298,6 +298,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
             if (ModelState.IsValid)
             {
+                if (model.Stock <= 0) model.Status = StockStatus.OutOfStock;
+                else model.Status = StockStatus.InStock;
                 if (oldStock is null)
                 {
                     var stock = db.Stocks.Add(
@@ -307,7 +309,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             Price = model.Price,
                             ProductId = (int)prodId,
                             StoreId = (int)storeId,
-                            StockingDate = DateTime.Now
+                            StockingDate = DateTime.Now,
+                            Status = model.Status
                         }
                     );
                 }
@@ -315,6 +318,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 {
                     oldStock.CurrentStock = model.Stock;
                     oldStock.Price = model.Price;
+                    oldStock.Status = model.Status;
                     db.Entry(oldStock).State = EntityState.Modified;
                 }
 

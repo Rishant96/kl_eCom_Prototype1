@@ -30,5 +30,13 @@ namespace kl_eCom.Web.Entities
         [Required]
         public int StoreId { get; set; }
         public virtual Store Store { get; set; }
+
+        public StockStatus Status { get; set; }
+    }
+
+    public enum StockStatus
+    {
+        OutOfStock,
+        InStock,
     }
 }

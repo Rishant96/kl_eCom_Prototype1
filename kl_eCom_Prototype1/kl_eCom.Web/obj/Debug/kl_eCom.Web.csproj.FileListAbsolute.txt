@@ -138,3 +138,4 @@ C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.catAtrDefault.resources
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.catAtrDefault2.resources
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Product_and_Category_Images_Added.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.StockModel_Status_Added.resources

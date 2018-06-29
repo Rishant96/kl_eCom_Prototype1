@@ -60,7 +60,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class ProductAllViewModel
     {
         public List<Product> Products { get; set; }
-        public Dictionary<Product, Stock> Inventory { get; set; }
+        public Dictionary<Product, List<Stock>> Inventory { get; set; }
         public Dictionary<Product, bool> HasListing { get; set; }
     }
 }

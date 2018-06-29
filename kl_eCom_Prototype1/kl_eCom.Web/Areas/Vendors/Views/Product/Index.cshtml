@@ -10,7 +10,7 @@
 <table class="table">
     <tr>
         <th>
-            @Html.Label("Id")
+
         </th>
         <th>
             @Html.Label("Name")
@@ -31,7 +31,18 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(m => item.Id)
+                @if (item.ThumbnailData != null && item.ThumbnailMimeType != null)
+                {
+                    <text>
+                        <img class="img-thumbnail" width="45" height="45"
+                             src="@Url.Action("GetThumbnail", "Product",
+                            new { item.Id })" />
+                    </text>
+                }
+                else
+                {
+                    <text>-</text>
+                }
             </td>
             <td>
                 @Html.ActionLink(item.Name, "Details", new { id = item.Id })
@@ -60,3 +71,6 @@
         </tr>
     }
 </table>
+
+@Html.ActionLink("Go to Category", "Details", "Category", new { catId = ViewBag.catId, storeId = ViewBag.storeId }, null) | 
+@Html.ActionLink("All Products", "AllProducts")

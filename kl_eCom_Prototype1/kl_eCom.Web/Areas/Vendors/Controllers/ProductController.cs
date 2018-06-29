@@ -439,7 +439,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var model = new ProductAllViewModel
             {
                 Products = prods,
-                Inventory = new Dictionary<Product, Stock>(),
+                Inventory = new Dictionary<Product, List<Stock>>(),
                 HasListing = new Dictionary<Product, bool>()
             };
 
@@ -449,7 +449,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     db.Stocks
                     .Include(m => m.Store)
                     .Where(m => m.ProductId == prod.Id)
-                    .FirstOrDefault());
+                    .ToList());
 
                 if (db.Categories.FirstOrDefault(m => m.CategoryId == prod.CategoryId) == null)
                 {

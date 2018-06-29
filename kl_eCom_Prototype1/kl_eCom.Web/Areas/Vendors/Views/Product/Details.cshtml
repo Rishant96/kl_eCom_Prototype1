@@ -79,7 +79,8 @@
 </p>
 
 <p>
-    @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) |
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) | 
+    @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) | 
+    @Html.ActionLink("All Products", "AllProducts") |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) |
     @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
 </p>

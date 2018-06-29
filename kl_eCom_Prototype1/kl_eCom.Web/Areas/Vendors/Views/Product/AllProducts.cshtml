@@ -8,10 +8,13 @@
 <table class="table">
     <tr>
         <th>
+
+        </th>
+        <th>
             @Html.Label("Name")
         </th>
         <th>
-            @Html.Label("Store")
+            @Html.Label("Stores")
         </th>
         <th>
             @Html.Label("Category")
@@ -22,28 +25,46 @@
     </tr>
     @foreach (var prod in Model.Products)
     {
-        <tr>
-            <td>
-                @Html.ActionLink(prod.Name, "Details", new { id = prod.Id })
-            </td>
-            <td>
-                @if (Model.Inventory[prod] is kl_eCom.Web.Entities.Stock stock)
+    <tr>
+        <td>
+            @if (prod.ThumbnailData != null && prod.ThumbnailMimeType != null)
+            {
+                <text>
+                    <img class="img-thumbnail" width="45" height="45"
+                         src="@Url.Action("GetThumbnail", "Product",
+                            new { prod.Id })" />
+                </text>
+            }
+            else
+            {
+                <text>-</text>
+            }
+        </td>
+        <td>
+            @Html.ActionLink(prod.Name, "Details", new { id = prod.Id })
+        </td>
+        <td>
+            @if (Model.Inventory[prod] is List<kl_eCom.Web.Entities.Stock> stocks && stocks.Count > 0)
+            {
+                foreach (var stock in stocks)
                 {
                     @Html.ActionLink(stock.Store.Name, "Stock", "Product", new { prodId = prod.Id, storeId = stock.StoreId }, null)
+                    <br />
                 }
-                else
-                {
-                    @Html.Label("Not Stocked")<br />
-                    <text>(</text>@Html.ActionLink("Add Stock", "Stock", "Product", new { prodId = prod.Id, storeId = prod.Category.StoreId }, null)<text>)</text>
-                }
-            </td>
-            <td>
-                @Html.ActionLink(prod.Category.Name, "Details", "Category", new { storeId = prod.Category.StoreId, catId = prod.Category.Id }, null)
-            </td>
-            <td>
-                @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })
-            </td>
-        </tr>
+            }
+            else
+            {
+                @Html.Label("Not Stocked")<br />
+                <text>(</text>@Html.ActionLink("Add Stock", "Stock", "Product", new { prodId = prod.Id, storeId = prod.Category.StoreId }, null)<text>)</text>
+            }
+        </td>
+        <td>
+            @Html.ActionLink(prod.Category.Name, "Details", "Category", new { storeId = prod.Category.StoreId, catId = prod.Category.Id }, null)
+        </td>
+        <td>
+            @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })
+        </td>
+    </tr>
     }
 </table>
 

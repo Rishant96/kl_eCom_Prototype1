@@ -130,7 +130,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Details(int? storeId, int? catId)
         {
-            if (storeId == null || catId == null) return RedirectToAction("Index", controllerName: "Home");
+            if (storeId == null || catId == null || storeId == 0 || catId == 0) return RedirectToAction("Index", controllerName: "Store");
             ViewBag.storeId = storeId;  
             var cat = db.Categories.Include(m => m.Attributes)
                 .FirstOrDefault(m => m.Id == (int)catId);
@@ -170,6 +170,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (cat.Attributes == null) cat.Attributes = new List<CategoryAttribute>();
             return View(new CategoryEditViewModel {
                 Id = cat.Id,
+                StoreId = cat.StoreId,
                 Name = cat.Name,
                 Description = cat.Description,
                 Attributes = cat.Attributes.ToList()

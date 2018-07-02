@@ -1,53 +1,60 @@
 ﻿@model kl_eCom.Web.Models.ShopProductsViewModel
 @{
     /**/
-
+    Layout = "~/Views/Shared/_ProductsLayout.cshtml";
     ViewBag.Title = "Products";
 }
 
-<div class="col-sm-offset-10 col-sm-2">
-    @Html.ActionLink("Go To Cart", "Index", controllerName: "Cart")
-</div>
-
 <h2>Products</h2>
-
-@foreach (var stock in Model.Stocks)
-{
-    using (Html.BeginForm(new { stockId = stock.Id }))
+<div class="row">
+    @foreach (var stock in Model.Stocks)
     {
-        @Html.AntiForgeryToken()
-
-        <div>
-            @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
-        </div>
-
-        <div>
-            @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
-        </div>
-
-        var inStock = true;
-        var stockList = new List<int> { };
-        if (stock.CurrentStock == 0)
+        using (Html.BeginForm(new { stockId = stock.Id }))
         {
-            inStock = false;
-        }
-        else
-        {
-            for (int i = 1; i <= stock.CurrentStock; i++)
-            {
-                stockList.Add(i);
-            }
-        }
-        var qtyList = new SelectList(stockList);
+            @Html.AntiForgeryToken()
+            <div class="col-md-4">
+                <div>
+                    <img class="img-thumbnail" width="160" height="100"
+                         src="@Url.Action("GetThumbnail", "Product",
+                                new { area = "Vendors", id = stock.ProductId })" />
+                </div>
 
-        if (!inStock)
-        {
-            @Html.Label("Out Of Stock")
+                <div>
+                    @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
+                </div>
+
+                <div>
+                    @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                </div>
+                @{ 
+                    var inStock = true;
+                    var stockList = new List<int>
+                    { };
+                    if (stock.CurrentStock == 0)
+                    {
+                        inStock = false;
+                    }
+                    else
+                    {
+                        for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                        {
+                            stockList.Add(i);
+                        }
+                    }
+                    var qtyList = new SelectList(stockList);
+
+                    if (!inStock)
+                    {
+                    @Html.Label("Out Of Stock")
+                    }
+                    else
+                    {
+                    @Html.DropDownListFor(m => m.Qty, qtyList)
+                    <input type="submit" value="Add To Cart" />
+                    }
+                }
+            </div>
         }
-        else
-        {
-            @Html.DropDownListFor(m => m.Qty, qtyList)
-            <input type="submit" value="Add To Cart" />
-        }
+
     }
-}
+</div>

@@ -31,6 +31,8 @@ namespace kl_eCom.Web.Entities
         public int StoreId { get; set; }
         public virtual Store Store { get; set; }
 
+        public int MaxAmtPerUser { get; set; }
+
         public StockStatus Status { get; set; }
     }
 

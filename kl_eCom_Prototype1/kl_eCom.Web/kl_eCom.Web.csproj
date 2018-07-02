@@ -270,6 +270,10 @@
     <Compile Include="Migrations\201806290957431_ProductModel_Booleans_Added.Designer.cs">
       <DependentUpon>201806290957431_ProductModel_Booleans_Added.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.cs" />
+    <Compile Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.Designer.cs">
+      <DependentUpon>201807020434538_Store_MaxPerCustomer_Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -385,6 +389,10 @@
     <Content Include="Views\Shop\Products.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
+    <Content Include="Views\Shared\_ProductsLayout.cshtml" />
+    <Content Include="Views\Shared\_ShopPartial.cshtml" />
+    <Content Include="Views\Shared\_EcomLayout.cshtml" />
+    <Content Include="Views\Shared\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -430,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806290957431_ProductModel_Booleans_Added.resx">
       <DependentUpon>201806290957431_ProductModel_Booleans_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.resx">
+      <DependentUpon>201807020434538_Store_MaxPerCustomer_Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

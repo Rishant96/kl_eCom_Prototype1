@@ -27,6 +27,8 @@ namespace kl_eCom.Web.Models
 
         public virtual ICollection<Address> Addresses { get; set; }
 
+        public virtual ICollection<Store> Stores { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

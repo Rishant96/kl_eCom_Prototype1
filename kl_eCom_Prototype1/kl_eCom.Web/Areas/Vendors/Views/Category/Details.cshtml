@@ -75,18 +75,24 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Category.Id })<br />
+<div>
+    <div style="margin-bottom: 15px">
+        @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Category.Id })<br />
+    </div>
+    <div style="margin-bottom: 15px">
+        @if (ViewBag.isLeaf == true)
+        {
+            @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Category.Id })
+            <text> | </text>
+            @Html.ActionLink("Products", "Index", "Product", new { id = Model.Category.Id }, null)
+        }
+        <br />
+    </div>
+    <div>
+        @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) |
 
-    @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) | 
-    @if (ViewBag.isLeaf == true)
-    {
-        @Html.ActionLink("Products", "Index", "Product", new { id = Model.Category.Id }, null)
-        <text> | </text>
-        @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Category.Id })
-        <text> | </text>
-    }
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-success" })
-    |
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-danger" })
-</p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-success" })
+        |
+        @Html.ActionLink("Delete", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-danger" })
+    </div>
+</div>

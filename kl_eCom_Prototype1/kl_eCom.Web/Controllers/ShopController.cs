@@ -21,13 +21,19 @@ namespace kl_eCom.Web.Controllers
         {
             if (id == null) return RedirectToAction("Index", "Market");
             ViewBag.storeId = id;
-            var model = new ShopIndexViewModel { IsLeafDict = new Dictionary<Entities.Category, bool>() };
+            var model = new ShopIndexViewModel { IsLeafDict = new Dictionary<Entities.Category, bool>(), Breadcrum = new Dictionary<string, int>() };
+            var store = db.Stores.FirstOrDefault(m => m.Id == id);
+            if (store == null) return View("Error");
+            model.Breadcrum.Add(store.Name, store.Id);
             if (catId == null)
             {
                 model.Categories = db.Categories.Where(m => m.StoreId == id && m.IsBase == true).ToList();
             }
             else
             {
+                var parentCat = db.Categories.FirstOrDefault(m => m.Id == catId);
+                if (parentCat == null) return View("Error");
+                model.Breadcrum.Add(parentCat.Name, parentCat.Id);
                 model.Categories = db.Categories.Where(m => m.CategoryId == catId).ToList();
             }
             foreach (var cat in model.Categories)
@@ -49,6 +55,16 @@ namespace kl_eCom.Web.Controllers
             if(storeId == null || catId == null) return RedirectToAction("Index", "Market");
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
+            var store = db.Stores.FirstOrDefault(m => m.Id == storeId);
+            if (store == null) return View("Error");
+            var parent = db.Categories.FirstOrDefault(m => m.Id == catId);
+            if (parent == null) return View("Error");
+            var parentList = new Dictionary<string, int>();
+            while (parent != null)
+            {
+                parentList.Add(parent.Name, parent.Id);
+                parent = db.Categories.FirstOrDefault(m => m.Id == parent.CategoryId);
+            }
             var catProdIds = db.Products.Where(m => m.CategoryId == catId).Select(m => m.Id).ToList();
             var model = new ShopProductsViewModel
             {
@@ -56,8 +72,19 @@ namespace kl_eCom.Web.Controllers
                             .Include(m => m.Product)
                             .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId))
                             .ToList(),
-                Max = new Dictionary<int, int>()
+                Max = new Dictionary<int, int>(),
+                Breadcrum = new Dictionary<string, int>()
             };
+
+            model.Breadcrum.Add(store.Name, store.Id);
+
+            var keys = parentList.Keys.ToList();
+            keys.Reverse();
+            foreach(var key in keys)
+            {
+                model.Breadcrum.Add(key, parentList[key]);
+            }
+
             var cart = GetCart();
 
             foreach (var stk in model.Stocks)

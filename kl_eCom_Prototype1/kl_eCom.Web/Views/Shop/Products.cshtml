@@ -2,10 +2,31 @@
 @{
     /**/
     Layout = "~/Views/Shared/_ProductsLayout.cshtml";
-    ViewBag.Title = "Products";
+    ViewBag.Title = Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1);
+    var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
+    var count = Model.Breadcrum.Keys.Count;
 }
 
-<h2>Products</h2>
+@for (int i = 0; i < count; i++)
+{
+    var name = Model.Breadcrum.Keys.ElementAt(i);
+    if (i == count - 1)
+    {
+        <text> @name </text>
+    }
+    else if (i == 0)
+    {
+        @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+        <text> > </text>
+    }
+    else
+    {
+        @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+        <text> > </text>
+    }
+}
+<br />
+
 <div class="row">
     @foreach (var stock in Model.Stocks)
     {
@@ -26,10 +47,9 @@
                 <div>
                     @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
                 </div>
-                @{ 
+                @{
                     var inStock = true;
-                    var stockList = new List<int>
-                    { };
+                    var stockList = new List<int>();
                     if (stock.CurrentStock == 0)
                     {
                         inStock = false;
@@ -45,12 +65,12 @@
 
                     if (!inStock)
                     {
-                    @Html.Label("Out Of Stock")
+                        @Html.Label("Out Of Stock")
                     }
                     else
                     {
-                    @Html.DropDownListFor(m => m.Qty, qtyList)
-                    <input type="submit" value="Add To Cart" />
+                        @Html.DropDownListFor(m => m.Qty, qtyList)
+                        <input type="submit" value="Add To Cart" />
                     }
                 }
             </div>

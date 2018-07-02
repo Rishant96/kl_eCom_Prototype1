@@ -27,11 +27,12 @@
     </div>
     <div class="row">
         <div id="filterPanel" class="col-md-3">
-
+            Filtering Options
         </div>
         <div class="col-md-9">
-            <div id="sortPanel">
-
+            <div class="row" id="sortPanel">
+                @Html.Label("Sort By:", new { @class = "col-md-offset-9 col-md-1" })
+                Dropdown
             </div>
             <div id="productsPanel" class="row">
                 @RenderBody()

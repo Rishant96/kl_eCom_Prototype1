@@ -42,7 +42,7 @@
                 <text>
                 <div class="alert alert-success alert-dismissible" style="width: 800px;">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", controllerName: "Cart").
+                    <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null).
                 </div>
                 </text>
             }

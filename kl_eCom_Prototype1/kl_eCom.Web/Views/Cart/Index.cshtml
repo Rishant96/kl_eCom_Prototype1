@@ -10,7 +10,7 @@
     <text>
         <div class="alert alert-danger alert-dismissible" style="width: 800px;">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Cart Updated</strong> Product deleted from the cart.
+            <strong>Cart Updated</strong> Product deleted from cart.
         </div>
     </text>
 }
@@ -76,4 +76,4 @@
     </div>
 </div>
 
-@Html.ActionLink("Continue Shopping", "Index", controllerName: "Market")
+@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })

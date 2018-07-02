@@ -28,53 +28,66 @@
 <br />
 
 <div class="row">
-    @foreach (var stock in Model.Stocks)
-    {
-        using (Html.BeginForm(new { stockId = stock.Id }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="col-md-3">
-                <div>
-                    <img class="img-thumbnail" width="160" height="100"
-                         src="@Url.Action("GetThumbnail", "Product",
+    <div id="filterPanel" class="col-md-3">
+        Filtering Options
+    </div>
+    <div class="col-md-9">
+        <div class="row" id="sortPanel">
+            @Html.Label("Sort By:", new { @class = "col-md-offset-9 col-md-1" })
+            Dropdown
+        </div>
+        <div id="productsPanel">
+            <div class="row">
+                @foreach (var stock in Model.Stocks)
+                {
+                    using (Html.BeginForm(new { stockId = stock.Id }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-3">
+                            <div>
+                                <img class="img-thumbnail" width="160" height="100"
+                                     src="@Url.Action("GetThumbnail", "Product",
                                 new { area = "Vendors", id = stock.ProductId })" />
-                </div>
+                            </div>
 
-                <div>
-                    @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
-                </div>
+                            <div>
+                                @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
+                            </div>
 
-                <div>
-                    @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
-                </div>
-                @{
-                    var inStock = true;
-                    var stockList = new List<int>();
-                    if (stock.CurrentStock == 0)
-                    {
-                        inStock = false;
-                    }
-                    else
-                    {
-                        for (int i = 1; i <= Model.Max[stock.Id]; i++)
-                        {
-                            stockList.Add(i);
-                        }
-                    }
-                    var qtyList = new SelectList(stockList);
+                            <div>
+                                @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                            </div>
+                            @{
+                                var inStock = true;
+                                var stockList = new List<int>();
+                                if (stock.CurrentStock == 0)
+                                {
+                                    inStock = false;
+                                }
+                                else
+                                {
+                                    for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                    {
+                                        stockList.Add(i);
+                                    }
+                                }
+                                var qtyList = new SelectList(stockList);
 
-                    if (!inStock)
-                    {
-                        @Html.Label("Out Of Stock")
+                                if (!inStock)
+                                {
+                                    @Html.Label("Out Of Stock")
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.Qty, qtyList)
+                                    <input type="submit" value="Add To Cart" />
+                                }
+                            }
+                        </div>
                     }
-                    else
-                    {
-                        @Html.DropDownListFor(m => m.Qty, qtyList)
-                        <input type="submit" value="Add To Cart" />
-                    }
+
                 }
             </div>
-        }
-
-    }
+        </div>
+    </div>
 </div>

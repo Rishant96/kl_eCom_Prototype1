@@ -12,7 +12,7 @@
         using (Html.BeginForm(new { stockId = stock.Id }))
         {
             @Html.AntiForgeryToken()
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div>
                     <img class="img-thumbnail" width="160" height="100"
                          src="@Url.Action("GetThumbnail", "Product",

@@ -37,6 +37,15 @@
             Dropdown
         </div>
         <div id="productsPanel">
+            @if (ViewBag.flag)
+            {
+                <text>
+                <div class="alert alert-success alert-dismissible" style="width: 800px;">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", controllerName: "Cart").
+                </div>
+                </text>
+            }
             <div class="row">
                 @foreach (var stock in Model.Stocks)
                 {

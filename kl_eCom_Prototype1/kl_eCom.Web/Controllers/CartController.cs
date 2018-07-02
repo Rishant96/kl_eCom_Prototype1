@@ -17,12 +17,13 @@ namespace kl_eCom.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Cart
-        public ActionResult Index()
+        public ActionResult Index(bool flag = false)
         {
             var cart = GetCart();
             var total = 0.0f;
             var prices = new Dictionary<CartItem, float>();
             var names = new Dictionary<CartItem, string>();
+            ViewBag.Flag = flag;
             foreach (var itm in cart.CartItems)
             {
                 var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
@@ -68,7 +69,7 @@ namespace kl_eCom.Web.Controllers
                         Response.Cookies.Add(cookie);
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { flag = true });
             }
         }
 

@@ -50,13 +50,34 @@ namespace kl_eCom.Web.Controllers
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
             var catProdIds = db.Products.Where(m => m.CategoryId == catId).Select(m => m.Id).ToList();
-            return View(new ShopProductsViewModel
+            var model = new ShopProductsViewModel
             {
                 Stocks = db.Stocks
                             .Include(m => m.Product)
-                            .Where(m => m.StoreId == storeId && catProdIds.Contains(m.Id))
-                            .ToList()
-            });
+                            .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId))
+                            .ToList(),
+                Max = new Dictionary<int, int>()
+            };
+            var cart = GetCart();
+
+            foreach (var stk in model.Stocks)
+            {
+                var available = 0;
+                if (stk.MaxAmtPerUser < stk.CurrentStock)
+                {
+                    available = stk.MaxAmtPerUser;
+                }
+                else
+                {
+                    available = stk.CurrentStock;
+                }
+                var cartItm = cart.CartItems.FirstOrDefault(m => m.StockId == stk.Id);
+                if (cartItm != null)
+                    model.Max.Add(stk.Id, available - cartItm.Qty);
+                else
+                    model.Max.Add(stk.Id, available);
+            } 
+            return View(model);
         }
 
         [HttpPost]

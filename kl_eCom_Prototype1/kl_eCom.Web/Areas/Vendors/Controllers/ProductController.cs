@@ -278,11 +278,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
-            var model = new ProductStockViewModel { Product = db.Products.FirstOrDefault(m => m.Id == prodId) };
+            var model = new ProductStockViewModel {
+                Product = db.Products.FirstOrDefault(m => m.Id == prodId),
+                MaxPerUser = 10
+            };
             if (oldStock != null)
             {
                 model.Price = oldStock.Price;
                 model.Stock = oldStock.CurrentStock;
+                model.MaxPerUser = oldStock.MaxAmtPerUser;
             }
             if (model.Product == null) return RedirectToAction("Index", controllerName: "Store");
             return View(model);
@@ -310,7 +314,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             ProductId = (int)prodId,
                             StoreId = (int)storeId,
                             StockingDate = DateTime.Now,
-                            Status = model.Status
+                            Status = model.Status,
+                            MaxAmtPerUser = model.MaxPerUser
                         }
                     );
                 }
@@ -319,6 +324,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     oldStock.CurrentStock = model.Stock;
                     oldStock.Price = model.Price;
                     oldStock.Status = model.Status;
+                    oldStock.MaxAmtPerUser = model.MaxPerUser;
                     db.Entry(oldStock).State = EntityState.Modified;
                 }
 
@@ -328,6 +334,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
+            var stock_2 = db.Stocks
+                .Include(m => m.Product)
+                .FirstOrDefault(m => m.Id == model.Stock);
+            model = new ProductStockViewModel {
+                Stock = stock_2.Id,
+                Price = stock_2.Price,
+                MaxPerUser = stock_2.MaxAmtPerUser,
+                Product = stock_2.Product
+            };
             return View(model);
         }
 

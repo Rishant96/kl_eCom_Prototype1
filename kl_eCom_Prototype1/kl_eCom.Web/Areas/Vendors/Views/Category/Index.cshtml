@@ -7,10 +7,10 @@
 
 @Html.ActionLink("+ Create Category", "Create", new { storeId = ViewBag.storeId, catId = null as int? })
 
-<table class="table">
+<table class="table" style="margin: auto; margin-top: 20px">
     <tr>
         <th>
-            @Html.Label("Id")
+
         </th>
         <th>
             @Html.Label("Name")
@@ -26,12 +26,22 @@
         </th>
     </tr>
 
-
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(m => item.Id)
+            <td style="width: 100px; text-align: center;">
+                @if (item.ThumbnailData != null && item.ThumbnailMimeType != null)
+                {
+                    <text>
+                        <img class="img-thumbnail" width="45" height="45"
+                             src="@Url.Action("GetThumbnail", "Category",
+                            new { item.Id })" />
+                    </text>
+                }
+                else
+                {
+                    <text>-</text>
+                }
             </td>
             <td>
                 @Html.ActionLink(item.Name, "Details", new { storeId = ViewBag.StoreId, catId = item.Id })
@@ -53,6 +63,10 @@
                 {
                     @Html.DisplayFor(m => item.Parent.Name)
                 }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>
     }

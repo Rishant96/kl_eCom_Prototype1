@@ -16,5 +16,6 @@ namespace kl_eCom.Web.Models
     {
         public List<Stock> Stocks { get; set; }
         public int Qty { get; set; }
+        public Dictionary<int, int> Max { get; set; }
     }
 }

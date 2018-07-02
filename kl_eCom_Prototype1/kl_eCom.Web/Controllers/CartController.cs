@@ -17,7 +17,7 @@ namespace kl_eCom.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Cart
-        public ActionResult Index(bool flag = false)
+        public ActionResult Index(bool flag = false, string returnUrl = "")
         {
             var cart = GetCart();
             var total = 0.0f;
@@ -33,6 +33,16 @@ namespace kl_eCom.Web.Controllers
                 prices.Add(itm, cost);
                 total += cost;
             }
+
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                ViewBag.ReturnUrl = returnUrl;
+            }
+            else
+            {
+                ViewBag.ReturnUrl = "";
+            }
+
             return View(new CartIndexViewModel {
                 Cart = cart,
                 TotalCost = total,
@@ -76,6 +86,15 @@ namespace kl_eCom.Web.Controllers
         public ActionResult Checkout()
         {
             return View();
+        }
+
+        public ActionResult ContinueShopping(string returnUrl = "")
+        {
+            if(returnUrl != "")
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", controllerName: "Market");
         }
 
         private Cart GetCart(bool fromUpdate = false)

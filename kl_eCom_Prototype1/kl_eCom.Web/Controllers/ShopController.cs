@@ -50,11 +50,12 @@ namespace kl_eCom.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Products(int? storeId, int? catId)
+        public ActionResult Products(int? storeId, int? catId, bool flag = false)
         {
             if(storeId == null || catId == null) return RedirectToAction("Index", "Market");
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
+            ViewBag.Flag = flag;
             var store = db.Stores.FirstOrDefault(m => m.Id == storeId);
             if (store == null) return View("Error");
             var parent = db.Categories.FirstOrDefault(m => m.Id == catId);
@@ -119,7 +120,7 @@ namespace kl_eCom.Web.Controllers
             if(ModelState.IsValid)
             {
                 AddToCart(new CartAddViewModel { StockId = (int)stockId, Qty = model.Qty });
-                return RedirectToAction("Products", new { storeId = storeID, catId = catID });
+                return RedirectToAction("Products", new { storeId = storeID, catId = catID, flag = true });
             }
 
             TempData["storeId"] = storeID;

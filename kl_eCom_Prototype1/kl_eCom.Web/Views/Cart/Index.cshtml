@@ -57,7 +57,7 @@
                 <text>@Model.Prices[itm].ToString()</text>
             </td>
             <td>
-                @Html.ActionLink("Remove", "Delete", new { id = itm.Id })
+                @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })
             </td>
         </tr>
     }

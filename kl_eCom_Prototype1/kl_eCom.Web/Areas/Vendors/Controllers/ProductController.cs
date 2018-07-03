@@ -227,6 +227,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         public FileContentResult GetThumbnail(int? id)
         {
             if (id == null) return null;

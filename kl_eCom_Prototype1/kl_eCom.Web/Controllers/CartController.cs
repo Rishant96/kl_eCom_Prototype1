@@ -51,7 +51,7 @@ namespace kl_eCom.Web.Controllers
             });
         }
 
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, string return_Url)
         {
             if (id == null) return RedirectToAction("Index");
             else
@@ -79,7 +79,7 @@ namespace kl_eCom.Web.Controllers
                         Response.Cookies.Add(cookie);
                     }
                 }
-                return RedirectToAction("Index", new { flag = true });
+                return RedirectToAction("Index", new { flag = true, returnUrl = return_Url });
             }
         }
 

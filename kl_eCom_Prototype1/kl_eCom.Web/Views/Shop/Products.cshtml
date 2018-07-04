@@ -33,7 +33,7 @@
 
 <div class="row">
     <div id="filterPanel" class="col-md-3">
-        Filtering Options
+        @Html.Partial("_FiltersPartial")
     </div>
     <div class="col-md-9">
         <div class="row" id="sortPanel">
@@ -42,17 +42,16 @@
                 , FormMethod.Post, new { id = "sortForm" }))
             {
                 <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
-                        <option @if ((int)Model.SelectedOption == 0) { <text>selected="selected"</text> } value="0">Relevance</option>
+                    <option @if ((int)Model.SelectedOption == 0) { <text>selected="selected"</text> } value="0">Relevance</option>
         
-                            <option @if ((int)Model.SelectedOption == 1) { <text>selected="selected"</text> } value="1">Newest Arrival</option>
+                    <option @if ((int)Model.SelectedOption == 1) { <text>selected="selected"</text> } value="1">Newest Arrival</option>
         
-                            <option @if ((int)Model.SelectedOption == 2) { <text>selected="selected"</text> } value="2">Price (High to Low)</option>
+                    <option @if ((int)Model.SelectedOption == 2) { <text>selected="selected"</text> } value="2">Price (High to Low)</option>
         
-                            <option @if ((int)Model.SelectedOption == 3) { <text>selected="selected"</text> } value="3">Price (Low to High</option>
+                    <option @if ((int)Model.SelectedOption == 3) { <text>selected="selected"</text> } value="3">Price (Low to High)</option>
         
-                            <option @if ((int)Model.SelectedOption == 4) { <text>selected="selected"</text> } value="4">Average Rating</option>
-        
-                    </select>
+                    <option @if ((int)Model.SelectedOption == 4) { <text>selected="selected"</text> } value="4">Average Rating</option>
+                </select>
             }
         </div>
         <div id="productsPanel">

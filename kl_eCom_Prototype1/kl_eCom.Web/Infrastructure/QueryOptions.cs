@@ -69,13 +69,9 @@ namespace kl_eCom.Web.Infrastructure
     {
         [Display(Name = "Relevance")]
         Relevance,
-        [Display(Name = "Newest Arrival")]
         NewestArrivals,
-        [Display(Name = "Price (High to Low)")]
         Price_HighToLow,
-        [Display(Name = "Price (Low to High")]
         Price_LowToHigh,
-        [Display(Name = "Average Rating")]
         AverageRating
     }
 

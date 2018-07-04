@@ -23,7 +23,7 @@ namespace kl_eCom.Web.Entities
         [Required]
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
-        
+               
         [Required]
         public DateTime StockingDate { get; set; }
 

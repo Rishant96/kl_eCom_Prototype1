@@ -34,7 +34,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [Display(Name = "Mobile No.")]
         [DataType(DataType.PhoneNumber, ErrorMessage = "Please enter a valid mobile number")]
-        public string Mobile { get; set; }
+        [MaxLength(10, ErrorMessage = "Please enter a 10 digit mobile number")]
+        [MinLength(10, ErrorMessage = "Please enter a 10 digit mobile number")]
+        public long Mobile { get; set; }
 
         [Display(Name = "Website URL")]
         [DataType(DataType.Url, ErrorMessage = "Please enter a valid URL")]

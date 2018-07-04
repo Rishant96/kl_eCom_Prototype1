@@ -1,6 +1,8 @@
 ﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -19,5 +21,7 @@ namespace kl_eCom.Web.Models
         public List<Stock> Stocks { get; set; }
         public int Qty { get; set; }
         public Dictionary<int, int> Max { get; set; }
+        [Required]
+        public SortOption SelectedOption { get; set; }
     }
 }

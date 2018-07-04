@@ -1,4 +1,6 @@
-﻿@model kl_eCom.Web.Models.ShopProductsViewModel
+﻿@using kl_eCom.Web.Infrastructure
+@model kl_eCom.Web.Models.ShopProductsViewModel
+
 @{
     /**/
     Layout = "~/Views/Shared/_ProductsLayout.cshtml";
@@ -36,7 +38,22 @@
     <div class="col-md-9">
         <div class="row" id="sortPanel">
             @Html.Label("Sort By:", new { @class = "col-md-offset-9 col-md-1" })
-            Dropdown
+            @using (Html.BeginForm("FilterSortProducts", "Shop"
+                , FormMethod.Post, new { id = "sortForm" }))
+            {
+                <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
+                        <option @if ((int)Model.SelectedOption == 0) { <text>selected="selected"</text> } value="0">Relevance</option>
+        
+                            <option @if ((int)Model.SelectedOption == 1) { <text>selected="selected"</text> } value="1">Newest Arrival</option>
+        
+                            <option @if ((int)Model.SelectedOption == 2) { <text>selected="selected"</text> } value="2">Price (High to Low)</option>
+        
+                            <option @if ((int)Model.SelectedOption == 3) { <text>selected="selected"</text> } value="3">Price (Low to High</option>
+        
+                            <option @if ((int)Model.SelectedOption == 4) { <text>selected="selected"</text> } value="4">Average Rating</option>
+        
+                    </select>
+            }
         </div>
         <div id="productsPanel">
             @if (ViewBag.flag)
@@ -50,11 +67,11 @@
             }
             <div class="row">
                 @foreach (var stock in Model.Stocks)
-                {
-                    using (Html.BeginForm(new { stockId = stock.Id }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <div class="col-md-3">
+                        {
+                            using (Html.BeginForm(new { stockId = stock.Id }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="col-md-3">
                             <div>
                                 <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
                                      src="@Url.Action("GetThumbnail", "Product",

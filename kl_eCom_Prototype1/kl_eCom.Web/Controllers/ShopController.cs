@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
@@ -9,6 +10,8 @@ using kl_eCom.Web.Entities;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using kl_eCom.Web.Utilities;
+using System.Web.ModelBinding;
+using kl_eCom.Web.Infrastructure;
 
 namespace kl_eCom.Web.Controllers
 {
@@ -21,7 +24,8 @@ namespace kl_eCom.Web.Controllers
         {
             if (id == null) return RedirectToAction("Index", "Market");
             ViewBag.storeId = id;
-            var model = new ShopIndexViewModel { IsLeafDict = new Dictionary<Entities.Category, bool>(), Breadcrum = new Dictionary<string, int>() };
+            var model = new ShopIndexViewModel { IsLeafDict = new Dictionary<Entities.Category, bool>(),
+                                Breadcrum = new Dictionary<string, int>() };
             var store = db.Stores.FirstOrDefault(m => m.Id == id);
             if (store == null) return View("Error");
             model.Breadcrum.Add(store.Name, store.Id);
@@ -50,8 +54,10 @@ namespace kl_eCom.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Products(int? storeId, int? catId, bool flag = false)
+        public ActionResult Products(int? storeId, int? catId,
+                                [Form] QueryOptions queryOptions, bool flag = false)
         {
+            if (queryOptions == null) queryOptions = new QueryOptions();
             if(storeId == null || catId == null) return RedirectToAction("Index", "Market");
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
@@ -72,9 +78,11 @@ namespace kl_eCom.Web.Controllers
                 Stocks = db.Stocks
                             .Include(m => m.Product)
                             .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId))
+                            .OrderBy(queryOptions.Sort) 
                             .ToList(),
                 Max = new Dictionary<int, int>(),
-                Breadcrum = new Dictionary<string, int>()
+                Breadcrum = new Dictionary<string, int>(),
+                SelectedOption = queryOptions.SortOption
             };
 
             model.Breadcrum.Add(store.Name, store.Id);
@@ -127,6 +135,24 @@ namespace kl_eCom.Web.Controllers
             TempData["catId"] = catID;
             return View(model);
         }
+        
+        [HttpPost]
+        public ActionResult FilterSortProducts()
+        {
+            int? storeID = TempData["storeId"] as int?;
+            int? catID = TempData["catId"] as int?;
+            if (storeID == null || catID == null)
+                return RedirectToAction("Index", "Market");
+            var formOption = Request.Form["SortOption"];
+            SortOption sortOption = (SortOption)Enum.Parse(typeof(SortOption), formOption);
+
+            return RedirectToAction("Products", 
+                new {
+                    SortOption = sortOption,
+                    storeId = storeID,
+                    catId = catID
+                });
+        } 
 
         private Cart GetCart(bool fromUpdate = false)
         {
@@ -140,7 +166,8 @@ namespace kl_eCom.Web.Controllers
                 {
                     cart = db.Carts.Add(new Cart
                     {
-                        ApplicationUserId = userId
+                        ApplicationUserId = userId,
+                        CartItems = new List<CartItem>()
                     });
                     db.SaveChanges();
                 }

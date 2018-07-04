@@ -112,7 +112,8 @@ namespace kl_eCom.Web.Controllers
                 {
                     cart = db.Carts.Add(new Cart
                     {
-                        ApplicationUserId = userId
+                        ApplicationUserId = userId,
+                        CartItems = new List<CartItem>()
                     });
                     db.SaveChanges();
                 }

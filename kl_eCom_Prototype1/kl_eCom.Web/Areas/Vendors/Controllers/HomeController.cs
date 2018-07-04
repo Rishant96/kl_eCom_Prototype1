@@ -76,7 +76,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    PhoneNumber = model.Mobile,
+                    PhoneNumber = model.Mobile.ToString(),
                     PrimaryRole = "Vendor",
                     VendorDetails = new Utilities.VendorDetails
                     {

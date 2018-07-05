@@ -10,110 +10,113 @@
     var width = "160px";
     var height = "100px";
 }
-
-@for (int i = 0; i < count; i++)
-{
-    var name = Model.Breadcrum.Keys.ElementAt(i);
-    if (i == count - 1)
-    {
-        <text> @name </text>
-    }
-    else if (i == 0)
-    {
-        @Html.ActionLink(store.Name, "Index", new { id = store.Id })
-        <text> > </text>
-    }
-    else
-    {
-        @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
-        <text> > </text>
-    }
-}
-<br />
-
-<div class="row">
-    <div id="filterPanel" class="col-md-3">
-        @Html.Partial("_FiltersPartial")
+<div style="padding-top: 10px">
+    <div style="margin-left: 15px;">
+        @for (int i = 0; i < count; i++)
+        {
+            var name = Model.Breadcrum.Keys.ElementAt(i);
+            if (i == count - 1)
+            {
+                <text> @name </text>
+            }
+            else if (i == 0)
+            {
+                @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+                <text> > </text>
+            }
+            else
+            {
+                @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+                <text> > </text>
+            }
+        }
     </div>
-    <div class="col-md-9">
-        <div class="row" id="sortPanel">
-            @Html.Label("Sort By:", new { @class = "col-md-offset-9 col-md-1" })
-            @using (Html.BeginForm("FilterSortProducts", "Shop"
-                , FormMethod.Post, new { id = "sortForm" }))
-            {
-                <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
-                    <option @if ((int)Model.SelectedOption == 0) { <text>selected="selected"</text> } value="0">Relevance</option>
-        
-                    <option @if ((int)Model.SelectedOption == 1) { <text>selected="selected"</text> } value="1">Newest Arrival</option>
-        
-                    <option @if ((int)Model.SelectedOption == 2) { <text>selected="selected"</text> } value="2">Price (High to Low)</option>
-        
-                    <option @if ((int)Model.SelectedOption == 3) { <text>selected="selected"</text> } value="3">Price (Low to High)</option>
-        
-                    <option @if ((int)Model.SelectedOption == 4) { <text>selected="selected"</text> } value="4">Average Rating</option>
-                </select>
-            }
+    <br />
+
+    <div class="row" style="margin-top: -10px; margin-right: 0">
+        <div id="filterPanel" class="col-md-3" style="margin-top: 30px;">
+            @Html.Partial("_FiltersPartial")
         </div>
-        <div id="productsPanel">
-            @if (ViewBag.flag)
-            {
-                <text>
-                <div class="alert alert-success alert-dismissible" style="width: 800px;">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null).
-                </div>
-                </text>
-            }
-            <div class="row">
-                @foreach (var stock in Model.Stocks)
+        <div class="col-md-9">
+            <div class="row" id="sortPanel" style="margin-bottom: 5px">
+                @Html.Label("Sort By:", new { @class = "col-md-offset-9 col-md-1" })
+                @using (Html.BeginForm("FilterSortProducts", "Shop"
+                    , FormMethod.Post, new { id = "sortForm" }))
+                {
+                    <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
+                        <option @if ((int)Model.SelectedOption == 0) { <text> selected="selected" </text> } value="0">Relevance</option>
+
+                        <option @if ((int)Model.SelectedOption == 1) { <text> selected="selected" </text> } value="1">Newest Arrival</option>
+
+                        <option @if ((int)Model.SelectedOption == 2) { <text> selected="selected" </text> } value="2">Price (High to Low)</option>
+
+                        <option @if ((int)Model.SelectedOption == 3) { <text> selected="selected" </text> } value="3">Price (Low to High)</option>
+
+                        <option @if ((int)Model.SelectedOption == 4) { <text> selected="selected" </text> } value="4">Average Rating</option>
+                    </select>
+                }
+            </div>
+            <div id="productsPanel">
+                @if (ViewBag.flag)
+                {
+                    <text>
+                        <div class="alert alert-success alert-dismissible" style="width: 800px;">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null).
+                        </div>
+                    </text>
+                }
+                <div class="row">
+                    @foreach (var stock in Model.Stocks)
+                    {
+                        using (Html.BeginForm(new { stockId = stock.Id }))
                         {
-                            using (Html.BeginForm(new { stockId = stock.Id }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <div class="col-md-3">
-                            <div>
-                                <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                                     src="@Url.Action("GetThumbnail", "Product",
+                            @Html.AntiForgeryToken()
+                            <div class="col-md-3">
+                                <div>
+                                    <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                         src="@Url.Action("GetThumbnail", "Product",
                                          new { area = "Vendors", id = stock.ProductId })" />
-                            </div>
+                                </div>
 
-                            <div>
-                                @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
-                            </div>
+                                <div>
+                                    @Html.DisplayNameFor(m => stock.Product.Name) : @Html.DisplayFor(m => stock.Product.Name)
+                                </div>
 
-                            <div>
-                                @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
-                            </div>
-                            @{
-                                var inStock = true;
-                                var stockList = new List<int>();
-                                if (stock.CurrentStock == 0)
-                                {
-                                    inStock = false;
-                                }
-                                else
-                                {
-                                    for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                <div>
+                                    @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                                </div>
+                                @{
+                                    var inStock = true;
+                                    var stockList = new List<int>();
+                                    if (stock.CurrentStock == 0)
                                     {
-                                        stockList.Add(i);
+                                        inStock = false;
+                                    }
+                                    else
+                                    {
+                                        for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                        {
+                                            stockList.Add(i);
+                                        }
+                                    }
+                                    var qtyList = new SelectList(stockList);
+
+                                    if (!inStock)
+                                    {
+                                        @Html.Label("Out Of Stock")
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(m => m.Qty, qtyList)
+                                        <input type="submit" value="Add To Cart" />
                                     }
                                 }
-                                var qtyList = new SelectList(stockList);
+                            </div>
+                        }
 
-                                if (!inStock)
-                                {
-                                    @Html.Label("Out Of Stock")
-                                }
-                                else
-                                {
-                                    @Html.DropDownListFor(m => m.Qty, qtyList)
-                                    <input type="submit" value="Add To Cart" />
-                                }
-                            }
-                        </div>
                     }
-
-                }
+                </div>
             </div>
         </div>
     </div>

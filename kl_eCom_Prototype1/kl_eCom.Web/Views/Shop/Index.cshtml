@@ -25,14 +25,22 @@
     }
 }
 <br />
-@foreach (var cat in Model.Categories)
-{
-    if (Model.IsLeafDict[cat])
-    {
-        @Html.ActionLink(cat.Name, "Products", new { storeId = ViewBag.storeId, catId = cat.Id })<br />
-    }
-    else
-    {
-        @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })<br />
-    }
-}
+<hr />
+<h3 class="">Catalog</h3><br />
+<div class="row">
+    <div class="col-md-offset-1">
+        @foreach (var cat in Model.Categories)
+        {
+            if (Model.IsLeafDict[cat])
+            {
+                @Html.ActionLink(cat.Name, "Products", new { storeId = ViewBag.storeId, catId = cat.Id })<br />
+            }
+            else
+            {
+                @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })<br />
+            }
+        }
+    </div>
+</div>
+<hr />
+@Html.ActionLink("Back to vendors list", "Index", controllerName: "Market") | @Html.ActionLink("Back to stores list", "Index", "Market", new { vendorId = ViewBag.Vendor })

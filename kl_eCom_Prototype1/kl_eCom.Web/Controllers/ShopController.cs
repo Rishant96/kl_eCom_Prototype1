@@ -51,6 +51,7 @@ namespace kl_eCom.Web.Controllers
                     model.IsLeafDict.Add(cat, false);
                 }
             }
+            ViewBag.Vendor = store.ApplicationUserId;
             return View(model);
         }
 

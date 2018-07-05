@@ -297,6 +297,19 @@
     <Compile Include="Utilities\VendorDetails.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\images\1-1355x565.jpg" />
+    <Content Include="assets\images\12-1366x690.jpg" />
+    <Content Include="assets\images\13-1366x690.jpg" />
+    <Content Include="assets\images\14-1366x693.jpg" />
+    <Content Include="assets\images\15-1366x696.jpg" />
+    <Content Include="assets\images\addvendor-1-1300x12000.jpg" />
+    <Content Include="assets\images\final-1-1300x1512.jpg" />
+    <Content Include="assets\images\khushlifelogo-122x131.jpg" />
+    <Content Include="assets\images\open-business.jpg" />
+    <Content Include="assets\images\order-1366x698.jpg" />
+    <Content Include="assets\images\screenshot-11-1366x768.jpg" />
+    <Content Include="assets\images\shawna-dunsmore-237252-unsplash-2000x1333.jpg" />
+    <Content Include="assets\images\shopping.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -343,6 +356,7 @@
     <Content Include="Areas\Vendors\Views\Category\ImportProduct.cshtml" />
     <Content Include="Areas\Vendors\Views\Store\DeleteStock.cshtml" />
     <Content Include="Areas\Vendors\Views\Store\MultipleStores.cshtml" />
+    <Content Include="assets\images\hashes.json" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

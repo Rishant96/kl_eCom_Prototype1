@@ -62,6 +62,16 @@ namespace kl_eCom.Web.Controllers
             if(storeId == null || catId == null) return RedirectToAction("Index", "Market");
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
+            bool? recFlag = TempData["flag"] as bool?;
+            if (recFlag != null && recFlag == true)
+            {
+                TempData["flag"] = null;
+                return RedirectToAction("Products", new { storeId, catId, queryOptions });
+            }
+            else if(flag)
+            {
+                TempData["flag"] = flag;
+            }
             ViewBag.Flag = flag;
             var store = db.Stores.FirstOrDefault(m => m.Id == storeId);
             if (store == null) return View("Error");
@@ -126,8 +136,9 @@ namespace kl_eCom.Web.Controllers
             if (storeID == null || catID == null || stockId == null)
                 return RedirectToAction("Index", "Market");
 
-            if(ModelState.IsValid)
+            if(model.Qty == 0 || ModelState.IsValid)
             {
+                if (model.Qty == 0) model.Qty = 1;
                 AddToCart(new CartAddViewModel { StockId = (int)stockId, Qty = model.Qty });
                 return RedirectToAction("Products", new { storeId = storeID, catId = catID, flag = true });
             }

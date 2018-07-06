@@ -57,12 +57,21 @@ namespace kl_eCom.Web.Controllers
             else
             {
                 var cart = GetCart();
-                var cartItm = db.CartItems.FirstOrDefault(m => m.Id == id);
-                var entry = db.Entry(cartItm);
-                if (entry.State == EntityState.Detached)
-                    db.CartItems.Attach(cartItm);
-                db.CartItems.Remove(cartItm);
-                db.SaveChanges();
+                CartItem cartItm = null;
+                if (User.Identity.IsAuthenticated)
+                {
+                    cartItm = db.CartItems.FirstOrDefault(m => m.Id == id);
+                    var entry = db.Entry(cartItm);
+                    if (entry.State == EntityState.Detached)
+                        db.CartItems.Attach(cartItm);
+                    db.CartItems.Remove(cartItm);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    cartItm = cart.CartItems.FirstOrDefault(m => m.Id == id);
+                    cart.CartItems.Remove(cartItm);
+                }
 
                 if (User.Identity.IsAuthenticated)
                 {

@@ -55,6 +55,124 @@ namespace kl_eCom.Web.Controllers
             return View(model);
         }
 
+        [ChildActionOnly]
+        public ActionResult FiltersPartial()
+        {
+            ShopFilterViewModel model = new ShopFilterViewModel
+            {
+                PriceSelection = new PriceSelection
+                {
+                    PriceItemSelected = null,
+                    PriceSelectionItems = new List<PriceSelectionItem>
+                    {
+                        new PriceSelectionItem
+                        {
+                            Id = 1,
+                            DisplayName = "0 to 10,000",
+                            MinPrice = 0,
+                            MaxPrice = 10000
+                        },
+                        new PriceSelectionItem
+                        {
+                            Id = 2,
+                            DisplayName = "10,000 to 20,000",
+                            MinPrice = 10000,
+                            MaxPrice = 20000
+                        },
+                        new PriceSelectionItem
+                        {
+                            Id = 3,
+                            DisplayName = "Enter Price Range",
+                            MinPrice = -1,
+                            MaxPrice = -1
+                        }
+                    }
+                },
+                RatingSelection = new RatingSelection
+                {
+                    RatingItemSelected = null,
+                    RatingSelectionItems = new List<RatingSelectionItem>
+                    {
+                        new RatingSelectionItem
+                        {
+                            Id = 1,
+                            DisplayName = "Average Rating: 5",
+                            MinRating = 5
+                        },
+                        new RatingSelectionItem
+                        {
+                            Id = 2,
+                            DisplayName = "Average Rating: 4 and above",
+                            MinRating = 4
+                        },
+                        new RatingSelectionItem
+                        {
+                            Id = 3,
+                            DisplayName = "Average Rating: 3 and above",
+                            MinRating = 3
+                        },
+                        new RatingSelectionItem
+                        {
+                            Id = 4,
+                            DisplayName = "Average Rating: 2 and above",
+                            MinRating = 2
+                        },
+                        new RatingSelectionItem
+                        {
+                            Id = 5,
+                            DisplayName = "Average Rating: 1 and above",
+                            MinRating = 1
+                        }
+                    }
+                },
+                NewestArrivalSelection = new NewestArrivalSelection
+                {
+                    NewestArrivalItemSelected = null,
+                    NewestArrivalSelectionItems = new List<NewestArrivalSelectionItem>
+                    {
+                        new NewestArrivalSelectionItem
+                        {
+                            Id = 1,
+                            DisplayName = "Last 30 days",
+                            AllowedDays = 30
+                        },
+                        new NewestArrivalSelectionItem
+                        {
+                            Id = 2,
+                            DisplayName = "Last 60 days",
+                            AllowedDays = 60
+                        },
+                        new NewestArrivalSelectionItem
+                        {
+                            Id = 3,
+                            DisplayName = "Older",
+                            AllowedDays = int.MaxValue
+                        }
+                    }
+                },
+                AvailabilitySelection = new AvailabilitySelection
+                {
+                    AvailabilityItemSelected = null,
+                    AvailabilitySelectionItems = new List<AvailabilitySelectionItem>
+                    {
+                        new AvailabilitySelectionItem
+                        {
+                            Id = 1,
+                            DisplayName = "Only In Stock",
+                            Value = false
+                        },
+                        new AvailabilitySelectionItem
+                        {
+                            Id = 2,
+                            DisplayName = "All Products",
+                            Value = true
+                        }                        
+                    }
+                }
+            };
+            return View(model);
+        }
+
         public ActionResult Products(int? storeId, int? catId,
                                 [Form] QueryOptions queryOptions, bool flag = false)
         {
@@ -86,6 +204,7 @@ namespace kl_eCom.Web.Controllers
             var catProdIds = db.Products.Where(m => m.CategoryId == catId).Select(m => m.Id).ToList();
             var model = new ShopProductsViewModel
             {
+                CategoryId = (int)catId,
                 Stocks = db.Stocks
                             .Include(m => m.Product)
                             .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId))

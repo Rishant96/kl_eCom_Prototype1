@@ -412,7 +412,7 @@
     <Content Include="Views\Shared\_ShopPartial.cshtml" />
     <Content Include="Views\Shared\_EcomLayout.cshtml" />
     <Content Include="Views\Shared\_SearchPartial.cshtml" />
-    <Content Include="Views\Shop\_FiltersPartial.cshtml" />
+    <Content Include="Views\Shop\FiltersPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

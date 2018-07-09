@@ -79,7 +79,13 @@ namespace kl_eCom.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                {
+                    if (string.IsNullOrEmpty(Session["extVendor"] as string))
+                    {
+                        // Associate with vendor
+                    }
                     return RedirectToLocal(returnUrl);
+                }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

@@ -21,9 +21,12 @@ namespace kl_eCom.Web.Models
 
         [Required]
         public string PrimaryRole { get; set; }
-
+        
         public int? VendorDetailsId { get; set; }
         public VendorDetails VendorDetails { get; set; }
+
+        public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
+        public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; }
 
@@ -43,6 +46,23 @@ namespace kl_eCom.Web.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.AssociatedCustomerOf) // <--
+            .WithRequired(r => r.Customer) // <--
+            .HasForeignKey(r => r.CustomerId)
+            .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.AssociatedVendorOf) // <--
+            .WithRequired(r => r.Vendor) // <--
+            .HasForeignKey(r => r.VendorId)
+            .WillCascadeOnDelete(false);
         }
 
         public DbSet<Store> Stores { get; set; }

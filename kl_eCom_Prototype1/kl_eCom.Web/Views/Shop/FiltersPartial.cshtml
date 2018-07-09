@@ -91,19 +91,20 @@
         $(document).ready(function () {
             $("#PriceItm3").ready(function () {
                 if ($("#PriceItm3").prop('checked') == false) {
-                    $(".PriceTxt").prop('disabled', true)                    
+                    $(".PriceTxt").prop('disabled', true);                  
                 }
             });
             $('input:radio[name=PriceList]').change(function () {
                 if ($("#PriceItm3").prop('checked') == false) {
-                    $(".PriceTxt").prop('disabled', true)
+                    $(".PriceTxt").prop('disabled', true);
                 }
                 else {
-                    $(".PriceTxt").prop('disabled', false)
+                    $(".PriceTxt").prop('disabled', false);
                 }
             });
             $("#clearPrice").click(function () {
                 $('input:radio[name=PriceList]').prop('checked', false);
+                $(".PriceTxt").prop('disabled', true);    
             });
             $("#clearRating").click(function () {
                 $('input:radio[name=RatingList]').prop('checked', false);

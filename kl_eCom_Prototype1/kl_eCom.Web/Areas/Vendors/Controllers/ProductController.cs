@@ -92,7 +92,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             int? catId = TempData["catId"] as int?;
             if (catId == null) return RedirectToAction("Index", controllerName: "Store");
-
+            
             if (ModelState.IsValid)
             {
                 var prod = new Product

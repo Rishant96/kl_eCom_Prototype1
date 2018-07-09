@@ -31,8 +31,17 @@ namespace kl_eCom.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Shops(string vendorId)
+        public ActionResult Shops(string vendorId, bool extLink = false)
         {
+            if (extLink)
+            {
+                // Begin Lockout 
+                Session["extVendor"] = vendorId;
+                if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+                {
+                    // Associate with Vendor
+                }
+            }
             if (string.IsNullOrEmpty(vendorId))
                 return View("Index");
             var shops = db.Stores.Where(m => m.ApplicationUserId == vendorId).ToList();

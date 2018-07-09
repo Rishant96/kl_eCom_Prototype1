@@ -137,11 +137,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Name = prod.Name,
                 Description = prod.Description,
                 Manufacturer = prod.Manufacturer,
+                DateAdded = prod.DateAdded,
                 AttributeNames = new List<string>(),
                 Attributes = new Dictionary<string, int>(),
                 Specifications = new Dictionary<string, string>()
             };
-
             var catIds = new List<int>();
             var cat = prod.Category;
             while(cat != null)
@@ -178,6 +178,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 prod.Name = model.Name;
                 prod.Manufacturer = model.Manufacturer;
                 prod.Description = model.Description;
+                prod.DateAdded = model.DateAdded;
                 prod.Specifications = new List<Specification>();
 
                 if (prod == null) return View("Error");

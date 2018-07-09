@@ -292,9 +292,11 @@
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
+    <Compile Include="Utilities\Refferal.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
     <Compile Include="Utilities\VendorDetails.cs" />
+    <Compile Include="Utilities\VendorPackages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\images\1-1355x565.jpg" />
@@ -357,6 +359,7 @@
     <Content Include="Areas\Vendors\Views\Store\DeleteStock.cshtml" />
     <Content Include="Areas\Vendors\Views\Store\MultipleStores.cshtml" />
     <Content Include="assets\images\hashes.json" />
+    <Content Include="Areas\Vendors\Views\Home\Login.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

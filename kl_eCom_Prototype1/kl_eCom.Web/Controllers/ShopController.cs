@@ -54,16 +54,11 @@ namespace kl_eCom.Web.Controllers
             ViewBag.Vendor = store.ApplicationUserId;
             return View(model);
         }
-
-        [ChildActionOnly]
-        public ActionResult FiltersPartial()
+        
+        public ActionResult FiltersPartial(ShopProductsViewModel prodModel)
         {
-            ShopFilterViewModel model = new ShopFilterViewModel
-            {
-                PriceSelection = new PriceSelection
-                {
-                    PriceItemSelected = null,
-                    PriceSelectionItems = new List<PriceSelectionItem>
+            prodModel.FilterViewModel.PriceSelection.PriceSelectionItems
+                = new List<PriceSelectionItem>
                     {
                         new PriceSelectionItem
                         {
@@ -86,13 +81,11 @@ namespace kl_eCom.Web.Controllers
                             MinPrice = -1,
                             MaxPrice = -1
                         }
-                    }
-                },
-                RatingSelection = new RatingSelection
+                    };
+
+            prodModel.FilterViewModel.RatingSelection.RatingSelectionItems
+                 = new List<RatingSelectionItem>
                 {
-                    RatingItemSelected = null,
-                    RatingSelectionItems = new List<RatingSelectionItem>
-                    {
                         new RatingSelectionItem
                         {
                             Id = 1,
@@ -123,13 +116,11 @@ namespace kl_eCom.Web.Controllers
                             DisplayName = "Average Rating: 1 and above",
                             MinRating = 1
                         }
-                    }
-                },
-                NewestArrivalSelection = new NewestArrivalSelection
+                };
+
+            prodModel.FilterViewModel.NewestArrivalSelection.NewestArrivalSelectionItems
+                = new List<NewestArrivalSelectionItem>
                 {
-                    NewestArrivalItemSelected = null,
-                    NewestArrivalSelectionItems = new List<NewestArrivalSelectionItem>
-                    {
                         new NewestArrivalSelectionItem
                         {
                             Id = 1,
@@ -148,12 +139,10 @@ namespace kl_eCom.Web.Controllers
                             DisplayName = "Older",
                             AllowedDays = int.MaxValue
                         }
-                    }
-                },
-                AvailabilitySelection = new AvailabilitySelection
-                {
-                    AvailabilityItemSelected = null,
-                    AvailabilitySelectionItems = new List<AvailabilitySelectionItem>
+                };
+
+            prodModel.FilterViewModel.AvailabilitySelection.AvailabilitySelectionItems
+                = new List<AvailabilitySelectionItem>
                     {
                         new AvailabilitySelectionItem
                         {
@@ -166,14 +155,178 @@ namespace kl_eCom.Web.Controllers
                             Id = 2,
                             DisplayName = "All Products",
                             Value = true
-                        }                        
+                        }
+                    };
+
+            //if (prodModel.FilteringOptions != null && prodModel.FilterViewModel != null)
+            //{
+            //    if (prodModel.FilteringOptions.PriceOption != null)
+            //        prodModel.FilterViewModel.PriceSelection.PriceItemSelected
+            //            = prodModel.FilterViewModel.PriceSelection.PriceSelectionItems
+            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.PriceOption);
+
+            //    if (prodModel.FilteringOptions.RatingOption != null)
+            //        prodModel.FilterViewModel.RatingSelection.RatingItemSelected
+            //            = prodModel.FilterViewModel.RatingSelection.RatingSelectionItems
+            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.RatingOption);
+
+            //    if (prodModel.FilteringOptions.ArrivalOption != null)
+            //        prodModel.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected
+            //            = prodModel.FilterViewModel.AvailabilitySelection.AvailabilitySelectionItems
+            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.AvailabilityOption);
+
+            //    if (prodModel.FilteringOptions.AvailabilityOption != null)
+            //        prodModel.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected
+            //            = prodModel.FilterViewModel.NewestArrivalSelection.NewestArrivalSelectionItems
+            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.ArrivalOption);
+            //}
+
+            return View(prodModel);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("FiltersPartial")]
+        public ActionResult FiltersPartialPost(ShopProductsViewModel model)
+        {
+            var priceOption = Request.Form["PriceList"];
+            var ratingOption = Request.Form["RatingList"];
+            var newArrivalsOption = Request.Form["NewArrivalsList"];
+            var availabilityOption = Request.Form["AvailabilityList"];
+
+            var options = new ShopFilteringOptions();
+            var selectedOptions = new SelectedFilters();
+
+            if (priceOption != null)
+            {
+                switch (priceOption)
+                {
+                    case "1":
+                    {
+                        options.Price_MaxValue = 10000;
+                        break;
+                    }
+                    case "2":
+                    {
+                        options.Price_MinValue = 10000;
+                        options.Price_MaxValue = 20000;
+                        break;
+                    }
+                    case "3":
+                    {
+                        if (model.FilterViewModel.MinValue > 0 && model.FilterViewModel.MaxValue > 0)
+                        {
+                            options.Price_MaxValue = model.FilterViewModel.MaxValue;
+                            options.Price_MinValue = model.FilterViewModel.MinValue;
+                        }
+                        break;
                     }
                 }
-            };
-            return View(model);
+            }
+            else
+            {
+                priceOption = "0";
+            }
+
+            if (ratingOption != null)
+            {
+                switch (ratingOption)
+                {
+                    case "1":
+                    {
+                        options.Rating_Min = 5;
+                        break;
+                    }
+                    case "2":
+                    {
+                        options.Rating_Min = 4;
+                        break;
+                    }
+                    case "3":
+                    {
+                        options.Rating_Min = 3;
+                        break;
+                    }
+                    case "4":
+                    {
+                        options.Rating_Min = 2;
+                        break;
+                    }
+                    case "5":
+                    {
+                        options.Rating_Min = 1;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                ratingOption = "0";
+            }
+
+            if (newArrivalsOption != null)
+            {
+                switch (newArrivalsOption)
+                {
+                    case "1":
+                        {
+                            options.Allowed_Days = 30;
+                            break;
+                        }
+                    case "2":
+                        {
+                            options.Allowed_Days = 60;
+                            break;
+                        }
+                    case "3":
+                        {
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                newArrivalsOption = "0";
+            }
+
+            if (availabilityOption != null)
+            {
+                switch (availabilityOption)
+                {
+                    case "1":
+                    {
+                            options.Availability = false;
+                        break;
+                    }
+                    case "2":
+                    {
+                            options.Availability = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                availabilityOption = "0";
+            }
+            selectedOptions.PriceFilterSelected = int.Parse(priceOption);
+            selectedOptions.RatingFilterSelected = int.Parse(ratingOption);
+            selectedOptions.NewArrivalFilterSelected = int.Parse(newArrivalsOption);
+            selectedOptions.AvailabilityFilterSelected = int.Parse(availabilityOption);
+            return RedirectToAction("Products", new { storeId = db.Categories.FirstOrDefault(m => m.Id == model.CategoryId).StoreId, catId = model.CategoryId,
+                
+                Price_MinValue = options.Price_MinValue, Price_MaxValue = options.Price_MaxValue, Rating_Min = options.Rating_Min,
+                Allowed_Days = options.Allowed_Days, Availability = options.Availability,
+                PriceFilterSelected = selectedOptions.PriceFilterSelected, 
+                RatingFilterSelected = selectedOptions.RatingFilterSelected,
+                NewArrivalFilterSelected = selectedOptions.NewArrivalFilterSelected,
+                AvailabilityFilterSelected = selectedOptions.AvailabilityFilterSelected,
+                SortOption = model.SelectedOption
+            });
         }
 
-        public ActionResult Products(int? storeId, int? catId,
+        public ActionResult Products(int? storeId, int? catId, [Form] ShopFilteringOptions filteringOptions,
+                                [Form] SelectedFilters selectedFilters,
                                 [Form] QueryOptions queryOptions, bool flag = false)
         {
             if (queryOptions == null) queryOptions = new QueryOptions();
@@ -202,19 +355,40 @@ namespace kl_eCom.Web.Controllers
                 parent = db.Categories.FirstOrDefault(m => m.Id == parent.CategoryId);
             }
             var catProdIds = db.Products.Where(m => m.CategoryId == catId).Select(m => m.Id).ToList();
+            var thresholdDate = DateTime.Now;
+            bool dateFlag = false;
+            if (filteringOptions.Allowed_Days == -1)
+            {
+                dateFlag = true;
+            }
+            else
+            {
+                thresholdDate = thresholdDate.AddDays(-1 * filteringOptions.Allowed_Days);
+            }
             var model = new ShopProductsViewModel
             {
                 CategoryId = (int)catId,
                 Stocks = db.Stocks
                             .Include(m => m.Product)
-                            .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId))
+                            .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId)
+                                && m.Price >= filteringOptions.Price_MinValue && m.Price <= filteringOptions.Price_MaxValue
+                                && m.Product.Rating >= filteringOptions.Rating_Min
+                                && (filteringOptions.Availability || m.Status == StockStatus.InStock))
                             .OrderBy(queryOptions.Sort) 
                             .ToList(),
                 Max = new Dictionary<int, int>(),
                 Breadcrum = new Dictionary<string, int>(),
-                SelectedOption = queryOptions.SortOption
+                SelectedOption = queryOptions.SortOption,
+                StoreId = (int)storeId
             };
-
+            var stockList = model.Stocks;
+            foreach (var stock in stockList)
+            {
+                if (!dateFlag && (stock.StockingDate - thresholdDate).Days < 0)
+                {
+                    model.Stocks.Remove(stock);
+                }
+            }
             model.Breadcrum.Add(store.Name, store.Id);
 
             var keys = parentList.Keys.ToList();
@@ -242,7 +416,20 @@ namespace kl_eCom.Web.Controllers
                     model.Max.Add(stk.Id, available - cartItm.Qty);
                 else
                     model.Max.Add(stk.Id, available);
-            } 
+            }
+            if (model.FilterViewModel == null)
+            {
+                model.FilterViewModel = new ShopFilterViewModel {
+                    PriceSelection = new PriceSelection(),
+                    RatingSelection = new RatingSelection(),
+                    NewestArrivalSelection = new NewestArrivalSelection(),
+                    AvailabilitySelection = new AvailabilitySelection()
+                };
+            }
+            model.FilterViewModel.PriceSelection.PriceItemSelected = selectedFilters.PriceFilterSelected;
+            model.FilterViewModel.RatingSelection.RatingItemSelected = selectedFilters.RatingFilterSelected;
+            model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected = selectedFilters.NewArrivalFilterSelected;
+            model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected = selectedFilters.AvailabilityFilterSelected;
             return View(model);
         }
 

@@ -35,7 +35,7 @@
 
     <div class="row" style="margin-top: -10px; margin-right: 0">
         <div id="filterPanel" class="col-md-3" style="margin-top: 30px;">
-            @Html.Action("FiltersPartial")
+            @Html.Action("FiltersPartial", new { prodModel = Model })
         </div>
         <div class="col-md-9">
             <div class="row" id="sortPanel" style="margin-bottom: 5px">

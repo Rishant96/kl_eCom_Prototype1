@@ -17,7 +17,10 @@ namespace kl_eCom.Web.Models
 
     public class ShopProductsViewModel
     {
+        public ShopFilteringOptions FilteringOptions { get; set; }
+        public ShopFilterViewModel FilterViewModel { get; set; }
         public int CategoryId { get; set; }
+        public int StoreId { get; set; }
         public Dictionary<string, int> Breadcrum { get; set; }
         public List<Stock> Stocks { get; set; }
         public int Qty { get; set; }
@@ -29,9 +32,37 @@ namespace kl_eCom.Web.Models
     // Helpers: Price Selection, Rating Selection, Newest Arrivals Selection
     //          Availability Selection
 
+    public class SelectedFilters
+    {
+        public int PriceFilterSelected { get; set; }
+        public int RatingFilterSelected { get; set; }
+        public int NewArrivalFilterSelected { get; set; }
+        public int AvailabilityFilterSelected { get; set; }
+    }
+
+    public class ShopFilteringOptions
+    {
+        public ShopFilteringOptions()
+        {
+            this.Price_MaxValue = int.MaxValue;
+            this.Price_MinValue = 0;
+            this.Rating_Min = 0;
+            this.Allowed_Days = -1;
+            this.Availability = true;
+        }
+
+        public int Price_MinValue { get; set; }
+        public int Price_MaxValue { get; set; }
+        public int Rating_Min { get; set; }
+        public int Allowed_Days { get; set; }
+        public bool Availability { get; set; }
+    }
+
     public class ShopFilterViewModel
     {
         public PriceSelection PriceSelection { get; set; }
+        public int MinValue { get; set; }
+        public int MaxValue { get; set; }
         public RatingSelection RatingSelection { get; set; }
         public NewestArrivalSelection NewestArrivalSelection { get; set; }
         public AvailabilitySelection AvailabilitySelection { get; set; }
@@ -39,7 +70,7 @@ namespace kl_eCom.Web.Models
 
     public class PriceSelection
     {
-        public PriceSelectionItem PriceItemSelected { get; set; }
+        public int PriceItemSelected { get; set; }
         public List<PriceSelectionItem> PriceSelectionItems { get; set; }
     }
 
@@ -53,7 +84,7 @@ namespace kl_eCom.Web.Models
 
     public class RatingSelection
     {
-        public RatingSelectionItem RatingItemSelected { get; set; }
+        public int RatingItemSelected { get; set; }
         public List<RatingSelectionItem> RatingSelectionItems { get; set; }
     }
 
@@ -66,7 +97,7 @@ namespace kl_eCom.Web.Models
 
     public class NewestArrivalSelection
     {
-        public NewestArrivalSelectionItem NewestArrivalItemSelected { get; set; }
+        public int NewestArrivalItemSelected { get; set; }
         public List<NewestArrivalSelectionItem> NewestArrivalSelectionItems { get; set; }
     }
 
@@ -79,7 +110,7 @@ namespace kl_eCom.Web.Models
 
     public class AvailabilitySelection
     {
-        public AvailabilitySelectionItem AvailabilityItemSelected { get; set; }
+        public int AvailabilityItemSelected { get; set; }
         public List<AvailabilitySelectionItem> AvailabilitySelectionItems { get; set; }
     }
 

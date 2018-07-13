@@ -94,6 +94,7 @@
                     $(".PriceTxt").prop('disabled', true);                  
                 }
             });
+
             $('input:radio[name=PriceList]').change(function () {
                 if ($("#PriceItm3").prop('checked') == false) {
                     $(".PriceTxt").prop('disabled', true);
@@ -102,6 +103,7 @@
                     $(".PriceTxt").prop('disabled', false);
                 }
             });
+
             $("#clearPrice").click(function () {
                 $('input:radio[name=PriceList]').prop('checked', false);
                 $(".PriceTxt").prop('disabled', true);    

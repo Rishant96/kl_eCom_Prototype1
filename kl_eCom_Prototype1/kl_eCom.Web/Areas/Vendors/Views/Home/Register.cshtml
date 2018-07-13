@@ -98,6 +98,18 @@
         </div>
     </div>
 
+    @*<div>
+        <h4>Plans</h4>
+        @foreach (var plan in Model.AvailablePackages)
+        {
+        <div class="col-md-offset-2">
+            <input type="radio" id="PlansList" name="PlansList" value="@plan.Id" @if (Model.VendorPackageSelected == plan.Id) { <text> checked</text>} @if (!plan.IsEnabled) { <text>disabled="disabled"</text> } />
+            <div style="display: inline-block">Name: @plan.DisplayName, Max. Products Allowed: @plan.MaxProducts, Validity: @if (plan.ValidityPeriod != null) { <text>@plan.ValidityPeriod (in years)</text> }
+            else { <text>No expiration</text> }, Price: @if (plan.Price == 0.0f) { <text>free</text> } else { <text>@plan.Price</text> }</div>
+        </div>
+        }
+    </div>*@
+
     <input type="submit" class="col-md-offset-2 btn btn-primary" value="Register" />
 </div>
 }

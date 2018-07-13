@@ -211,6 +211,14 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
+    <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Vendors\Controllers\HomeController.cs" />
     <Compile Include="Areas\Vendors\Controllers\ProductController.cs" />
@@ -228,6 +236,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MarketController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
+    <Compile Include="Entities\ActivePlans.cs" />
     <Compile Include="Entities\Cart.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Product.cs" />
@@ -238,45 +247,57 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201806270834015_NewInit.cs" />
-    <Compile Include="Migrations\201806270834015_NewInit.Designer.cs">
-      <DependentUpon>201806270834015_NewInit.cs</DependentUpon>
+    <Compile Include="Migrations\201807100947361_Init.cs" />
+    <Compile Include="Migrations\201807100947361_Init.Designer.cs">
+      <DependentUpon>201807100947361_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806270850265_Product_AutoGen.cs" />
-    <Compile Include="Migrations\201806270850265_Product_AutoGen.Designer.cs">
-      <DependentUpon>201806270850265_Product_AutoGen.cs</DependentUpon>
+    <Compile Include="Migrations\201807120442013_ActivePlan_Model_Added.cs" />
+    <Compile Include="Migrations\201807120442013_ActivePlan_Model_Added.Designer.cs">
+      <DependentUpon>201807120442013_ActivePlan_Model_Added.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806270858424_Product_AutoGen_2.cs" />
-    <Compile Include="Migrations\201806270858424_Product_AutoGen_2.Designer.cs">
-      <DependentUpon>201806270858424_Product_AutoGen_2.cs</DependentUpon>
+    <Compile Include="Migrations\201807120449393_VendorPackage_Model_Edited.cs" />
+    <Compile Include="Migrations\201807120449393_VendorPackage_Model_Edited.Designer.cs">
+      <DependentUpon>201807120449393_VendorPackage_Model_Edited.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806270904023_StockModel_Date_Changed.cs" />
-    <Compile Include="Migrations\201806270904023_StockModel_Date_Changed.Designer.cs">
-      <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
+    <Compile Include="Migrations\201807120532487_Models_Changed.cs" />
+    <Compile Include="Migrations\201807120532487_Models_Changed.Designer.cs">
+      <DependentUpon>201807120532487_Models_Changed.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806280429036_catAtrDefault.cs" />
-    <Compile Include="Migrations\201806280429036_catAtrDefault.Designer.cs">
-      <DependentUpon>201806280429036_catAtrDefault.cs</DependentUpon>
+    <Compile Include="Migrations\201807120538401_Models_Changed_Again.cs" />
+    <Compile Include="Migrations\201807120538401_Models_Changed_Again.Designer.cs">
+      <DependentUpon>201807120538401_Models_Changed_Again.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806280812100_catAtrDefault2.cs" />
-    <Compile Include="Migrations\201806280812100_catAtrDefault2.Designer.cs">
-      <DependentUpon>201806280812100_catAtrDefault2.cs</DependentUpon>
+    <Compile Include="Migrations\201807120632560_Models_Changed_Again_twice.cs" />
+    <Compile Include="Migrations\201807120632560_Models_Changed_Again_twice.Designer.cs">
+      <DependentUpon>201807120632560_Models_Changed_Again_twice.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806281015503_Product_and_Category_Images_Added.cs" />
-    <Compile Include="Migrations\201806281015503_Product_and_Category_Images_Added.Designer.cs">
-      <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201807120709275_Models_Changed_Again_3.cs" />
+    <Compile Include="Migrations\201807120709275_Models_Changed_Again_3.Designer.cs">
+      <DependentUpon>201807120709275_Models_Changed_Again_3.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806290946519_StockModel_Status_Added.cs" />
-    <Compile Include="Migrations\201806290946519_StockModel_Status_Added.Designer.cs">
-      <DependentUpon>201806290946519_StockModel_Status_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201807120718418_Models_Changed_Again_4.cs" />
+    <Compile Include="Migrations\201807120718418_Models_Changed_Again_4.Designer.cs">
+      <DependentUpon>201807120718418_Models_Changed_Again_4.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806290957431_ProductModel_Booleans_Added.cs" />
-    <Compile Include="Migrations\201806290957431_ProductModel_Booleans_Added.Designer.cs">
-      <DependentUpon>201806290957431_ProductModel_Booleans_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201807120736167_Models_Changed_Again_5.cs" />
+    <Compile Include="Migrations\201807120736167_Models_Changed_Again_5.Designer.cs">
+      <DependentUpon>201807120736167_Models_Changed_Again_5.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.cs" />
-    <Compile Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.Designer.cs">
-      <DependentUpon>201807020434538_Store_MaxPerCustomer_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201807121001597_Models_Changed_Again_6.cs" />
+    <Compile Include="Migrations\201807121001597_Models_Changed_Again_6.Designer.cs">
+      <DependentUpon>201807121001597_Models_Changed_Again_6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807130725067_Models_updated_1.cs" />
+    <Compile Include="Migrations\201807130725067_Models_updated_1.Designer.cs">
+      <DependentUpon>201807130725067_Models_updated_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807130735514_Models_updated_2.cs" />
+    <Compile Include="Migrations\201807130735514_Models_updated_2.Designer.cs">
+      <DependentUpon>201807130735514_Models_updated_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807130956310_Models_updated_3.cs" />
+    <Compile Include="Migrations\201807130956310_Models_updated_3.Designer.cs">
+      <DependentUpon>201807130956310_Models_updated_3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -288,15 +309,18 @@
     <Compile Include="Models\ShopViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\ActivePackages.cs" />
     <Compile Include="Utilities\Address.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
+    <Compile Include="Utilities\PlanChangeRequest.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
     <Compile Include="Utilities\Refferal.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
     <Compile Include="Utilities\VendorDetails.cs" />
     <Compile Include="Utilities\VendorPackages.cs" />
+    <Compile Include="Utilities\VendorPaymentDetails.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\images\1-1355x565.jpg" />
@@ -360,6 +384,23 @@
     <Content Include="Areas\Vendors\Views\Store\MultipleStores.cshtml" />
     <Content Include="assets\images\hashes.json" />
     <Content Include="Areas\Vendors\Views\Home\Login.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\web.config" />
+    <Content Include="Areas\KL_Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Home.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Plans.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Create.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Edit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ChangePassword.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Plan.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ChangePlan.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\PlanChange.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\EditDomain.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -435,35 +476,44 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201806270834015_NewInit.resx">
-      <DependentUpon>201806270834015_NewInit.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807100947361_Init.resx">
+      <DependentUpon>201807100947361_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270850265_Product_AutoGen.resx">
-      <DependentUpon>201806270850265_Product_AutoGen.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120442013_ActivePlan_Model_Added.resx">
+      <DependentUpon>201807120442013_ActivePlan_Model_Added.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270858424_Product_AutoGen_2.resx">
-      <DependentUpon>201806270858424_Product_AutoGen_2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120449393_VendorPackage_Model_Edited.resx">
+      <DependentUpon>201807120449393_VendorPackage_Model_Edited.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806270904023_StockModel_Date_Changed.resx">
-      <DependentUpon>201806270904023_StockModel_Date_Changed.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120532487_Models_Changed.resx">
+      <DependentUpon>201807120532487_Models_Changed.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806280429036_catAtrDefault.resx">
-      <DependentUpon>201806280429036_catAtrDefault.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120538401_Models_Changed_Again.resx">
+      <DependentUpon>201807120538401_Models_Changed_Again.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806280812100_catAtrDefault2.resx">
-      <DependentUpon>201806280812100_catAtrDefault2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120632560_Models_Changed_Again_twice.resx">
+      <DependentUpon>201807120632560_Models_Changed_Again_twice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806281015503_Product_and_Category_Images_Added.resx">
-      <DependentUpon>201806281015503_Product_and_Category_Images_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120709275_Models_Changed_Again_3.resx">
+      <DependentUpon>201807120709275_Models_Changed_Again_3.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806290946519_StockModel_Status_Added.resx">
-      <DependentUpon>201806290946519_StockModel_Status_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120718418_Models_Changed_Again_4.resx">
+      <DependentUpon>201807120718418_Models_Changed_Again_4.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806290957431_ProductModel_Booleans_Added.resx">
-      <DependentUpon>201806290957431_ProductModel_Booleans_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807120736167_Models_Changed_Again_5.resx">
+      <DependentUpon>201807120736167_Models_Changed_Again_5.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807020434538_Store_MaxPerCustomer_Added.resx">
-      <DependentUpon>201807020434538_Store_MaxPerCustomer_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807121001597_Models_Changed_Again_6.resx">
+      <DependentUpon>201807121001597_Models_Changed_Again_6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807130725067_Models_updated_1.resx">
+      <DependentUpon>201807130725067_Models_updated_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807130735514_Models_updated_2.resx">
+      <DependentUpon>201807130735514_Models_updated_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807130956310_Models_updated_3.resx">
+      <DependentUpon>201807130956310_Models_updated_3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

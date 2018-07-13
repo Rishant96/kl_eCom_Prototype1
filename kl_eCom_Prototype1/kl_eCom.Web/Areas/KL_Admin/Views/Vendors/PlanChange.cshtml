@@ -1,0 +1,88 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminVendorsPlanChangeViewModel
+@{
+    ViewBag.Title = "Change Plan - Vendor";
+}
+
+<h2>Change Plan - Vendor</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.VendorId)
+    @Html.HiddenFor(m => m.NewPlanId)
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(m => m.VendorName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.VendorName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.CurrentPackage, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.CurrentPackage, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewPlanName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.NewPlanName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewPlanMaxProds, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.NewPlanMaxProds, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IsAccepted, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.IsAccepted, new { htmlAttributes = new { @class = "checkbox", Id = "isPaidFor" } })
+            @Html.ValidationMessageFor(m => m.IsAccepted, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="col-md-offset-1" id="acceptOrReject">
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.IsPaidFor, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.IsPaidFor, new { htmlAttributes = new { @class = "checkbox", Id = "isPaidFor" } })
+                @Html.ValidationMessageFor(m => m.IsPaidFor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="paymentDetails">
+            <div class="form-group">
+                @Html.LabelFor(m => m.PaymentMode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.PaymentMode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.PaymentMode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.Notes, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Submit" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+@Html.ActionLink("Back to Details", "Details", new { id = Model.VendorId })

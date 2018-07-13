@@ -63,6 +63,11 @@ namespace kl_eCom.Web.Models
             .WithRequired(r => r.Vendor) // <--
             .HasForeignKey(r => r.VendorId)
             .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ActivePackage>()
+            .HasOptional(a => a.PaymentDetails)
+            .WithOptionalDependent()
+            .WillCascadeOnDelete(false);
         }
 
         public DbSet<Store> Stores { get; set; }
@@ -73,6 +78,9 @@ namespace kl_eCom.Web.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<CategoryAttribute> Attributes { get; set; }
         public DbSet<Specification> Specifications { get; set; }
+        public DbSet<VendorPackage> VendorPackages { get; set; }
+        public DbSet<ActivePackage> ActivePackages { get; set; }
+        public DbSet<PlanChangeRequest> PlanChangeRequests { get; set; }
 
         public static ApplicationDbContext Create()
         {

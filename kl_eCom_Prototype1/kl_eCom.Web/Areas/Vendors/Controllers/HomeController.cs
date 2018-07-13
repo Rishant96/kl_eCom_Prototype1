@@ -63,7 +63,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Register()
         {
-            return View(new HomeRegisterViewModel());
+            var db = new ApplicationDbContext();
+            var availablePackages = db.VendorPackages
+                     .Where(m => m.IsActive == true)
+                     .ToList();
+            return View(new HomeRegisterViewModel
+            {
+            //    AvailablePackages = availablePackages,
+            //    VendorPackageSelected = (availablePackages
+            //        .FirstOrDefault(m => m.Price == 0.0f)).Id
+            });
         }
 
         [HttpPost]
@@ -72,6 +81,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
+                // model.VendorPackageSelected = int.Parse(Request.Form["PlansList"]);
+                var db = new ApplicationDbContext();
+                // var plan = db.VendorPackages.FirstOrDefault(m => m.Id == model.VendorPackageSelected);
+
                 var vendor = new ApplicationUser {
                     UserName = model.UserName,
                     Email = model.Email,
@@ -84,13 +97,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         BusinessName = model.BusinessName,
                         Zip = model.Zip,
                         State = model.State,
-                        WebsiteUrl = model.WebsiteUrl
+                        WebsiteUrl = model.WebsiteUrl,
+                        RegistrationDate = DateTime.Now
                     }
                 };
                 var result = UserManager.Create(vendor, model.Password);
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(vendor.Id, "Vendor");
+                    var pkg = db.ActivePackages.Add(new Utilities.ActivePackage
+                    {
+                        ApplicationUserId = vendor.Id,
+                        IsPaidFor = null,
+                        VendorPackageId = db.VendorPackages.FirstOrDefault(m => m.Price == 0.0f).Id,
+                        VendorPaymentDetailsId = null
+                    });
+                    vendor.VendorDetails.ActivePackageId = pkg.Id;
+                    db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
                     SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
 
                     return RedirectToAction("Index", controllerName: "Vendor");

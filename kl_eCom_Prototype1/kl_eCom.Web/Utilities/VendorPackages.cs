@@ -10,17 +10,19 @@ namespace kl_eCom.Web.Utilities
     public class VendorPackage
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public bool IsActive { get; set; }
         [Required]
+        public bool IsEnabled { get; set; }
+        public string DisplayName { get; set; }
+        [Required]
+        public int MaxProducts { get; set; }
+        [Required]
         public string Name { get; set; }
         [Required]
         public float Price { get; set; }
-        [Required]
-        public DateTime ActivationDate { get; set; }
-        [Required]
-        public DateTime ValidityPeriod { get; set; }
+        public int? ValidityPeriod { get; set; }
     }
 }

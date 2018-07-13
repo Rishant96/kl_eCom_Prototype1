@@ -1,0 +1,51 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorPlanIndexViewModel
+@{
+    ViewBag.Title = "My Plan";
+}
+
+<h2>My Plan</h2>
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.CurrentPackage.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.CurrentPackage.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.CurrentPackage.MaxProducts, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.CurrentPackage.MaxProducts, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.CurrentPackage.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.CurrentPackage.Price, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ExpiryDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ExpiryDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10" style="position: relative; right: 10px">
+            @Html.ActionLink("Change Plan", "ChangePlan", null, new { @class = "btn btn-link" })<text>|</text>
+            @Html.ActionLink("Back to Dashboard", "Index")
+        </div>
+    </div>
+</div>

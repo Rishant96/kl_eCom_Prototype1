@@ -24,11 +24,14 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public string State { get; set; }
-
-        [Required]
-        public VendorPackage Package { get; set; }
+        
+        public int? ActivePackageId { get; set; }
+        [Display(Name = "Active Plan")]
+        public ActivePackage ActivePackage { get; set; }
         
         [Required]
         public DateTime RegistrationDate { get; set; }
+        
+        public DateTime DomainRegistrationDate { get; set; }
     }
 }

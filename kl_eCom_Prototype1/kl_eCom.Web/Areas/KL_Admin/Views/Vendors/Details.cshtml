@@ -1,0 +1,80 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminVendorsDetailsViewModel
+@{
+    ViewBag.Title = "Details - Vendor";
+}
+
+<h2>Details - Vendor</h2>
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.Display(Model.Vendor.FirstName + " " + Model.Vendor.LastName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.VendorDetails.RegistrationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.VendorDetails.RegistrationDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.VendorDetails.DomainRegistrationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.VendorDetails.DomainRegistrationDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.VendorDetails.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.VendorDetails.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePackage.Package.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePackage.Package.Price, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Package", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePackage.Package.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePackage.Package.MaxProducts, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePackage.Package.MaxProducts, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePackage.Package.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePackage.Package.Price, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @if (Model.ChangeRequest != null)
+            {<text>@Html.ActionLink("Go to plan change request", "PlanChange", new { id = Model.Vendor.Id })</text> }
+        else
+        { <text>No pending requests</text>}
+            <text> | </text>
+            @Html.ActionLink("Edit Domain Date", "EditDomain", new { id = Model.Vendor.Id })
+        </div>
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

@@ -299,6 +299,10 @@
     <Compile Include="Migrations\201807130956310_Models_updated_3.Designer.cs">
       <DependentUpon>201807130956310_Models_updated_3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807151014584_new_migrations-1.cs" />
+    <Compile Include="Migrations\201807151014584_new_migrations-1.Designer.cs">
+      <DependentUpon>201807151014584_new_migrations-1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -401,6 +405,7 @@
     <Content Include="Areas\KL_Admin\Views\Vendors\Details.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\PlanChange.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\EditDomain.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\EditActiveProducts.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -514,6 +519,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807130956310_Models_updated_3.resx">
       <DependentUpon>201807130956310_Models_updated_3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807151014584_new_migrations-1.resx">
+      <DependentUpon>201807151014584_new_migrations-1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

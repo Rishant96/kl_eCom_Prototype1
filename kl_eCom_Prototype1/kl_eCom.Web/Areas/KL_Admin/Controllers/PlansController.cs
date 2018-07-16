@@ -72,6 +72,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 plan.IsActive = model.IsActive;
                 plan.Price = model.Price;
                 plan.IsEnabled = model.IsEnabled;
+                plan.MaxProducts = model.MaxProducts;
                 db.Entry(plan).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = model.Id });
@@ -82,7 +83,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Delete(int? id)
         {
             if (id == null) return View("Error");
-            var model = db.VendorPackages.FirstOrDefault(m => m.Id == id);
+            var model = db.VendorPackages.FirstOrDefault(m => m.Id == id);      
             if (model == null) return View("Error");
             return View(model);
         }

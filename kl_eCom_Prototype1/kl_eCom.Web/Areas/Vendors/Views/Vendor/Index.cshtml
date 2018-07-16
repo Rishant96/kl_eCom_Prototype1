@@ -5,6 +5,19 @@
 
 <h2>Vendor - Home</h2>
 
+@if (ViewBag.Flag)
+{
+    <div class="alert alert-warning">
+        <p>
+            You have @ViewBag.CurrProds listed products in your inventory, but your plan only allows for
+            @ViewBag.MaxProds listed products, please de-list some of your products to fix this issue.
+            <br />
+            <br />
+            If you fail to do so within a week then, some of your products maybe de-listed automatically.
+        </p>
+    </div>
+}
+
 @Html.ActionLink("Go to Stores", "Index", "Store")
  | 
 @Html.ActionLink("All Products", "AllProducts", controllerName: "Product")

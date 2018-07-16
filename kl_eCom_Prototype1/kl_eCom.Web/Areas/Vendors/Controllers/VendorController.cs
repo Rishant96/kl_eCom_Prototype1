@@ -56,6 +56,32 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Vendor
         public ActionResult Index()
         {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var pkg = db.VendorPackages
+                        .FirstOrDefault(m => m.Id ==
+                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+
+            var prods = db.Products
+                        .Include(m => m.Category)
+                        .Include(m => m.Category.Store)
+                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id)
+                        .ToList();
+
+            var prodCount = prods.Count;
+
+            if (pkg.MaxProducts < prodCount)
+                ViewBag.Flag = true;
+            else
+                ViewBag.Flag = false;
+
+            ViewBag.CurrProds = prods.Count;
+            ViewBag.MaxProds = pkg.MaxProducts;
+
             return View();
         }
 

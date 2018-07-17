@@ -244,6 +244,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (id == null) return null;
             Product prod = db.Products.FirstOrDefault(m => m.Id == id);
             if (prod == null) return null;
+            if (prod.ThumbnailData == null || prod.ThumbnailMimeType == null)
+                return null;
             return File(prod.ThumbnailData, prod.ThumbnailMimeType);
         }
 

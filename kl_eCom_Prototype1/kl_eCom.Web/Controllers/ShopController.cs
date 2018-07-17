@@ -370,9 +370,12 @@ namespace kl_eCom.Web.Controllers
                 CategoryId = (int)catId,
                 Stocks = db.Stocks
                             .Include(m => m.Product)
-                            .Where(m => m.StoreId == storeId && catProdIds.Contains(m.ProductId)
-                                && m.Price >= filteringOptions.Price_MinValue && m.Price <= filteringOptions.Price_MaxValue
-                                && m.Product.Rating >= filteringOptions.Rating_Min
+                            .Where(m => m.StoreId == storeId 
+                                && catProdIds.Contains(m.ProductId)
+                                && m.Price >= filteringOptions.Price_MinValue 
+                                && m.Price <= filteringOptions.Price_MaxValue
+                                && m.Product.Rating >= filteringOptions.Rating_Min 
+                                && m.Product.IsActive == true
                                 && (filteringOptions.Availability || m.Status == StockStatus.InStock))
                             .OrderBy(queryOptions.Sort) 
                             .ToList(),

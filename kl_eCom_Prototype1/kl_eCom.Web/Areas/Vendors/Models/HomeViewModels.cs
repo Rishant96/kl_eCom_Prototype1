@@ -1,4 +1,5 @@
-﻿using System;
+﻿using kl_eCom.Web.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -50,6 +51,10 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string Password { get; set; }
+        
+        //public List<VendorPackage> AvailablePackages { get; set; }
+        
+        //public int VendorPackageSelected { get; set; }
 
         [Required]
         [Display(Name = "Confirm Password")]

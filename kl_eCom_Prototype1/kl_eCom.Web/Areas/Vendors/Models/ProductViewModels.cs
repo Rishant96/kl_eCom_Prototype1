@@ -23,6 +23,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public List<string> AttributeNames { get; set; }
         public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; } 
+        public bool IsActive { get; set; }
     }
 
     public class ProductEditViewModel
@@ -33,9 +34,13 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
+        [DataType(DataType.DateTime)]
+        [Required]
+        public DateTime DateAdded { get; set; }
         public List<string> AttributeNames { get; set; }
         public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class ProductStockViewModel
@@ -69,5 +74,15 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public List<Product> Products { get; set; }
         public Dictionary<Product, List<Stock>> Inventory { get; set; }
         public Dictionary<Product, bool> HasListing { get; set; }
+    }
+
+    public class ProductEditListedViewModel
+    {
+        public List<Product> Products { get; set; }
+        public Dictionary<Product, List<Stock>> Inventory { get; set; }
+        public Dictionary<Product, bool> HasListing { get; set; }
+        public Dictionary<int, bool> IsActiveList { get; set; }
+        public int CurrentSelectedProducts { get; set; }
+        public int MaxAllowedProducts { get; set; }
     }
 }

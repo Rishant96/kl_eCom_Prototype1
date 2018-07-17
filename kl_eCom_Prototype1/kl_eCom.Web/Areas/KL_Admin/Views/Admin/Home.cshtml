@@ -1,0 +1,43 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminHomeViewModel
+@{
+    ViewBag.Title = "Admin - Home";
+}
+
+<h3>Admin - Home</h3>
+
+<div class="container">
+    <div style="display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center">
+            <h3>Plans</h3>
+        </div>
+        <hr style="width: 100%; margin-left: 15px; border-color: lightslategray" />
+    </div>
+    <div>
+        <div class="row">
+            @{ var i = 1; }
+            @if (Model.VendorPackages == null) { Model.VendorPackages = new List<kl_eCom.Web.Utilities.VendorPackage>(); }
+            @foreach (var package in Model.VendorPackages)
+            {
+                <div class="card col-md-4" style="padding: 30px; display: flex; flex-direction: column">
+                    <div class="card-header"><h4>@Html.ActionLink("Plan " + i, "Details", "Plans",
+                                                    new { id = package.Id }, new { @class = "btn-link" })</h4></div>
+                    <div class="col-md-offset-1">
+                        <div>Name: @package.DisplayName</div>
+                        <div class="col-md-offset-2">(@package.Name)</div>
+                        <div>Max. Products: @package.MaxProducts</div>
+                        <div>Validity Period: @package.ValidityPeriod</div>
+                        <div>
+                            Price: @if (package.Price == 0)
+                            {<text>Free</text> }
+                        else
+                        { @package.Price}
+                        </div>
+                        <div>Is Active: @package.IsActive</div>
+                        <div>Is Enabled: @package.IsEnabled</div>
+                    </div>
+                </div>
+                i++;
+            }
+        </div>
+    </div>
+</div>

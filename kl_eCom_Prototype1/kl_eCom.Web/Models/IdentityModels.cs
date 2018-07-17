@@ -21,9 +21,12 @@ namespace kl_eCom.Web.Models
 
         [Required]
         public string PrimaryRole { get; set; }
-
+        
         public int? VendorDetailsId { get; set; }
         public VendorDetails VendorDetails { get; set; }
+
+        public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
+        public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; }
 
@@ -45,6 +48,28 @@ namespace kl_eCom.Web.Models
         {
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.AssociatedCustomerOf) // <--
+            .WithRequired(r => r.Customer) // <--
+            .HasForeignKey(r => r.CustomerId)
+            .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.AssociatedVendorOf) // <--
+            .WithRequired(r => r.Vendor) // <--
+            .HasForeignKey(r => r.VendorId)
+            .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ActivePackage>()
+            .HasOptional(a => a.PaymentDetails)
+            .WithOptionalDependent()
+            .WillCascadeOnDelete(false);
+        }
+
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -53,6 +78,9 @@ namespace kl_eCom.Web.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<CategoryAttribute> Attributes { get; set; }
         public DbSet<Specification> Specifications { get; set; }
+        public DbSet<VendorPackage> VendorPackages { get; set; }
+        public DbSet<ActivePackage> ActivePackages { get; set; }
+        public DbSet<PlanChangeRequest> PlanChangeRequests { get; set; }
 
         public static ApplicationDbContext Create()
         {

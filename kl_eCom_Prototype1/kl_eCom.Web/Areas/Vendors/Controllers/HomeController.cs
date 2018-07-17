@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -56,13 +57,22 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Home
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated && User.IsInRole("Vendor")) return RedirectToAction("Index", controllerName: "Vendor");
+            if (User.Identity.IsAuthenticated) return RedirectToAction("Index", controllerName: "Vendor");
             return View();
         }
 
         public ActionResult Register()
         {
-            return View(new HomeRegisterViewModel());
+            var db = new ApplicationDbContext();
+            var availablePackages = db.VendorPackages
+                     .Where(m => m.IsActive == true)
+                     .ToList();
+            return View(new HomeRegisterViewModel
+            {
+            //    AvailablePackages = availablePackages,
+            //    VendorPackageSelected = (availablePackages
+            //        .FirstOrDefault(m => m.Price == 0.0f)).Id
+            });
         }
 
         [HttpPost]
@@ -71,6 +81,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
+                // model.VendorPackageSelected = int.Parse(Request.Form["PlansList"]);
+                var db = new ApplicationDbContext();
+                // var plan = db.VendorPackages.FirstOrDefault(m => m.Id == model.VendorPackageSelected);
+
                 var vendor = new ApplicationUser {
                     UserName = model.UserName,
                     Email = model.Email,
@@ -83,13 +97,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         BusinessName = model.BusinessName,
                         Zip = model.Zip,
                         State = model.State,
-                        WebsiteUrl = model.WebsiteUrl
+                        WebsiteUrl = model.WebsiteUrl,
+                        RegistrationDate = DateTime.Now
                     }
                 };
                 var result = UserManager.Create(vendor, model.Password);
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(vendor.Id, "Vendor");
+                    var pkg = db.ActivePackages.Add(new Utilities.ActivePackage
+                    {
+                        ApplicationUserId = vendor.Id,
+                        IsPaidFor = null,
+                        VendorPackageId = db.VendorPackages.FirstOrDefault(m => m.Price == 0.0f).Id,
+                        VendorPaymentDetailsId = null
+                    });
+                    vendor.VendorDetails.ActivePackageId = pkg.Id;
+                    db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
                     SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
 
                     return RedirectToAction("Index", controllerName: "Vendor");
@@ -97,6 +122,54 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 AddErrors(result);
             }
             return View(model);
+        }
+
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Login
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(model);
+            }
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         private void AddErrors(IdentityResult result)

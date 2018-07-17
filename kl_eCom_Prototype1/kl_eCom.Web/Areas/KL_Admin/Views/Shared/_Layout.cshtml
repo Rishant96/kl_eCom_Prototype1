@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="container" style="padding-top: 0;">
+    <nav class="navbar navbar-inverse bg-primary">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">KL Admin</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Home", "Home", controllerName: "Admin")</li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Users
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Customers</a></li>
+                        <li><a href="@Url.Action("Index", controllerName: "Vendors")">Vendors</a></li>
+                    </ul>
+                </li>
+                <li><a href="@Url.Action("Plans")">Plans</a></li>
+                <li><a href="#">Deals</a></li>
+            </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                using (Html.BeginForm("LogOff", "Admin", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <text>
+                    <ul class="nav navbar-nav navbar-right" style="padding-top: 7px; margin-right: 5px;">
+                        <li><input type="submit" class="btn btn-primary" value="Log Off" /></li>
+                    </ul>
+                    </text>
+                }
+            }
+        </div>
+    </nav>
+
+
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

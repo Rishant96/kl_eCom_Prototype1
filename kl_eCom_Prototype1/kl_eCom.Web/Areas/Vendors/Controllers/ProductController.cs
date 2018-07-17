@@ -62,6 +62,13 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (store != null) storeID = store.StoreId;
             ViewBag.catId = id;
             ViewBag.storeId = storeID;
+
+            ViewBag.Flag = false;
+            if (GetVendorProductsCount() >= GetMaxProductsAllowed())
+            {
+                ViewBag.Flag = true;
+            }
+
             return View(model);
         }
 
@@ -92,7 +99,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             int? catId = TempData["catId"] as int?;
             if (catId == null) return RedirectToAction("Index", controllerName: "Store");
-
+            
             if (ModelState.IsValid)
             {
                 var prod = new Product
@@ -102,7 +109,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     Manufacturer = model.Manufacturer,
                     CategoryId = (int)catId,
                     Specifications = new List<Specification>(),
-                    DateAdded = DateTime.Now
+                    DateAdded = DateTime.Now,
+                    IsActive = model.IsActive
                 };
 
                 if (model.Specifications == null) model.Specifications = new Dictionary<string, string>();
@@ -137,11 +145,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Name = prod.Name,
                 Description = prod.Description,
                 Manufacturer = prod.Manufacturer,
+                DateAdded = prod.DateAdded,
                 AttributeNames = new List<string>(),
                 Attributes = new Dictionary<string, int>(),
-                Specifications = new Dictionary<string, string>()
+                Specifications = new Dictionary<string, string>(),
+                IsActive = prod.IsActive
             };
-
             var catIds = new List<int>();
             var cat = prod.Category;
             while(cat != null)
@@ -178,7 +187,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 prod.Name = model.Name;
                 prod.Manufacturer = model.Manufacturer;
                 prod.Description = model.Description;
+                prod.DateAdded = model.DateAdded;
                 prod.Specifications = new List<Specification>();
+                prod.IsActive = model.IsActive;
 
                 if (prod == null) return View("Error");
                 
@@ -481,6 +492,127 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 }
             }
             return View(model);
+        }
+
+        public ActionResult EditActiveProducts()
+        {
+            var userId = User.Identity.GetUserId();
+            var prods = db.Products
+                .Include(m => m.Category)
+                .Include(m => m.Category.Store)
+                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .ToList();
+
+            var model = new ProductEditListedViewModel
+            {
+                Products = prods,
+                Inventory = new Dictionary<Product, List<Stock>>(),
+                IsActiveList = new Dictionary<int, bool>(),
+                HasListing = new Dictionary<Product, bool>(),
+                CurrentSelectedProducts = GetActiveProductsCount(),
+                MaxAllowedProducts = GetMaxProductsAllowed()
+            };
+
+            foreach (var prod in prods)
+            {
+                model.IsActiveList.Add(prod.Id, prod.IsActive);
+
+                model.Inventory.Add(prod,
+                    db.Stocks
+                    .Include(m => m.Store)
+                    .Where(m => m.ProductId == prod.Id)
+                    .ToList());
+
+                if (db.Categories.FirstOrDefault(m => m.CategoryId == prod.CategoryId) == null)
+                {
+                    model.HasListing.Add(prod, true);
+                }
+                else
+                {
+                    model.HasListing.Add(prod, false);
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditActiveProducts(ProductEditListedViewModel model, string[] actives)
+        {
+            if (ModelState.IsValid)
+            {
+                var prodIds = Request.Form["prodIds"];
+                var activeProds = actives ?? new string[0];
+
+                var userId = User.Identity.GetUserId();
+
+                var prods = db.Products
+                .Include(m => m.Category)
+                .Include(m => m.Category.Store)
+                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .ToList();
+
+                foreach (var prod in prods)
+                {
+                    if (actives.Contains(prod.Id.ToString()))
+                        prod.IsActive = true;
+                    else
+                        prod.IsActive = false;
+                    db.Entry(prod).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+                return RedirectToAction("AllProducts");
+            }
+            return RedirectToAction("EditActiveProducts");
+        }
+
+        private int GetActiveProductsCount()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var prods = db.Products
+                        .Include(m => m.Category)
+                        .Include(m => m.Category.Store)
+                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id && m.IsActive == true)
+                        .ToList();
+
+            return prods.Count;
+        }
+
+        private int GetVendorProductsCount()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var prods = db.Products
+                        .Include(m => m.Category)
+                        .Include(m => m.Category.Store)
+                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id)
+                        .ToList();
+
+            return prods.Count;
+        }
+
+        private int GetMaxProductsAllowed()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var pkg = db.VendorPackages
+                        .FirstOrDefault(m => m.Id ==
+                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+
+            return pkg.MaxProducts;
         }
     }
 }

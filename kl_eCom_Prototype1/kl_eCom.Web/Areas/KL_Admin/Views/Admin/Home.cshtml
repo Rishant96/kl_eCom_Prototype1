@@ -7,13 +7,14 @@
 
 <div class="container">
     <div style="display: flex; flex-direction: column">
-        <div style="display: flex; align-items: center">
+        <div style="display: flex; align-items: baseline">
             <h3>Plans</h3>
+            @Html.ActionLink("Go to Plans", "Plans", null, new { style = "margin-left: 20px" })
         </div>
         <hr style="width: 100%; margin-left: 15px; border-color: lightslategray" />
     </div>
     <div>
-        <div class="row">
+        @*<div class="row">
             @{ var i = 1; }
             @if (Model.VendorPackages == null) { Model.VendorPackages = new List<kl_eCom.Web.Utilities.VendorPackage>(); }
             @foreach (var package in Model.VendorPackages)
@@ -38,6 +39,6 @@
                 </div>
                 i++;
             }
-        </div>
+        </div>*@
     </div>
 </div>

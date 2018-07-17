@@ -10,4 +10,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
     {
         public List<VendorPackage> VendorPackages { get; set; }
     }
+
+    public class AdminFixActivesViewModel
+    {
+        public List<string> Vendors { get; set; }
+        public Dictionary<string, List<string>> ProductsDeactivated { get; set; }
+    }
 }

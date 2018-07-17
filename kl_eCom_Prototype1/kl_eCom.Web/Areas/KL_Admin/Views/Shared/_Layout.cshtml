@@ -21,11 +21,11 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Customers</a></li>
+                        <li><a href="@Url.Action("Index", controllerName: "Customers")">Customers</a></li>
                         <li><a href="@Url.Action("Index", controllerName: "Vendors")">Vendors</a></li>
                     </ul>
                 </li>
-                <li><a href="@Url.Action("Plans")">Plans</a></li>
+                <li><a href="@Url.Action("Plans", controllerName: "Admin")">Plans</a></li>
                 <li><a href="#">Deals</a></li>
             </ul>
             @if (User.Identity.IsAuthenticated)

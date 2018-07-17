@@ -1,0 +1,38 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminFixActivesViewModel
+@{
+    ViewBag.Title = "Fix Active Products";
+}
+
+@if (ViewBag.Confirmation)
+{
+    using (Html.BeginForm(new { key = "klSecret-0fe0456-01" }))
+    {
+        <text>Are you Sure?
+        <div class="container row">
+            @Html.ActionLink("Go back", "Index")
+            <text> | </text> 
+            <input type="submit" value="Yes" class="btn btn-primary" />
+        </div>
+        </text>
+    }
+}
+else
+{
+    <text>
+    <div class="container">
+        Fixed <hr />
+        @foreach (var vendor in Model.Vendors)
+        {
+            <div class="row">
+                <label class="col-md-2">@vendor</label><br />
+                <div class="col-md-offset-2">
+                    @foreach (var prod in Model.ProductsDeactivated[vendor])
+                    {
+                        <label class="col-md-2 col-md-offset-1">prod</label>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    </text>
+}

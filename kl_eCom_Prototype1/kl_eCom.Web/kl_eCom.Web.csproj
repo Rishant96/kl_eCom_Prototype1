@@ -212,6 +212,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\CustomersController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
     <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
@@ -406,6 +407,8 @@
     <Content Include="Areas\KL_Admin\Views\Vendors\PlanChange.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\EditDomain.cshtml" />
     <Content Include="Areas\Vendors\Views\Product\EditActiveProducts.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\FixActiveProducts.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

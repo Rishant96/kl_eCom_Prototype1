@@ -167,5 +167,92 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             }
             return View(model);
         }
+
+
+        public ActionResult FixActiveProducts()
+        {
+            ViewBag.Confirmation = true;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult FixActiveProducts(string key)
+        {
+            ViewBag.Confirmation = false;
+
+            if (key != "klSecret-0fe0456-01")
+            {
+                return View("Error");
+            }
+
+            var vendors = db.Users
+                            .Where(m => m.PrimaryRole == "Vendor")
+                            .ToList();
+
+            var model = new AdminFixActivesViewModel
+            {
+                Vendors = vendors.Select(m => m.UserName).ToList(),
+                ProductsDeactivated = new Dictionary<string, List<string>>()
+            };
+
+            foreach (var vendor in vendors)
+            {
+                var activeProds = GetActiveProductsCount(vendor.Id);
+                var maxProds = GetMaxProductsAllowed(vendor.Id);
+
+                if (activeProds > maxProds)
+                {
+                    var prodsToDeActivate = db.Products
+                        .Where(m => m.IsActive)
+                        .OrderByDescending(m => m.DateAdded)
+                        .Take(activeProds - maxProds)
+                        .ToList();
+
+                    foreach (var prod in prodsToDeActivate)
+                    {
+                        prod.IsActive = false;
+                        db.Entry(prod).State = EntityState.Modified;
+                    }
+
+                    model.ProductsDeactivated.Add(vendor.Id,
+                        prodsToDeActivate.Select(m => m.Name).ToList());
+                    db.SaveChanges();
+                }
+            }
+
+            return View(model);
+        }
+
+        private int GetActiveProductsCount(string id)
+        {
+            var vendorId = id;
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var prods = db.Products
+                        .Include(m => m.Category)
+                        .Include(m => m.Category.Store)
+                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id && m.IsActive == true)
+                        .ToList();
+
+            return prods.Count;
+        }
+
+        private int GetMaxProductsAllowed(string id)
+        {
+            var vendorId = id;
+            var vendor = db.Users
+                        .Include(m => m.VendorDetails)
+                        .Include(m => m.VendorDetails.ActivePackage)
+                        .FirstOrDefault(m => m.Id == vendorId);
+
+            var pkg = db.VendorPackages
+                        .FirstOrDefault(m => m.Id ==
+                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+
+            return pkg.MaxProducts;
+        }
     }
 }

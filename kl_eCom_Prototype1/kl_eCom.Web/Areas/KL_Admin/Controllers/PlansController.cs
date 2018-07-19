@@ -26,7 +26,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.VendorPackages.Add(new Utilities.VendorPackage {
+                db.VendorPlans.Add(new Utilities.VendorPlan {
                     Name = model.Name,
                     DisplayName = model.DisplayName,
                     ValidityPeriod = (model.IsExpirable) ? model.ValidityPeriod : null,
@@ -44,7 +44,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null) return View("Error");
-            var model = db.VendorPackages.FirstOrDefault(m => m.Id == id);
+            var model = db.VendorPlans.FirstOrDefault(m => m.Id == id);
             if (model == null) return View("Error");
             return View(new AdminPlansEditViewModel {
                 Id = model.Id,
@@ -65,7 +65,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var plan = db.VendorPackages.FirstOrDefault(m => m.Id == model.Id);
+                var plan = db.VendorPlans.FirstOrDefault(m => m.Id == model.Id);
                 plan.Name = model.Name;
                 plan.DisplayName = model.DisplayName;
                 plan.ValidityPeriod = (model.IsExpirable) ? model.ValidityPeriod : null;
@@ -83,22 +83,22 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Delete(int? id)
         {
             if (id == null) return View("Error");
-            var model = db.VendorPackages.FirstOrDefault(m => m.Id == id);      
+            var model = db.VendorPlans.FirstOrDefault(m => m.Id == id);      
             if (model == null) return View("Error");
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(VendorPackage model)
+        public ActionResult Delete(VendorPlan model)
         {
-            var plan = db.VendorPackages.FirstOrDefault(m => m.Id == model.Id);
+            var plan = db.VendorPlans.FirstOrDefault(m => m.Id == model.Id);
             if (plan != null)
             {
                 var entry = db.Entry(plan);
                 if (entry.State == EntityState.Detached)
-                    db.VendorPackages.Attach(plan);
-                db.VendorPackages.Remove(plan);
+                    db.VendorPlans.Attach(plan);
+                db.VendorPlans.Remove(plan);
                 db.SaveChanges();
                 return RedirectToAction("Plans", controllerName: "Admin");
             }
@@ -108,7 +108,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Details(int? id)
         {
             if (id == null) return View("Error");
-            var model = db.VendorPackages.FirstOrDefault(m => m.Id == id);
+            var model = db.VendorPlans.FirstOrDefault(m => m.Id == id);
             if (model == null) return View("Error");
             return View(new AdminPlansDetailsViewModel { VendorPackage = model });
         }

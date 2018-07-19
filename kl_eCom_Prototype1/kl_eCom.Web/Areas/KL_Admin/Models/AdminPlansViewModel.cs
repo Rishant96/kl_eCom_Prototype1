@@ -9,7 +9,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
 {
     public class AdminPlansIndexViewModel
     {
-        public List<VendorPackage> VendorPackages { get; set; }
+        public List<VendorPlan> VendorPackages { get; set; }
     }
 
     public class AdminPlansCreateViewModel
@@ -53,6 +53,6 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
 
     public class AdminPlansDetailsViewModel
     {
-        public VendorPackage VendorPackage { get; set; }
+        public VendorPlan VendorPackage { get; set; }
     }
 }

@@ -59,12 +59,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var vendorId = User.Identity.GetUserId();
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
-            var pkg = db.VendorPackages
+            var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
-                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+                        vendor.VendorDetails.ActivePlan.VendorPlanId);
 
             var prods = db.Products
                         .Include(m => m.Category)
@@ -176,14 +176,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Plan()
         {
             var userId = User.Identity.GetUserId();
-            var activePlan = db.ActivePackages
+            var activePlan = db.ActivePlans
                                 .Include(m => m.PaymentDetails)
                                 .FirstOrDefault(m => m.ApplicationUserId 
                                     == userId);
             return View(new VendorPlanIndexViewModel {
                 UserName = User.Identity.GetUserName(),
-                CurrentPackage = db.VendorPackages
-                    .FirstOrDefault(m => m.Id == activePlan.VendorPackageId),
+                CurrentPackage = db.VendorPlans
+                    .FirstOrDefault(m => m.Id == activePlan.VendorPlanId),
                 PaymentDetails = activePlan.PaymentDetails
             });
         }
@@ -191,17 +191,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult ChangePlan()
         {
             var userId = User.Identity.GetUserId();
-            var activePlan = db.ActivePackages
+            var activePlan = db.ActivePlans
                                 .Include(m => m.PaymentDetails)
                                 .FirstOrDefault(m => m.ApplicationUserId
                                     == userId);
 
             return View(new VendorPlanChangeViewModel {
                 UserName = User.Identity.GetUserName(),
-                CurrentPackage = db.VendorPackages
-                    .FirstOrDefault(m => m.Id == activePlan.VendorPackageId),
-                Packages = db.VendorPackages
-                    .Where(m => m.Id != activePlan.VendorPackageId && m.IsEnabled == true)
+                CurrentPackage = db.VendorPlans
+                    .FirstOrDefault(m => m.Id == activePlan.VendorPlanId),
+                Packages = db.VendorPlans
+                    .Where(m => m.Id != activePlan.VendorPlanId && m.IsEnabled == true)
                     .Select(m => m.DisplayName)
                     .ToList()
             });
@@ -213,13 +213,13 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pkg = db.VendorPackages.FirstOrDefault(m => m.DisplayName == model.SelectedPackage);
+                var pkg = db.VendorPlans.FirstOrDefault(m => m.DisplayName == model.SelectedPackage);
                 if (pkg == null) return View("Error");
                 var usrId = User.Identity.GetUserId();
                 
                 db.PlanChangeRequests.Add(new Utilities.PlanChangeRequest {
                     ApplicationUserId = usrId,
-                    VendorPackageId = pkg.Id,
+                    VendorPlanId = pkg.Id,
                     Status = Utilities.RequestStatus.Pending,
                     RequestDate = DateTime.Now
                 });

@@ -18,10 +18,10 @@ namespace kl_eCom.Web.Utilities
         public ApplicationUser Customer { get; set; }
         public ApplicationUser Vendor { get; set; }
 
-        public bool IsRegisteredUser { get; set; }
-        public bool IsBuyer { get; set; }
+        public bool? IsRegisteredUser { get; set; }
+        public bool? IsBuyer { get; set; }
 
-        public DateTime DateBuyerAdded { get; set; }
-        public DateTime DateOfRegistration { get; set; }
+        public DateTime? DateBuyerAdded { get; set; }
+        public DateTime? DateOfRegistration { get; set; }
     }
 }

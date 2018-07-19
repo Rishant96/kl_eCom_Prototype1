@@ -71,7 +71,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             var model = new AdminHomeViewModel
             {
-                VendorPackages = db.VendorPackages.ToList()
+                VendorPackages = db.VendorPlans.ToList()
             };
             return View(model);
         }
@@ -79,7 +79,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Plans()
         {
             return View(new AdminPlansIndexViewModel {
-                VendorPackages = db.VendorPackages.ToList()
+                VendorPackages = db.VendorPlans.ToList()
             });
         }
     }

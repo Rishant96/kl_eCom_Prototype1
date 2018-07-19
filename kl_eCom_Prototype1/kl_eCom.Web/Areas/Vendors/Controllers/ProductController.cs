@@ -573,7 +573,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var vendorId = User.Identity.GetUserId();
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
             var prods = db.Products
@@ -590,7 +590,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var vendorId = User.Identity.GetUserId();
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
             var prods = db.Products
@@ -607,12 +607,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var vendorId = User.Identity.GetUserId();
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
-            var pkg = db.VendorPackages
+            var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
-                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+                        vendor.VendorDetails.ActivePlan.VendorPlanId);
 
             return pkg.MaxProducts;
         }

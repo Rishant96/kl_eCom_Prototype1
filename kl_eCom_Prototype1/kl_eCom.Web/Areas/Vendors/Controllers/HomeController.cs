@@ -64,7 +64,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Register()
         {
             var db = new ApplicationDbContext();
-            var availablePackages = db.VendorPackages
+            var availablePackages = db.VendorPlans
                      .Where(m => m.IsActive == true)
                      .ToList();
             return View(new HomeRegisterViewModel
@@ -105,14 +105,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(vendor.Id, "Vendor");
-                    var pkg = db.ActivePackages.Add(new Utilities.ActivePackage
+                    var pkg = db.ActivePlans.Add(new Utilities.ActivePlan
                     {
                         ApplicationUserId = vendor.Id,
                         IsPaidFor = null,
-                        VendorPackageId = db.VendorPackages.FirstOrDefault(m => m.Price == 0.0f).Id,
+                        VendorPlanId = db.VendorPlans.FirstOrDefault(m => m.Price == 0.0f).Id,
                         VendorPaymentDetailsId = null
                     });
-                    vendor.VendorDetails.ActivePackageId = pkg.Id;
+                    vendor.VendorDetails.ActivePlanId = pkg.Id;
                     db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);

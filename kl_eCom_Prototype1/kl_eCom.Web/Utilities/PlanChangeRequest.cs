@@ -17,8 +17,8 @@ namespace kl_eCom.Web.Utilities
         public ApplicationUser Vendor { get; set; }
 
         [Required]
-        public int VendorPackageId { get; set; }
-        public VendorPackage RequestedPackage { get; set; }
+        public int VendorPlanId { get; set; }
+        public VendorPlan RequestedPackage { get; set; }
 
         [Required]
         public RequestStatus Status { get; set; }
@@ -26,7 +26,7 @@ namespace kl_eCom.Web.Utilities
         [Required]
         public DateTime RequestDate { get; set; }
 
-        public DateTime DecisionDate { get; set; }
+        public DateTime? DecisionDate { get; set; }
     }
 
     public enum RequestStatus

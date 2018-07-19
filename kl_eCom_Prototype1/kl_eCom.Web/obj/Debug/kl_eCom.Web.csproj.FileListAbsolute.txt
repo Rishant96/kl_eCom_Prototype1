@@ -265,21 +265,6 @@ C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\ob
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csproj.CopyComplete
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.dll
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.pdb
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Init.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csproj.GenerateResource.cache
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.ActivePlan_Model_Added.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.VendorPackage_Model_Edited.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again_twice.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again_3.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again_4.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again_5.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_Again_6.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_1.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_2.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_3.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.new_migrations1.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Init.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.ActivePlan_Model_Added.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.VendorPackage_Model_Edited.resources
@@ -294,3 +279,5 @@ C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\ob
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_2.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_3.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.new_migrations1.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Renew.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csproj.GenerateResource.cache

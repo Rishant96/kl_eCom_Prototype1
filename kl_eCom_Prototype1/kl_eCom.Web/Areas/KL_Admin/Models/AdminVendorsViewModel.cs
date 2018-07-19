@@ -18,7 +18,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         public ApplicationUser Vendor { get; set; }
         public PlanChangeRequest ChangeRequest { get; set; }
         public VendorDetails VendorDetails { get; set; }
-        public ActivePackage ActivePackage { get; set; }
+        public ActivePlan ActivePackage { get; set; }
     }
 
     public class AdminVendorsDomainEditViewModel

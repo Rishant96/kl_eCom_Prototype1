@@ -64,7 +64,7 @@ namespace kl_eCom.Web.Models
             .HasForeignKey(r => r.VendorId)
             .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ActivePackage>()
+            modelBuilder.Entity<ActivePlan>()
             .HasOptional(a => a.PaymentDetails)
             .WithOptionalDependent()
             .WillCascadeOnDelete(false);
@@ -78,8 +78,8 @@ namespace kl_eCom.Web.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<CategoryAttribute> Attributes { get; set; }
         public DbSet<Specification> Specifications { get; set; }
-        public DbSet<VendorPackage> VendorPackages { get; set; }
-        public DbSet<ActivePackage> ActivePackages { get; set; }
+        public DbSet<VendorPlan> VendorPlans { get; set; }
+        public DbSet<ActivePlan> ActivePlans { get; set; }
         public DbSet<PlanChangeRequest> PlanChangeRequests { get; set; }
 
         public static ApplicationDbContext Create()

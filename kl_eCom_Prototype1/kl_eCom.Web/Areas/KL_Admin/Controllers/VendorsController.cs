@@ -37,8 +37,8 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 ChangeRequest = db.PlanChangeRequests
                                   .FirstOrDefault(m => m.ApplicationUserId == vendor.Id 
                                   && m.Status == Utilities.RequestStatus.Pending),
-                ActivePackage = db.ActivePackages
-                                  .Include(m => m.Package)
+                ActivePackage = db.ActivePlans
+                                  .Include(m => m.Plan)
                                   .Include(m => m.PaymentDetails)
                                   .FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
             });
@@ -53,7 +53,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return View(new AdminVendorsDomainEditViewModel {
                 FullName = vendor.FirstName + " " + vendor.LastName,
                 RegisterDate = vendor.VendorDetails.RegistrationDate,
-                DomainDate = vendor.VendorDetails.DomainRegistrationDate
+                DomainDate = (DateTime) vendor.VendorDetails.DomainRegistrationDate
             });
         }
 
@@ -84,15 +84,15 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                              .Include(m => m.RequestedPackage)
                              .FirstOrDefault(m => m.ApplicationUserId == vendor.Id 
                                     && m.Status == Utilities.RequestStatus.Pending);
-            var activePckg = db.ActivePackages
-                                  .Include(m => m.Package)
+            var activePckg = db.ActivePlans
+                                  .Include(m => m.Plan)
                                   .Include(m => m.PaymentDetails)
                                   .FirstOrDefault(m => m.ApplicationUserId == vendor.Id);
             return View(new AdminVendorsPlanChangeViewModel {
                 VendorName = vendor.FirstName + " " + vendor.LastName,
                 VendorId = vendor.Id,
-                CurrentPackage = activePckg.Package.DisplayName,
-                NewPlanId = chngRqst.VendorPackageId,
+                CurrentPackage = activePckg.Plan.DisplayName,
+                NewPlanId = chngRqst.VendorPlanId,
                 NewPlanName = chngRqst.RequestedPackage.DisplayName,
                 NewPlanMaxProds = chngRqst.RequestedPackage.MaxProducts
             });
@@ -112,8 +112,8 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                     changeRequest.Status = Utilities.RequestStatus.Dismissed;
                 else
                 {
-                    var oldPkg = db.ActivePackages.FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
-                    db.ActivePackages.Remove(oldPkg);
+                    var oldPkg = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+                    db.ActivePlans.Remove(oldPkg);
 
                     changeRequest.Status = Utilities.RequestStatus.Accepted;
 
@@ -121,33 +121,33 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                                 .Include(m => m.VendorDetails)
                                 .FirstOrDefault(m => m.Id == model.VendorId);
 
-                    var pkg = db.VendorPackages.FirstOrDefault(m => m.Id == model.NewPlanId);
+                    var pkg = db.VendorPlans.FirstOrDefault(m => m.Id == model.NewPlanId);
 
                     if (!model.IsPaidFor)
                     {
-                        vendor.VendorDetails.ActivePackage = new Utilities.ActivePackage
+                        vendor.VendorDetails.ActivePlan = new Utilities.ActivePlan
                         {
                             ApplicationUserId = model.VendorId,
                             IsPaidFor = false,
-                            Package = pkg,
-                            VendorPackageId = model.NewPlanId,
+                            Plan = pkg,
+                            VendorPlanId = model.NewPlanId,
                             VendorPaymentDetailsId = null
                         };
                     }
                     else
                     {
-                        vendor.VendorDetails.ActivePackage = new Utilities.ActivePackage
+                        vendor.VendorDetails.ActivePlan = new Utilities.ActivePlan
                         {
                             ApplicationUserId = model.VendorId,
                             IsPaidFor = true,
-                            Package = pkg,
-                            VendorPackageId = model.NewPlanId,
+                            Plan = pkg,
+                            VendorPlanId = model.NewPlanId,
                             PaymentDetails = new Utilities.VendorPaymentDetails
                             {
                                 ApplicationUserId = model.VendorId,
-                                VendorPackageId = model.NewPlanId,
+                                VendorPlanId = model.NewPlanId,
                                 PaymentMode = model.PaymentMode,
-                                KL_Notes = model.Notes
+                                Details = model.Notes
                             }
                         };
                     }
@@ -157,7 +157,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 
                     var vendor2 = db.Users
                                 .Include(m => m.VendorDetails)
-                                .Include(m => m.VendorDetails.ActivePackage)
+                                .Include(m => m.VendorDetails.ActivePlan)
                                 .FirstOrDefault(m => m.Id == model.VendorId);
                 }
                 changeRequest.DecisionDate = DateTime.Now;
@@ -228,7 +228,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             var vendorId = id;
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
             var prods = db.Products
@@ -245,12 +245,12 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             var vendorId = id;
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
-                        .Include(m => m.VendorDetails.ActivePackage)
+                        .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
 
-            var pkg = db.VendorPackages
+            var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
-                        vendor.VendorDetails.ActivePackage.VendorPackageId);
+                        vendor.VendorDetails.ActivePlan.VendorPlanId);
 
             return pkg.MaxProducts;
         }

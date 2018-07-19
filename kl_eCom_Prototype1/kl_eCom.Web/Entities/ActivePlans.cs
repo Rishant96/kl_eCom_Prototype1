@@ -17,7 +17,7 @@ namespace kl_eCom.Web.Entities
         public virtual ApplicationUser Vendor { get; set; }
         [Required]
         public int VendorPackageId { get; set; }
-        public virtual VendorPackage VendorPackage { get; set; }
+        public virtual VendorPlan VendorPackage { get; set; }
         [Required]
         [DataType(DataType.Date)]
         public DateTime ExpiryDate { get; set; }        

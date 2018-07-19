@@ -86,7 +86,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class VendorPlanIndexViewModel
     {
         public string UserName { get; set; }
-        public VendorPackage CurrentPackage { get; set; }
+        public VendorPlan CurrentPackage { get; set; }
         public VendorPaymentDetails PaymentDetails { get; set; }
         public DateTime? ExpiryDate { get; set; }
     }
@@ -94,7 +94,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public class VendorPlanChangeViewModel
     {
         public string UserName { get; set; }
-        public VendorPackage CurrentPackage { get; set; }
+        public VendorPlan CurrentPackage { get; set; }
         public List<string> Packages { get; set; }
         [Required]
         public string SelectedPackage { get; set; }

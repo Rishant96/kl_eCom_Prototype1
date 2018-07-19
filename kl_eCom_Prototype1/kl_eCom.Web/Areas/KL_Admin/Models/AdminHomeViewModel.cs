@@ -8,7 +8,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
 {
     public class AdminHomeViewModel
     {
-        public List<VendorPackage> VendorPackages { get; set; }
+        public List<VendorPlan> VendorPackages { get; set; }
     }
 
     public class AdminFixActivesViewModel

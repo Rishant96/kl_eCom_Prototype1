@@ -14,10 +14,10 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public string PaymentMode { get; set; }
-        public string KL_Notes { get; set; }
+        public string Details { get; set; }
 
-        public int VendorPackageId { get; set; }
-        public VendorPackage ForPackage { get; set; }
+        public int VendorPlanId { get; set; }
+        public VendorPlan ForPackage { get; set; }
 
         public String ApplicationUserId { get; set; }
         public ApplicationUser Vendor { get; set; }

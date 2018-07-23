@@ -41,6 +41,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; }
         public bool IsActive { get; set; }
+        public string ThumbnailPath { get; set; }
+        public string ThumbnailMimeType { get; set; }
     }
 
     public class ProductStockViewModel
@@ -84,5 +86,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public Dictionary<int, bool> IsActiveList { get; set; }
         public int CurrentSelectedProducts { get; set; }
         public int MaxAllowedProducts { get; set; }
+    }
+
+    public class ProductEditImagesViewModel
+    {
+        public List<ProductImage> ProductImages { get; set; }
+        public int ProductId { get; set; }
     }
 }

@@ -61,6 +61,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
+            
 
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==

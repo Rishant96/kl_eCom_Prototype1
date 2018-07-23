@@ -1,0 +1,73 @@
+﻿@model kl_eCom.Web.Models.CustomerAddressesIndexViewModel
+
+@{
+    ViewBag.Title = "Addresses";
+}
+
+<div class="container">
+    <h2>Addresses</h2>
+
+    @Html.ActionLink("+ Create Address", "CreateAddress")<br />
+
+    <table class="table">
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th style="width: 245px">
+                Address
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                State
+            </th>
+            <th>
+                Zip
+            </th>
+            <th>
+                Country
+            </th>
+            <th>
+            </th>
+        </tr>
+        @foreach (var addr in Model.Addresses)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => addr.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => addr.Name)
+                </td>
+                <td>
+                    <div>
+                        @Html.DisplayFor(m => addr.Line1)<br />
+                        @Html.DisplayFor(m => addr.Line2)<br />
+                        @Html.DisplayFor(m => addr.Line3)
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => addr.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => addr.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => addr.Zip)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(m => addr.Country)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditAddress", new { id = addr.Id }) | @Html.ActionLink("Delete", "DeleteAddress", new { id = addr.Id })
+                </td>
+            </tr>
+        }
+    </table>
+</div>

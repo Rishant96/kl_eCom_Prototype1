@@ -8,7 +8,7 @@
 @Html.HiddenFor(m => m.SelectedOption)
 <div style="display: flex; flex-direction: column; border-right: 1px solid lightgrey;">
     <div class="row" style="margin: 0; padding: 0 10px; border-bottom: 1px solid lightgrey;">
-        @Html.Label("Filters", new { @class = "col-md-offset-1 col-md-4", style = "margin-top: 5px" })
+        @Html.Label("Filters", new { @class = "col-md-5", style = "margin-top: 5px" })
         <input type="submit" class="btn btn-link col-md-offset-3 col-md-4" value="Submit" />
     </div>
     <div class="row" style="margin: 0; padding: 0; margin-top: 15px;">
@@ -23,10 +23,10 @@
                     {
                         <input type="radio" id=@string.Format("PriceItm{0}", priceItm.Id) name="PriceList" value="@priceItm.Id" @if (Model.FilterViewModel.PriceSelection.PriceItemSelected == priceItm.Id) { <text> checked</text>} />@priceItm.DisplayName<text><br /></text>
                     }
-                    <div>
-                        @Html.TextBoxFor(m => m.FilterViewModel.MinValue, new { @class = "PriceTxt", width = "20" })
+                    <div style="padding-left: 15px; margin-top: 5px">
+                        @Html.TextBoxFor(m => m.FilterViewModel.MinValue, new { @class = "PriceTxt", style = "max-width: 130px" })
                         <text> to </text>
-                        @Html.TextBoxFor(m => m.FilterViewModel.MaxValue, new { @class = "PriceTxt", width = "20" })
+                        @Html.TextBoxFor(m => m.FilterViewModel.MaxValue, new { @class = "PriceTxt", style = "max-width: 130px" })
                     </div>
                 </div>
                 <hr style="margin: 0; margin-left: 50px; margin-right: 40px;" />

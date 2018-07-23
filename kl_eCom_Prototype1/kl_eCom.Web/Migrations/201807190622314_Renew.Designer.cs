@@ -13,7 +13,7 @@ namespace kl_eCom.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201807190450285_Renew"; }
+            get { return "201807190622314_Renew"; }
         }
         
         string IMigrationMetadata.Source

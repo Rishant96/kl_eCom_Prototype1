@@ -233,6 +233,7 @@
     <Compile Include="Areas\Vendors\VendorsAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MarketController.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Entities\ActivePlans.cs" />
     <Compile Include="Entities\Cart.cs" />
     <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
@@ -248,13 +250,26 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201807190450285_Renew.cs" />
-    <Compile Include="Migrations\201807190450285_Renew.Designer.cs">
-      <DependentUpon>201807190450285_Renew.cs</DependentUpon>
+    <Compile Include="Migrations\201807190622314_Renew.cs" />
+    <Compile Include="Migrations\201807190622314_Renew.Designer.cs">
+      <DependentUpon>201807190622314_Renew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807190715348_Thumbnail_Model_Edited.cs" />
+    <Compile Include="Migrations\201807190715348_Thumbnail_Model_Edited.Designer.cs">
+      <DependentUpon>201807190715348_Thumbnail_Model_Edited.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807230526499_Address_Changes.cs" />
+    <Compile Include="Migrations\201807230526499_Address_Changes.Designer.cs">
+      <DependentUpon>201807230526499_Address_Changes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807230911335_Order_Placed.cs" />
+    <Compile Include="Migrations\201807230911335_Order_Placed.Designer.cs">
+      <DependentUpon>201807230911335_Order_Placed.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
+    <Compile Include="Models\CustomerViewModels.cs" />
     <Compile Include="Models\FilterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -266,6 +281,7 @@
     <Compile Include="Utilities\Address.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
+    <Compile Include="Utilities\OrderItem.cs" />
     <Compile Include="Utilities\PlanChangeRequest.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
     <Compile Include="Utilities\Refferal.cs" />
@@ -289,10 +305,12 @@
     <Content Include="assets\images\screenshot-11-1366x768.jpg" />
     <Content Include="assets\images\shawna-dunsmore-237252-unsplash-2000x1333.jpg" />
     <Content Include="assets\images\shopping.png" />
+    <Content Include="Content\basic.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\dropzone.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -357,7 +375,10 @@
     <Content Include="Areas\Vendors\Views\Product\EditActiveProducts.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Customers\Index.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\FixActiveProducts.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\EditDetailsImages.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\dropzone.js" />
+    <Content Include="Scripts\dropzone.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -405,7 +426,6 @@
     <Content Include="Views\Market\Index.cshtml" />
     <Content Include="Views\Market\Shops.cshtml" />
     <Content Include="Views\Shop\Index.cshtml" />
-    <Content Include="Views\Shop\Products.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
     <Content Include="Views\Shared\_ProductsLayout.cshtml" />
@@ -413,10 +433,19 @@
     <Content Include="Views\Shared\_EcomLayout.cshtml" />
     <Content Include="Views\Shared\_SearchPartial.cshtml" />
     <Content Include="Views\Shop\FiltersPartial.cshtml" />
+    <Content Include="Views\Shop\ProductDetails.cshtml" />
+    <Content Include="Views\Customer\Addresses.cshtml" />
+    <Content Include="Views\Customer\CreateAddress.cshtml" />
+    <Content Include="Views\Customer\EditAddress.cshtml" />
+    <Content Include="Views\Customer\DeleteAddress.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Shop\Products.cshtml" />
+    <Content Include="Views\Shared\_LayoutProdList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="App_Data\" />
+    <Folder Include="images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -432,8 +461,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201807190450285_Renew.resx">
-      <DependentUpon>201807190450285_Renew.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807190622314_Renew.resx">
+      <DependentUpon>201807190622314_Renew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807190715348_Thumbnail_Model_Edited.resx">
+      <DependentUpon>201807190715348_Thumbnail_Model_Edited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807230526499_Address_Changes.resx">
+      <DependentUpon>201807230526499_Address_Changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807230911335_Order_Placed.resx">
+      <DependentUpon>201807230911335_Order_Placed.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,13 +19,14 @@ namespace kl_eCom.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Cart
-        public ActionResult Index(bool flag = false, string returnUrl = "")
+        public ActionResult Index(bool flag = false, string returnUrl = "", bool checkoutErr = false)
         {
             var cart = GetCart();
             var total = 0.0f;
             var prices = new Dictionary<CartItem, float>();
             var names = new Dictionary<CartItem, string>();
             ViewBag.Flag = flag;
+            ViewBag.CheckoutErr = checkoutErr;
             foreach (var itm in cart.CartItems)
             {
                 var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
@@ -92,9 +95,185 @@ namespace kl_eCom.Web.Controllers
             }
         }
 
-        public ActionResult Checkout()
+        [Authorize(Roles = "Customer, Vendor")]
+        public ActionResult Checkout(bool addrErr = false)
         {
-            return View();
+            ViewBag.AddrErr = addrErr;
+            var usrId = User.Identity.GetUserId();
+            var cart = GetCart();
+            if (cart.CartItems.Count == 0)
+            {
+                return RedirectToAction("Index", new { checkoutErr = true });
+            }
+            var addrs = db.Addresses
+                        .Where(m => m.ApplicationUserId == usrId)
+                        .ToList();
+            var totalPrice = 0.0f;
+            var cartItems = cart.CartItems.ToList();
+            var prices = new Dictionary<int, float>();
+            foreach (var itm in cartItems)
+            {
+                var miniTotal = itm.Qty * itm.Stock.Price;
+                prices.Add(itm.Id, miniTotal);
+                totalPrice += miniTotal;
+            }
+            return View(new CheckoutViewModel {
+                Addresses = addrs,
+                CartItems = cartItems,
+                CustomerName = User.Identity.GetUserName(),
+                TotalPrice = totalPrice,
+                Prices = prices
+            });
+        }
+
+
+        [Authorize(Roles = "Customer, Vendor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Checkout(CheckoutViewModel model)
+        {
+            var usrId = User.Identity.GetUserId();
+            var addrId = int.Parse(Request.Form["SelectedAddress"] ?? "0");
+            if (addrId != 0)
+            {
+                var addr = db.Addresses
+                    .FirstOrDefault(m => m.Id == addrId
+                    && m.ApplicationUserId == usrId);
+                if (addr != null)
+                {
+                    var cart = GetCart();
+
+                    var order = db.Orders.Add(new Order
+                    {
+                        ApplicationUserId = usrId,
+                        OrderDate = DateTime.Now,
+                        Status = OrderStatus.Processing,
+                        TotalCost = 0.0f,
+                        OrderNumber = DateTime.Now.GetHashCode()
+                    });
+                    db.SaveChanges();
+
+                    var orderPerVendor = new Dictionary<string, List<int>>();
+
+                    foreach (var itm in cart.CartItems)
+                    {
+                        var orderItem = db.CartItems
+                            .Include(m => m.Stock)
+                            .Include(m => m.Stock.Store)
+                            .Include(m => m.Stock.Product)
+                            .FirstOrDefault(m => m.Id == itm.Id);
+
+                        var dbOrderItm = db.OrderItems.Add(new OrderItem {
+                            OrderId = order.Id,
+                            Order = order,
+                            Qty = itm.Qty,
+                            Price = itm.Stock.Price,
+                            ProductName = itm.Stock.Product.Name,
+                            StockId = itm.StockId,
+                            FinalCost = itm.Qty * itm.Stock.Price
+                        });
+
+                        var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
+                        // stock.CurrentStock -= itm.Qty;
+
+                        order.TotalCost += dbOrderItm.FinalCost;
+                        db.Entry(order).State = EntityState.Modified;
+                        db.Entry(stock).State = EntityState.Modified;
+                        db.SaveChanges();
+
+
+                        var vendorId = itm.Stock.Store.ApplicationUserId;
+                        
+                        if (db.Refferals.FirstOrDefault(
+                            m => m.CustomerId == usrId && m.VendorId == vendorId)
+                            is Refferal refferal)
+                        {
+                            if (refferal.IsBuyer == false)
+                            {
+                                refferal.IsBuyer = true;
+                                refferal.DateBuyerAdded = DateTime.Now;
+                                db.Entry(refferal).State = EntityState.Modified;
+                            }
+                        }
+                        else
+                        {
+                            db.Refferals.Add(new Refferal
+                            {
+                                CustomerId = usrId,
+                                VendorId = vendorId,
+                                DateBuyerAdded = DateTime.Now,
+                                IsBuyer = true,
+                                IsRegisteredUser = false,
+                                DateOfRegistration = null
+                            });
+                        }
+                        db.SaveChanges();
+
+                        if (orderPerVendor.Keys.Contains(vendorId))
+                        {
+                            orderPerVendor[vendorId].Add(dbOrderItm.Id);
+                        }
+                        else
+                        {
+                            orderPerVendor.Add(vendorId, new List<int>());
+                            orderPerVendor[vendorId].Add(dbOrderItm.Id);
+                        }
+                    }
+
+                    foreach (var vndrId in orderPerVendor.Keys.ToList())
+                    {
+                        var vendor = db.Users.FirstOrDefault(m => m.Id == vndrId);
+                        var customer = db.Users.FirstOrDefault(m => m.Id == usrId);
+                        var klEmail = "khushlifeecommerce@gmail.com";
+                        var klPass = "klEcom1234";
+                        using (MailMessage mm = new MailMessage(klEmail, vendor.Email))
+                        {
+                            mm.Subject = "New Order Recieved: #" + order.OrderNumber;
+                            mm.Body = "Order Details:\n";
+                            mm.Body += "Order Date: " + order.OrderDate.ToLongDateString();
+                            mm.Body += ", Customer Name: " + customer.FirstName + " " + customer.LastName + "\n\n";
+                            
+                            var i = 0;
+                            foreach(var orderItmId in orderPerVendor[vendor.Id])
+                            {
+                                var orderItm = db.OrderItems
+                                    .Include(m => m.StockProduct)
+                                    .Include(m => m.StockProduct.Product)
+                                    .FirstOrDefault(m => m.Id == orderItmId);
+
+                                mm.Body += "\tItem #" + ++i + ": Product Name - " + orderItm.ProductName +
+                                    ", Quantity - " + orderItm.Qty + ", Cost - Rs. " + orderItm.FinalCost + "\n";
+                            }
+                            mm.Body += "\nTotal Cost = Rs. " + order.TotalCost + "\n";
+                            mm.Body += "\n\nRegards,\nKhushlife E-Com";
+                            mm.IsBodyHtml = false;
+                            using (SmtpClient smtp = new SmtpClient())
+                            {
+                                smtp.Host = "smtp.gmail.com";
+                                smtp.EnableSsl = true;
+                                NetworkCredential NetworkCred = new NetworkCredential(klEmail, klPass);
+                                smtp.UseDefaultCredentials = true;
+                                smtp.Credentials = NetworkCred;
+                                smtp.Port = 587;
+                                smtp.Send(mm);
+                            }
+                        }
+                    }
+
+                    var cartItems = cart.CartItems.ToList();
+                    foreach (var cartItm in cartItems)
+                    {
+                        db.Entry(cartItm).State = EntityState.Deleted;
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            return RedirectToAction("Checkout", new { addrErr = true });
         }
 
         public ActionResult ContinueShopping(string returnUrl = "")
@@ -150,6 +329,8 @@ namespace kl_eCom.Web.Controllers
                     cookie.Value = cartCookie;
                     Response.Cookies.Add(cookie);
                 }
+
+                if (cart.CartItems == null) cart.CartItems = new List<CartItem>();
             }
             return cart;
         }

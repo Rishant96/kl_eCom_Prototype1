@@ -70,6 +70,7 @@ namespace kl_eCom.Web.Models
             .WillCascadeOnDelete(false);
         }
 
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -81,6 +82,10 @@ namespace kl_eCom.Web.Models
         public DbSet<VendorPlan> VendorPlans { get; set; }
         public DbSet<ActivePlan> ActivePlans { get; set; }
         public DbSet<PlanChangeRequest> PlanChangeRequests { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Refferal> Refferals { get; set; }
 
         public static ApplicationDbContext Create()
         {

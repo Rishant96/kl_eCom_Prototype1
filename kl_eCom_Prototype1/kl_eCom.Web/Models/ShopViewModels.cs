@@ -29,6 +29,15 @@ namespace kl_eCom.Web.Models
         public SortOption SelectedOption { get; set; }
     }
 
+    public class ShopProductDetailsViewModel
+    {
+        public string ReturnUrl { get; set; }
+        public Stock Stock { get; set; }
+        public int StockId { get; set; }
+        public int AlreadyInCart { get; set; }
+        public int Qty { get; set; }
+    }
+
     // Helpers: Price Selection, Rating Selection, Newest Arrivals Selection
     //          Availability Selection
 

@@ -1,5 +1,6 @@
 ﻿using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Models;
+using kl_eCom.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -105,19 +106,32 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(vendor.Id, "Vendor");
-                    var pkg = db.ActivePlans.Add(new Utilities.ActivePlan
+                    ActivePlan pkg;
+                    try
                     {
-                        ApplicationUserId = vendor.Id,
-                        IsPaidFor = null,
-                        VendorPlanId = db.VendorPlans.FirstOrDefault(m => m.Price == 0.0f).Id,
-                        VendorPaymentDetailsId = null
-                    });
-                    vendor.VendorDetails.ActivePlanId = pkg.Id;
-                    db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
-                    db.SaveChanges();
-                    SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
+                        db.ActivePlans.Add(new Utilities.ActivePlan
+                        {
+                            ApplicationUserId = vendor.Id,
+                            IsPaidFor = null,
+                            VendorPlanId = db.VendorPlans.FirstOrDefault(m => m.Price == 0.0f).Id,
+                            VendorPaymentDetailsId = null
+                        });
+                        db.SaveChanges();
 
-                    return RedirectToAction("Index", controllerName: "Vendor");
+                        vendor.VendorDetails.ActivePlanId = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == vendor.Id).Id;
+                        db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Modified;
+                        db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
+                        db.SaveChanges();
+                        SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
+
+                        return RedirectToAction("Index", controllerName: "Vendor");
+                    }
+                    catch (Exception)
+                    {
+                        db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
+                        UserManager.Delete(vendor);
+                        return View("Error");
+                    }
                 }
                 AddErrors(result);
             }
@@ -155,7 +169,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");

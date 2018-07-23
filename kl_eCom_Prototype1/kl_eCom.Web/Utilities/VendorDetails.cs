@@ -24,7 +24,7 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public string State { get; set; }
-        
+
         public int? ActivePlanId { get; set; }
         [Display(Name = "Active Plan")]
         public ActivePlan ActivePlan { get; set; }

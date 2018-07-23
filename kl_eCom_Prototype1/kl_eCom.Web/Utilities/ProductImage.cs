@@ -14,7 +14,7 @@ namespace kl_eCom.Web.Utilities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public byte[] ImageData { get; set; }
+        public string ImagePath { get; set; }
         public string ImageMimeType { get; set; }
 
         public int ProductId { get; set; }

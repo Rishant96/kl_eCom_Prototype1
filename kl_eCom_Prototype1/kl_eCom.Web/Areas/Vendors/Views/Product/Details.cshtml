@@ -55,7 +55,7 @@
         </dt>
 
         <dd>
-            @if (Model.ThumbnailData != null && Model.ThumbnailMimeType != null)
+            @if (Model.ThumbnailPath != null && Model.ThumbnailMimeType != null)
             {
                 <text>
                     <img class="img-thumbnail" width="75" height="75"
@@ -65,6 +65,34 @@
             }
         </dd>
     </dl>
+
+    <div>
+        <div class="row">
+            @Html.Label("Detail Images", new { @class = "col-md-offset-1" })
+            <div style="display: inline; margin-left: 20px">
+                @Html.ActionLink("Edit", "EditDetailsImages", new { id = Model.Id }, new { style = "display: inline" })
+            </div>
+        </div>
+
+        <div>
+            <div class="row col-md-offset-2" style="margin-top: 20px">
+
+                @foreach (var img in Model.ProductImages)
+                {
+                    <div class="col-md-2">
+                        @if (img.ImagePath != null && img.ImageMimeType != null)
+                        {
+                            <text>
+                                <img class="img-thumbnail" width="75" height="75"
+                                     src="@Url.Action("GetImage", "Product",
+                            new { path = img.ImagePath, type = img.ImageMimeType })" />
+                            </text>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 
     @Html.Label("Specifications", htmlAttributes: new { @class = "col-md-offset-1" })
     <dl class="dl-horizontal">
@@ -88,7 +116,10 @@
 
 <p>
     @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) | 
-    @Html.ActionLink("All Products", "AllProducts") |
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) |
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+    @Html.ActionLink("All Products", "AllProducts")
+</p>
+
+<p>
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" }) | 
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
 </p>

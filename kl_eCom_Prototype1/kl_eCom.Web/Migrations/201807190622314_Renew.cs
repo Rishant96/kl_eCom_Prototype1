@@ -21,7 +21,7 @@ namespace kl_eCom.Web.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.VendorPaymentDetails", t => t.PaymentDetails_Id)
                 .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: false)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
                 .Index(t => t.ApplicationUserId)
                 .Index(t => t.VendorPlanId)
                 .Index(t => t.PaymentDetails_Id);
@@ -37,7 +37,7 @@ namespace kl_eCom.Web.Migrations
                         ApplicationUserId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: false)
+                .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: true)
                 .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId)
                 .Index(t => t.VendorPlanId)
                 .Index(t => t.ApplicationUserId);
@@ -79,7 +79,7 @@ namespace kl_eCom.Web.Migrations
                         UserName = c.String(nullable: false, maxLength: 256),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId, cascadeDelete: true)
+                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId)
                 .Index(t => t.VendorDetailsId)
                 .Index(t => t.UserName, unique: true, name: "UserNameIndex");
             
@@ -99,7 +99,7 @@ namespace kl_eCom.Web.Migrations
                         User_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.User_Id, cascadeDelete: true)
+                .ForeignKey("dbo.AspNetUsers", t => t.User_Id)
                 .Index(t => t.User_Id);
             
             CreateTable(
@@ -115,8 +115,8 @@ namespace kl_eCom.Web.Migrations
                         DateOfRegistration = c.DateTime(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.CustomerId, cascadeDelete: false)
-                .ForeignKey("dbo.AspNetUsers", t => t.VendorId, cascadeDelete: false)
+                .ForeignKey("dbo.AspNetUsers", t => t.CustomerId)
+                .ForeignKey("dbo.AspNetUsers", t => t.VendorId)
                 .Index(t => t.CustomerId)
                 .Index(t => t.VendorId);
             

@@ -33,10 +33,15 @@ namespace kl_eCom.Web.Utilities
         public string State { get; set; }
 
         [Required]
+        public string City { get; set; }
+        
+        public string Place { get; set; }
+
+        [Required]
         public string Country { get; set; }
 
         [Required]
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser User { get; set; }
     }
 }

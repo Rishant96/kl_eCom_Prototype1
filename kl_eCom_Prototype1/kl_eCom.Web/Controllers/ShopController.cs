@@ -382,7 +382,8 @@ namespace kl_eCom.Web.Controllers
                 Max = new Dictionary<int, int>(),
                 Breadcrum = new Dictionary<string, int>(),
                 SelectedOption = queryOptions.SortOption,
-                StoreId = (int)storeId
+                StoreId = (int)storeId,
+                FilteringOptions = filteringOptions
             };
             var stockList = model.Stocks;
             foreach (var stock in stockList)
@@ -429,10 +430,12 @@ namespace kl_eCom.Web.Controllers
                     AvailabilitySelection = new AvailabilitySelection()
                 };
             }
+
             model.FilterViewModel.PriceSelection.PriceItemSelected = selectedFilters.PriceFilterSelected;
             model.FilterViewModel.RatingSelection.RatingItemSelected = selectedFilters.RatingFilterSelected;
             model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected = selectedFilters.NewArrivalFilterSelected;
             model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected = selectedFilters.AvailabilityFilterSelected;
+
             return View(model);
         }
 
@@ -474,6 +477,54 @@ namespace kl_eCom.Web.Controllers
                     catId = catID
                 });
         } 
+
+        public ActionResult ProductDetails(int? id, string returnUrl)
+        {
+            if (id == null) return View("Error");
+
+                if (string.IsNullOrEmpty(returnUrl))
+                ViewBag.ReturnUrl = "#";
+            else
+                ViewBag.ReturnUrl = returnUrl;
+
+            var stock = db.Stocks
+                .Include(m => m.Product)
+                .Include(m => m.Product.Category)
+                .Include(m => m.Product.ProductImages)
+                .Include(m => m.Product.Specifications)
+                .Include(m => m.Product.Category.Attributes)
+                .FirstOrDefault(m => m.Id == id);
+            if (stock == null) return View("Error");
+
+            var cart = GetCart();
+            var cartItms = cart.CartItems
+                        .FirstOrDefault(m => m.StockId == id);
+            var count = (cartItms != null) ? cartItms.Qty : 0; 
+
+            var model = new ShopProductDetailsViewModel
+            {
+                Stock = stock,
+                StockId = stock.Id,
+                ReturnUrl = ViewBag.ReturnUrl,
+                AlreadyInCart = count
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProductDetails(ShopProductDetailsViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            AddToCart(new CartAddViewModel {
+                Qty = model.Qty,
+                StockId = model.StockId
+            });
+
+            return RedirectToAction("Index", "Cart", new { returnUrl = model.ReturnUrl });
+        }
 
         private Cart GetCart(bool fromUpdate = false)
         {

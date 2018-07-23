@@ -2,78 +2,89 @@
 @{
     ViewBag.Title = "Index";
 }
+<div class="container">
+    <h2>My Cart</h2>
 
-<h2>My Cart</h2>
-
-@if (ViewBag.Flag)
-{
-    <text>
-        <div class="alert alert-danger alert-dismissible" style="width: 800px;">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Cart Updated</strong> Product deleted from cart.
-        </div>
-    </text>
-}
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.Label("Name")
-        </th>
-        <th>
-            @Html.Label("Qty")
-        </th>
-        <th>
-            @Html.Label("Cost")
-        </th>
-        <th>
-
-        </th>
-    </tr>
-    @if (Model.Cart.CartItems == null)
+    @if (ViewBag.Flag)
     {
-        Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
+        <text>
+            <div class="alert alert-danger alert-dismissible" style="width: 800px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Cart Updated!</strong> Product deleted from cart.
+            </div>
+        </text>
     }
-    @foreach (var itm in Model.Cart.CartItems)
+
+    @if (ViewBag.CheckoutErr)
     {
+        <text>
+            <div class="alert alert-warning alert-dismissible" style="width: 800px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Checkout Failed!</strong> Your cart is Empty.
+            </div>
+        </text>
+    }
+
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(m => Model.ProductNames[itm])
-            </td>
-            <td>
-                @*@{
-                        var stockList = new List<int> { };
-                        for (int i = 0; i <= itm.Stock.CurrentStock; i++)
-                        {
-                            stockList.Add(i);
-                        }
-                        var qtyList = new SelectList(stockList);
-                        qtyList.First(m => m.Value == itm.Qty.ToString()).Selected = true;
-                        @Html.DropDownListFor(m => itm.Qty, qtyList, new { id = "QtyList" })
-                    }*@
-                @Html.DisplayFor(m => itm.Qty)
-            </td>
-            <td>
-                <text>@Model.Prices[itm].ToString()</text>
-            </td>
-            <td>
-                @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })
-            </td>
+            <th>
+                @Html.Label("Name")
+            </th>
+            <th>
+                @Html.Label("Qty")
+            </th>
+            <th>
+                @Html.Label("Cost")
+            </th>
+            <th>
+
+            </th>
         </tr>
-    }
-</table>
+        @if (Model.Cart.CartItems == null)
+        {
+            Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
+        }
+        @foreach (var itm in Model.Cart.CartItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => Model.ProductNames[itm])
+                </td>
+                <td>
+                    @*@{
+                            var stockList = new List<int> { };
+                            for (int i = 0; i <= itm.Stock.CurrentStock; i++)
+                            {
+                                stockList.Add(i);
+                            }
+                            var qtyList = new SelectList(stockList);
+                            qtyList.First(m => m.Value == itm.Qty.ToString()).Selected = true;
+                            @Html.DropDownListFor(m => itm.Qty, qtyList, new { id = "QtyList" })
+                        }*@
+                    @Html.DisplayFor(m => itm.Qty)
+                </td>
+                <td>
+                    <text>@Model.Prices[itm].ToString()</text>
+                </td>
+                <td>
+                    @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })
+                </td>
+            </tr>
+        }
+    </table>
 
-<div class="row">
-    <div class="col-md-2 text-right">
-        @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
+    <div class="row">
+        <div class="col-md-2 text-right">
+            @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
+        </div>
+        <div class="col-md-4 text-center">
+            @Html.Label("Total Cost: ")
+            @Html.DisplayFor(m => m.TotalCost)
+        </div>
+        <div class="col-md-6 text-center">
+            @Html.ActionLink("Checkout", "Checkout", null, new { @class = "btn btn-primary" })
+        </div>
     </div>
-    <div class="col-md-4 text-center">
-        @Html.Label("Total Cost: ")
-        @Html.DisplayFor(m => m.TotalCost)
-    </div>
-    <div class="col-md-6 text-center">
-        @Html.ActionLink("Checkout", "Checkout", null, new { @class = "btn btn-primary" })
-    </div>
+
+    @Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })
 </div>
-
-@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })

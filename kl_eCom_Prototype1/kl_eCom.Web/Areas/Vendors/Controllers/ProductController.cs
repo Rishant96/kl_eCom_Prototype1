@@ -9,6 +9,7 @@ using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -63,10 +64,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             ViewBag.catId = id;
             ViewBag.storeId = storeID;
 
-            ViewBag.Flag = false;
+            ViewBag.Flag = true;
             if (GetVendorProductsCount() >= GetMaxProductsAllowed())
             {
-                ViewBag.Flag = true;
+                ViewBag.Flag = false;
             }
 
             return View(model);
@@ -74,6 +75,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Create(int? catId)
         {
+            if (GetVendorProductsCount() >= GetMaxProductsAllowed())
+            {
+                return View("Error");
+            }
             if (catId == null) return RedirectToAction("Index", controllerName: "Store");
             TempData["catId"] = catId;
             var parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == catId);
@@ -149,7 +154,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 AttributeNames = new List<string>(),
                 Attributes = new Dictionary<string, int>(),
                 Specifications = new Dictionary<string, string>(),
-                IsActive = prod.IsActive
+                IsActive = prod.IsActive,
+                ThumbnailPath = prod.ThumbnailPath,
+                ThumbnailMimeType = prod.ThumbnailMimeType
             };
             var catIds = new List<int>();
             var cat = prod.Category;
@@ -173,7 +180,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ProductEditViewModel model)
+        public ActionResult Edit(ProductEditViewModel model, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -183,7 +190,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     db.Specifications.Remove(spec);
                 }
 
-                var prod = db.Products.FirstOrDefault(m => m.Id == model.Id);
+                var prod = db.Products.Include(m => m.Category).FirstOrDefault(m => m.Id == model.Id);
                 prod.Name = model.Name;
                 prod.Manufacturer = model.Manufacturer;
                 prod.Description = model.Description;
@@ -220,14 +227,34 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 if (Request.Files.Count > 0)
                 {
-                    if (Request.Files.Count != 1) return View("Error");
                     HttpPostedFileBase hpf = Request.Files["thumbnail"];
                     if (hpf.ContentLength != 0)
                     {
+                        if (prod.ThumbnailPath != null
+                            || prod.ThumbnailMimeType == null)
+                            System.IO.File.Delete(prod.ThumbnailPath);
+
                         prod.ThumbnailMimeType = hpf.ContentType;
-                        prod.ThumbnailData = new byte[hpf.ContentLength];
-                        hpf.InputStream.Read(prod.ThumbnailData, 0, hpf.ContentLength);
+                        prod.ThumbnailPath = System.Web.HttpContext.Current.Server
+                                .MapPath("~/App_Data/Images");
+                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        prod.ThumbnailPath += "/Products/";
+                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        prod.ThumbnailPath += User.Identity.GetUserName() + "/";
+                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        prod.ThumbnailPath += prod.Category.Name + "/";
+                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        prod.ThumbnailPath += prod.Name + "/";
+                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        prod.ThumbnailPath += DateTime.Now.Ticks + "_" + hpf.FileName; 
+                        var byteBuff = new byte[hpf.ContentLength];
+                        hpf.InputStream.Read(byteBuff, 0, hpf.ContentLength);
+                        System.IO.File.WriteAllBytes(prod.ThumbnailPath, byteBuff);
+                        //prod.ThumbnailData = new byte[hpf.ContentLength];
+                        //hpf.InputStream.Read(prod.ThumbnailData, 0, hpf.ContentLength);
                     }
+
+                    Upload(prod.Id, files);
                 }
 
                 db.Entry(prod).State = EntityState.Modified;
@@ -237,6 +264,50 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             }
             return View(model);
         }
+        
+        public JsonResult Upload(int id, IEnumerable<HttpPostedFileBase> files)
+        {
+            if(id == 0) return Json(new { result = false });
+
+            var prod = db.Products
+                .Include(m => m.Category)
+                .FirstOrDefault(m => m.Id == id);
+
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var path = System.Web.HttpContext.Current.Server
+                                    .MapPath("~/App_Data/Images");
+                        System.IO.Directory.CreateDirectory(path);
+                        path += "/Products/";
+                        System.IO.Directory.CreateDirectory(path);
+                        path += User.Identity.GetUserName() + "/";
+                        System.IO.Directory.CreateDirectory(path);
+                        path += prod.Category.Name + "/";
+                        System.IO.Directory.CreateDirectory(path);
+                        path += prod.Name + "/";
+
+                        path += DateTime.Now.Ticks + "_" + file.FileName;
+
+                        file.SaveAs(path);
+
+                        db.ProductImages.Add(
+                            new ProductImage
+                            {
+                                ImageMimeType = file.ContentType,
+                                ImagePath = path,
+                                ProductId = id
+                            }
+                        );
+                    }
+                }
+            }
+            db.SaveChanges();
+            return Json(new { result = true });
+        }
 
         [AllowAnonymous]
         public FileContentResult GetThumbnail(int? id)
@@ -244,9 +315,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (id == null) return null;
             Product prod = db.Products.FirstOrDefault(m => m.Id == id);
             if (prod == null) return null;
-            if (prod.ThumbnailData == null || prod.ThumbnailMimeType == null)
+            if (prod.ThumbnailPath == null || prod.ThumbnailMimeType == null)
                 return null;
-            return File(prod.ThumbnailData, prod.ThumbnailMimeType);
+            return File(System.IO.File.ReadAllBytes(prod.ThumbnailPath), prod.ThumbnailMimeType);
+        }
+
+        [AllowAnonymous]
+        public FileContentResult GetImage(string path, string type)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            if (path == null || type == null)
+                return null;
+            return File(System.IO.File.ReadAllBytes(path), type);
         }
 
         public ActionResult Delete(int? id)
@@ -366,6 +446,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var model = db.Products
                 .Include(m => m.Category)
                 .Include(m => m.Specifications)
+                .Include(m => m.ProductImages)
                 .FirstOrDefault(m => m.Id == id);
             if (model == null) return View("Error");
             return View(model);
@@ -545,6 +626,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 var prodIds = Request.Form["prodIds"];
                 var activeProds = actives ?? new string[0];
+                if (actives == null) actives = new string[0];
 
                 var userId = User.Identity.GetUserId();
 
@@ -566,6 +648,106 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 return RedirectToAction("AllProducts");
             }
             return RedirectToAction("EditActiveProducts");
+        }
+
+        public ActionResult EditDetailsImages(int? id)
+        {
+            if (id == null) return View("Error");
+            var model = new ProductEditImagesViewModel
+            {
+                ProductImages = db.ProductImages
+                                    .Where(m => m.ProductId == id)
+                                    .ToList(),
+                ProductId = (int) id
+            };
+
+            if (model.ProductImages == null)
+                model.ProductImages = new List<ProductImage>();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditDetailsImages(int? id, int? prodId)
+        {
+            if (id == null || prodId == null) return View("Error");
+
+            var prodImg = db.ProductImages.FirstOrDefault(m => m.Id == id);
+
+            System.IO.File.Delete(prodImg.ImagePath);
+
+            db.Entry(prodImg).State = EntityState.Deleted;
+            db.SaveChanges();
+
+            return RedirectToAction("EditDetailsImages", new { id = prodId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProductImageUpload(HttpPostedFileBase file, int prodId)
+        {
+            if (file.ContentLength == 0) return View("Error");
+
+            try
+            {
+                var prod = db.Products
+                             .Include(m => m.Category)
+                             .Include(m => m.ProductImages)
+                             .FirstOrDefault(m => m.Id == prodId);
+
+                if (prod == null)
+                    return View("Error");
+
+                else if (prod.ProductImages.Count >= 6)
+                {
+                    ViewBag.Msg = "Max limit of 6 reached.";
+                    throw new Exception("Max limit of 6 reached.");
+                }
+                
+                var memStream = new MemoryStream();
+                file.InputStream.CopyTo(memStream);
+
+                byte[] fileData = memStream.ToArray();
+
+                var prodImg = new ProductImage
+                {
+                    ImageMimeType = file.ContentType,
+                    ImagePath = System.Web.HttpContext.Current.Server
+                                .MapPath("~/App_Data/Images"),
+                    ProductId = prodId,
+                    Product = prod
+                };
+
+                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                prodImg.ImagePath += "/Products/";
+                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                prodImg.ImagePath += User.Identity.GetUserName() + "/";
+                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                prodImg.ImagePath += prod.Category.Name + "/";
+                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                prodImg.ImagePath += prod.Name + "/";
+                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                prodImg.ImagePath += DateTime.Now.Ticks + "_" + file.FileName;
+
+                file.SaveAs(prodImg.ImagePath);
+
+                db.ProductImages.Add(prodImg);
+                db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Msg = ex.Message;
+                return Json(new
+                {
+                    success = false,
+                    response = ex.Message
+                });
+            }
+
+            ViewBag.Msg = "File uploaded.";
+            return Json(new { success = true,
+                              response = "File uploaded."});
         }
 
         private int GetActiveProductsCount()

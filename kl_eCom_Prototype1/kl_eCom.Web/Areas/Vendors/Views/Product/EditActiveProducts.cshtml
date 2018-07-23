@@ -42,7 +42,7 @@
             <tr>
                 @Html.HiddenFor(m => prod.Id)
                 <td>
-                    @if (prod.ThumbnailData != null && prod.ThumbnailMimeType != null)
+                    @if (prod.ThumbnailPath != null && prod.ThumbnailMimeType != null)
                     {
                         <text>
                             <img class="img-thumbnail" width="45" height="45"
@@ -89,7 +89,7 @@
 }
 <div class="row">
     <div class="navbar-fixed-bottom col-md-offset-10 col-md-2"
-         style="background-color: firebrick; color: white">
+         style="background-color: darkslategray; color: white; padding-top: 3px">
         <text>Selected: </text><label id="currLbl"></label><text>, Max allowed: </text><label id="maxLbl"></label>
     </div>
 </div>

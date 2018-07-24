@@ -143,13 +143,16 @@ namespace kl_eCom.Web.Controllers
                 {
                     var cart = GetCart();
 
+                    var hash = DateTime.Now.GetHashCode();
+                    hash = (hash > 0) ? hash : -hash;
+
                     var order = db.Orders.Add(new Order
                     {
                         ApplicationUserId = usrId,
                         OrderDate = DateTime.Now,
-                        Status = OrderStatus.Processing,
                         TotalCost = 0.0f,
-                        OrderNumber = DateTime.Now.GetHashCode()
+                        OrderNumber = hash,
+                        AddressId = addrId
                     });
                     db.SaveChanges();
 
@@ -157,6 +160,8 @@ namespace kl_eCom.Web.Controllers
 
                     foreach (var itm in cart.CartItems)
                     {
+                        var vendorId = itm.Stock.Store.ApplicationUserId;
+
                         var orderItem = db.CartItems
                             .Include(m => m.Stock)
                             .Include(m => m.Stock.Store)
@@ -170,7 +175,9 @@ namespace kl_eCom.Web.Controllers
                             Price = itm.Stock.Price,
                             ProductName = itm.Stock.Product.Name,
                             StockId = itm.StockId,
-                            FinalCost = itm.Qty * itm.Stock.Price
+                            FinalCost = itm.Qty * itm.Stock.Price,
+                            ApplicationUserId = vendorId,
+                            Status = OrderStatus.NewOrder
                         });
 
                         var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
@@ -180,9 +187,6 @@ namespace kl_eCom.Web.Controllers
                         db.Entry(order).State = EntityState.Modified;
                         db.Entry(stock).State = EntityState.Modified;
                         db.SaveChanges();
-
-
-                        var vendorId = itm.Stock.Store.ApplicationUserId;
                         
                         if (db.Refferals.FirstOrDefault(
                             m => m.CustomerId == usrId && m.VendorId == vendorId)
@@ -230,9 +234,10 @@ namespace kl_eCom.Web.Controllers
                         {
                             mm.Subject = "New Order Recieved: #" + order.OrderNumber;
                             mm.Body = "Order Details:\n";
-                            mm.Body += "Order Date: " + order.OrderDate.ToLongDateString();
-                            mm.Body += ", Customer Name: " + customer.FirstName + " " + customer.LastName + "\n\n";
-                            
+                            mm.Body += "Order Date: " + order.OrderDate.ToLongDateString() + "\n";
+                            mm.Body += ", Customer Name: " + customer.FirstName + " " + customer.LastName;
+                            mm.Body += ", Contact Info: " + customer.PhoneNumber + "\n\n";
+
                             var i = 0;
                             foreach(var orderItmId in orderPerVendor[vendor.Id])
                             {

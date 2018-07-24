@@ -58,7 +58,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Home
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated) return RedirectToAction("Index", controllerName: "Vendor");
             return View();
         }
 
@@ -109,11 +108,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     ActivePlan pkg;
                     try
                     {
+                        var plan = db.VendorPlans
+                                    .FirstOrDefault(m => m.Price == 0.0f
+                                        && m.IsActive == true
+                                        && m.IsEnabled == true);
                         db.ActivePlans.Add(new Utilities.ActivePlan
                         {
                             ApplicationUserId = vendor.Id,
                             IsPaidFor = null,
-                            VendorPlanId = db.VendorPlans.FirstOrDefault(m => m.Price == 0.0f).Id,
+                            VendorPlanId = plan.Id,
                             VendorPaymentDetailsId = null
                         });
                         db.SaveChanges();
@@ -126,7 +129,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         return RedirectToAction("Index", controllerName: "Vendor");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
                         UserManager.Delete(vendor);

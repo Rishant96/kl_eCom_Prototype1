@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -107,5 +108,13 @@ namespace kl_eCom.Web.Models
         public string Place { get; set; }
 
         public string Country { get; set; }
+    }
+
+    public class CustomerCancellationViewModel
+    {
+        [Required]
+        public int Id { get; set; }
+
+        public Order Order { get; set; }
     }
 }

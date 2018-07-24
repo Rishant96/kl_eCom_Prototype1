@@ -19,6 +19,60 @@ namespace kl_eCom.Web.Controllers
             return View();
         }
 
+        public ActionResult MyOrders()
+        {
+            var usrId = User.Identity.GetUserId();
+
+            return View(db.Orders
+                .Include(m => m.OrderItems)
+                .Where(m => m.ApplicationUserId == usrId)
+                .OrderByDescending(m => m.OrderDate)
+                .ToList());
+        }
+
+        public ActionResult Cancellation(int? id)
+        {
+            if (id == null) return View("Error");
+
+            return View(new CustomerCancellationViewModel {
+                Id = (int)id,
+                Order = db.Orders
+                    .Include(m => m.OrderItems)
+                    .FirstOrDefault(m => m.Id == id)
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Cancellation(CustomerCancellationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var order = db.Orders
+                    .FirstOrDefault(m => m.Id == model.Id);
+
+                string itemsStr = Request.Form["CanceledItems"];
+
+                if (itemsStr is null) itemsStr = "";
+                var cnclsList = itemsStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                if (cnclsList is null) cnclsList = new string[] { };
+
+                for (int i = 0; i < cnclsList.Count(); i++)
+                {
+                    if (cnclsList[i] == "") continue;
+                    int id = int.Parse(cnclsList[i]);
+                    var orderItm = db.OrderItems.FirstOrDefault(m => m.Id == id);
+                    orderItm.Status = Utilities.OrderStatus.CancellationRequested;
+                    db.Entry(orderItm).State = EntityState.Modified;
+                }
+
+                db.SaveChanges();
+
+                return RedirectToAction("MyOrders");
+            }
+            return View("Error");
+        }
+
         public ActionResult Addresses()
         {
             var usrId = User.Identity.GetUserId();

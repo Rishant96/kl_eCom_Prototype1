@@ -82,7 +82,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (catId == null) return RedirectToAction("Index", controllerName: "Store");
             TempData["catId"] = catId;
             var parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == catId);
-            var model = new ProductCreateViewModel { Specifications = new Dictionary<string, string>() };
+            var model = new ProductCreateViewModel {
+                Specifications = new Dictionary<string, string>(),
+                IsActive = true
+            };
             model.Attributes = new Dictionary<string, int>();
             while (parent != null)
             {

@@ -21,6 +21,10 @@ namespace kl_eCom.Web.Entities
         public string ApplicationUserId { get; set; }
         public ApplicationUser Customer { get; set; }
 
+        [Required]
+        public int AddressId { get; set; }
+        public Address Address { get; set; }
+
         public ICollection<OrderItem> OrderItems { get; set; }
 
         [Required]
@@ -28,19 +32,5 @@ namespace kl_eCom.Web.Entities
         
         [Required]
         public float TotalCost { get; set; }
-        
-        [Required]
-        public OrderStatus Status { get; set; }
-    }
-
-    public enum OrderStatus
-    {
-        Processing,
-        OrderPlaced,
-        InTransit,
-        OutForDelivery,
-        Delevered,
-        DeleveryFailed,
-        Cancelled
     }
 }

@@ -1,0 +1,61 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.CustomersOrdersViewModel
+@{
+    ViewBag.Title = "Orders";
+}
+
+<h2>Orders</h2>
+
+<div>
+    <h3>Active Orders</h3>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.Label("Order Number")
+            </th>
+            <th>
+                @Html.Label("Date")
+            </th>
+            <th>
+                @Html.Label("Order Items")
+            </th>
+            <th>
+                @Html.Label("Status")
+            </th>
+            <th>
+                @Html.Label("Total Cost")
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var order in Model.ActiveOrders)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => order.OrderNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => order.OrderDate)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var itm in order.OrderItems)
+                        {
+                            <li>@itm.ProductName x @itm.Qty = @itm.FinalCost</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    @foreach (var stat in order.OrderItems)
+                    {
+                        <text>@stat.Status</text><br />
+                    }
+                </td>
+                <td>
+                    <text>Rs. </text>@order.TotalCost
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+        }
+    </table>
+</div>

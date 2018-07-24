@@ -1,4 +1,5 @@
 ﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,10 +19,23 @@ namespace kl_eCom.Web.Utilities
         public int StockId { get; set; }
         public Stock StockProduct { get; set; }
 
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser Vendor { get; set; }
+        
         public int Qty { get; set; }
         public float Price { get; set; }
         public string ProductName { get; set; }
 
         public float FinalCost { get; set; }
+
+        public OrderStatus Status { get; set; }
+    }
+
+    public enum OrderStatus
+    {
+        NewOrder,
+        ActiveOrder,
+        Delivered,
+        CancellationRequested
     }
 }

@@ -221,11 +221,13 @@
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Vendors\Controllers\CustomersController.cs" />
     <Compile Include="Areas\Vendors\Controllers\HomeController.cs" />
     <Compile Include="Areas\Vendors\Controllers\ProductController.cs" />
     <Compile Include="Areas\Vendors\Controllers\StoreController.cs" />
     <Compile Include="Areas\Vendors\Controllers\VendorController.cs" />
     <Compile Include="Areas\Vendors\Models\CategoryViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\CustomersViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\HomeViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\ProductViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\StoreViewModels.cs" />
@@ -250,21 +252,9 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201807190622314_Renew.cs" />
-    <Compile Include="Migrations\201807190622314_Renew.Designer.cs">
-      <DependentUpon>201807190622314_Renew.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807190715348_Thumbnail_Model_Edited.cs" />
-    <Compile Include="Migrations\201807190715348_Thumbnail_Model_Edited.Designer.cs">
-      <DependentUpon>201807190715348_Thumbnail_Model_Edited.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807230526499_Address_Changes.cs" />
-    <Compile Include="Migrations\201807230526499_Address_Changes.Designer.cs">
-      <DependentUpon>201807230526499_Address_Changes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807230911335_Order_Placed.cs" />
-    <Compile Include="Migrations\201807230911335_Order_Placed.Designer.cs">
-      <DependentUpon>201807230911335_Order_Placed.cs</DependentUpon>
+    <Compile Include="Migrations\201807240941482_Init.cs" />
+    <Compile Include="Migrations\201807240941482_Init.Designer.cs">
+      <DependentUpon>201807240941482_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -376,6 +366,8 @@
     <Content Include="Areas\KL_Admin\Views\Customers\Index.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\FixActiveProducts.cshtml" />
     <Content Include="Areas\Vendors\Views\Product\EditDetailsImages.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\Index.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\Orders.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -441,6 +433,8 @@
     <Content Include="Views\Customer\Index.cshtml" />
     <Content Include="Views\Shop\Products.cshtml" />
     <Content Include="Views\Shared\_LayoutProdList.cshtml" />
+    <Content Include="Views\Customer\MyOrders.cshtml" />
+    <Content Include="Views\Customer\Cancellation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -461,17 +455,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201807190622314_Renew.resx">
-      <DependentUpon>201807190622314_Renew.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807190715348_Thumbnail_Model_Edited.resx">
-      <DependentUpon>201807190715348_Thumbnail_Model_Edited.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807230526499_Address_Changes.resx">
-      <DependentUpon>201807230526499_Address_Changes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807230911335_Order_Placed.resx">
-      <DependentUpon>201807230911335_Order_Placed.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201807240941482_Init.resx">
+      <DependentUpon>201807240941482_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

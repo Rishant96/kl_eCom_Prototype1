@@ -19,10 +19,16 @@
 }
 
 @Html.ActionLink("Go to Stores", "Index", "Store")
- | 
+<text> | </text>
 @Html.ActionLink("All Products", "AllProducts", controllerName: "Product")
 
 <br />
+
 @Html.ActionLink("My Customers", "Index", controllerName: "Customers")
- | 
+<text> | </text>
 @Html.ActionLink("Orders", "Orders", controllerName: "Customers")
+
+<br />
+@Html.ActionLink("Vouchers", "Vouchers")
+<text> | </text>
+@Html.ActionLink("Discounts", "Discounts")

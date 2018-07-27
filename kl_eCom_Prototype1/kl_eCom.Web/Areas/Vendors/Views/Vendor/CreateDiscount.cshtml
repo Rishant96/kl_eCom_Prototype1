@@ -1,0 +1,128 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorDiscountCreateViewModel
+@{
+    ViewBag.Title = "Create - Discount";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Discount - Create</h2>
+
+    @using (@Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+    <div class="container" style="display: flex">
+        <div class="form-horizontal" style="width: 50%">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "width: 280px; height: 110px;" })
+                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.StartDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.IsExpirable, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.IsExpirable, new { htmlAttributes = new { @class = "form-control, checkbox" } })
+                    @Html.ValidationMessageFor(m => m.IsExpirable, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ValidityPeriod, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.ValidityPeriod, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.ValidityPeriod, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.IsActive, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.IsActive, new { htmlAttributes = new { @class = "form-control, checkbox" } })
+                    @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Value, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.Value, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Value, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.IsConstrained, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(m => m.IsConstrained, new { htmlAttributes = new { @class = "form-control, checkbox" } })
+                    @Html.ValidationMessageFor(m => m.IsConstrained, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <input type="submit" class="btn btn-info col-md-offset-4" style="position: relative; left: 10px" 
+                   value="Create" />
+        </div>
+        <div class="row" style="width: 50%">
+            @foreach (var cat in Model.AvailableCategories)
+            {
+                <div class="col-md-offset-1 col-md-4 col-md-offset-1">
+                    <div>
+                        <label style="margin: auto 5px">@cat.Name</label>
+                        <hr />
+                    </div>
+                    <div style="margin-left: 30px">
+                        <table class="table-striped table-bordered">
+                            @foreach (var prod in Model.AvailableProducts[cat])
+                            {
+                                <tr>
+                                    <td style="padding: 5px 10px">
+                                        @Html.DisplayFor(m => prod.Name)
+                                    </td>
+                                    <td style="padding: 5px 10px">
+                                        <input type="checkbox"
+                                                class="@string.Format("cat{0}",cat.Id)"
+                                                id="@string.Format("prod{0}", prod.Id)" />
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                        <div style="text-align: right; margin-right: 5px">
+                            <h6 style="display: inline-block">Mark All @cat.Name</h6>
+                            <input type="checkbox" class="checkbox-inline"
+                                    style="position: relative; bottom: 3px; left: 2px"
+                                    id="@string.Format("all{0}", cat.Id)" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    }
+</div>
+
+@section Scripts 
+{
+<script>
+
+</script>    
+}

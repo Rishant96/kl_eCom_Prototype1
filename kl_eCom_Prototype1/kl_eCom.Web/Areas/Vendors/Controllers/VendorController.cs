@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity;
 using kl_eCom.Web.Areas.Vendors.Models;
 using Microsoft.AspNet.Identity.Owin;
+using kl_eCom.Web.Entities;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 { 
@@ -237,6 +238,122 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 ModelState.AddModelError("", error);
             }
+        }
+
+        public ActionResult Discounts()
+        {
+            var vendorId = User.Identity.GetUserId();
+
+            var discounts = db.Discounts
+                .Include(m => m.Store)
+                .Include(m => m.Constraint)
+                .Include(m => m.DiscountedItems)
+                .Where(m => m.ApplicationUserId == vendorId)
+                .ToList();
+
+            var model = new VendorDiscountsViewModel {
+                Ids = new List<int>(),
+                Names = new Dictionary<int, string>(),
+                DiscountIds = new Dictionary<int, int>(),
+                DiscountValues = new Dictionary<int, string>(),
+                StoreNames = new Dictionary<int, string>(),
+                DiscountTypes = new Dictionary<int, string>(),
+                StartDates = new Dictionary<int, string>(),
+                ValidityPeriods = new Dictionary<int, string>()
+            };
+
+            var Names = new List<string>();
+            var Values = new Dictionary<string, string>();
+            var Stores = new Dictionary<string, string>();
+            var Types = new Dictionary<string, string>();
+            var Dates = new Dictionary<string, string>();
+            var ValidityPeriods = new Dictionary<string, string>();
+            var DiscountIds = new Dictionary<string, int>();
+
+            foreach(var discount in discounts)
+            {
+                Names.Add(discount.Name);
+
+                Stores.Add(discount.Name, discount.Store.Name);
+
+                DiscountIds.Add(discount.Name, discount.Id);
+
+                if (discount.IsPercent)
+                    Values.Add(discount.Name, discount.Value + "%");
+                else
+                    Values.Add(discount.Name, (discount.Store.DefaultCurrencyType ?? "Rs.") 
+                        + discount.Value);
+
+                Types.Add(discount.Name, discount.Constraint.Type.ToString());
+
+                Dates.Add(discount.Name, discount.StartDate
+                        .ToUniversalTime().ToLongDateString());
+
+                ValidityPeriods.Add(discount.Name, discount.ValidityPeriod + " Days");
+            }
+
+            var i = 1;
+            foreach (var nameItm in Names)
+            {
+                foreach(var type in Types[nameItm])
+                {
+                    model.Ids.Add(i);
+                    model.Names.Add(i, nameItm);
+                    model.StartDates.Add(i, Dates[nameItm]);
+                    model.ValidityPeriods.Add(i, ValidityPeriods[nameItm]);
+                    model.StoreNames.Add(i, Stores[nameItm]);
+                    model.DiscountValues.Add(i, Values[nameItm]);
+                    model.DiscountTypes.Add(i, Types[nameItm]);
+                    model.DiscountIds.Add(i, DiscountIds[nameItm]);
+                }
+                i++;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult CreateDiscount()
+        {
+            var oldDate = DateTime.Now;
+            var date = oldDate.AddDays(1);
+            date = date.AddHours(-1 * oldDate.Hour);
+            date = date.AddMinutes(-1 * oldDate.Minute);
+            date = date.AddSeconds(-1 * oldDate.Second);
+
+            var model = new VendorDiscountCreateViewModel {
+                AvailableCategories = new List<Category>(),
+                AvailableProducts = new Dictionary<Category, List<Product>>(),
+                StartDate = date
+            };
+
+            var vendorId = User.Identity.GetUserId();
+            var stores = db.Stores
+                        .Include(m => m.Categories)
+                        .Where(m => m.ApplicationUserId == vendorId)
+                        .ToList();
+
+            foreach (var store in stores)
+            {
+                model.AvailableCategories = new List<Category>();
+                foreach (var cat in store.Categories)
+                {
+                    var prods = db.Products
+                                .Where(m => m.CategoryId == cat.Id)
+                                .ToList();
+                    if (prods != null || prods.Count > 0)
+                    {
+                        model.AvailableCategories.Add(cat);
+                        model.AvailableProducts.Add(cat, prods);
+                    }
+                }
+            }
+
+            return View(model); 
+        }
+
+        public ActionResult DiscountDetails()
+        {
+            return View();
         }
     }
 }

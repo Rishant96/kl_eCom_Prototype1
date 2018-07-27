@@ -58,6 +58,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Home
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated && User.IsInRole("Vendor"))
+                return RedirectToAction("Index", controllerName: "Vendor");
             return View();
         }
 

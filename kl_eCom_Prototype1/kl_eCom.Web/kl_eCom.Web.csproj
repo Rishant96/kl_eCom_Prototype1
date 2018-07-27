@@ -243,6 +243,7 @@
     <Compile Include="Entities\ActivePlans.cs" />
     <Compile Include="Entities\Cart.cs" />
     <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\Discount.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Stock.cs" />
@@ -255,6 +256,22 @@
     <Compile Include="Migrations\201807240941482_Init.cs" />
     <Compile Include="Migrations\201807240941482_Init.Designer.cs">
       <DependentUpon>201807240941482_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807250951331_Additional_Order_Details_Added.cs" />
+    <Compile Include="Migrations\201807250951331_Additional_Order_Details_Added.Designer.cs">
+      <DependentUpon>201807250951331_Additional_Order_Details_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807270701251_Discounts_Added.cs" />
+    <Compile Include="Migrations\201807270701251_Discounts_Added.Designer.cs">
+      <DependentUpon>201807270701251_Discounts_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807270748402_Discounts_Edited.cs" />
+    <Compile Include="Migrations\201807270748402_Discounts_Edited.Designer.cs">
+      <DependentUpon>201807270748402_Discounts_Edited.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807270801311_Discounts_Edited_2.cs" />
+    <Compile Include="Migrations\201807270801311_Discounts_Edited_2.Designer.cs">
+      <DependentUpon>201807270801311_Discounts_Edited_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -271,7 +288,10 @@
     <Compile Include="Utilities\Address.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
+    <Compile Include="Utilities\DiscountConstraint.cs" />
+    <Compile Include="Utilities\DiscountedItem.cs" />
     <Compile Include="Utilities\OrderItem.cs" />
+    <Compile Include="Utilities\OrderStateInfo.cs" />
     <Compile Include="Utilities\PlanChangeRequest.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
     <Compile Include="Utilities\Refferal.cs" />
@@ -368,6 +388,9 @@
     <Content Include="Areas\Vendors\Views\Product\EditDetailsImages.cshtml" />
     <Content Include="Areas\Vendors\Views\Customers\Index.cshtml" />
     <Content Include="Areas\Vendors\Views\Customers\Orders.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\OrderDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Discounts.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\CreateDiscount.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -457,6 +480,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201807240941482_Init.resx">
       <DependentUpon>201807240941482_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807250951331_Additional_Order_Details_Added.resx">
+      <DependentUpon>201807250951331_Additional_Order_Details_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807270701251_Discounts_Added.resx">
+      <DependentUpon>201807270701251_Discounts_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807270748402_Discounts_Edited.resx">
+      <DependentUpon>201807270748402_Discounts_Edited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807270801311_Discounts_Edited_2.resx">
+      <DependentUpon>201807270801311_Discounts_Edited_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

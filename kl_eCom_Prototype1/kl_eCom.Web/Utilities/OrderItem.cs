@@ -23,7 +23,11 @@ namespace kl_eCom.Web.Utilities
         public ApplicationUser Vendor { get; set; }
         
         public int Qty { get; set; }
+
         public float Price { get; set; }
+
+        public string CurrencyType { get; set; }
+
         public string ProductName { get; set; }
 
         public float FinalCost { get; set; }
@@ -36,6 +40,15 @@ namespace kl_eCom.Web.Utilities
         NewOrder,
         ActiveOrder,
         Delivered,
-        CancellationRequested
+        CancellationRequested,
+        Cancelled,
+        Undelivered
+    }
+
+    public enum CancellationOptions
+    {
+        Pending,
+        Cancel,
+        Reject
     }
 }

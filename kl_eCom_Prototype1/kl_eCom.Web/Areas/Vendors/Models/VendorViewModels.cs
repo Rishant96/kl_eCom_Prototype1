@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -91,12 +92,60 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public DateTime? ExpiryDate { get; set; }
     }
 
-        public class VendorPlanChangeViewModel
+    public class VendorPlanChangeViewModel
     {
         public string UserName { get; set; }
         public VendorPlan CurrentPackage { get; set; }
         public List<string> Packages { get; set; }
         [Required]
         public string SelectedPackage { get; set; }
+    }
+
+    public class VendorDiscountsViewModel
+    {
+        public List<int> Ids { get; set; }
+        public Dictionary<int, string> Names { get; set; }
+        public Dictionary<int, int> DiscountIds { get; set; }
+        public Dictionary<int, string> StartDates { get; set; }
+        public Dictionary<int, string> ValidityPeriods { get; set; }
+        public Dictionary<int, string> DiscountValues { get; set; }
+        public Dictionary<int, string> StoreNames { get; set; }
+        public Dictionary<int, string> DiscountTypes { get; set; }
+    }
+
+    public class VendorDiscountCreateViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+        
+        [Required]
+        [Display(Name = "Is Expirable?")]
+        public bool IsExpirable { get; set; }
+
+        [Required]
+        [Display(Name = "Validity Period")]
+        public int? ValidityPeriod { get; set; }
+
+        [Required]
+        [Display(Name = "Is Active?")]
+        public bool IsActive { get; set; }
+
+        [Required]
+        [Display(Name = "Advanced Discount")]
+        public bool IsConstrained { get; set; }
+
+        [Required]
+        public float Value { get; set; }
+        
+        public List<Category> AvailableCategories { get; set; }
+
+        public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
     }
 }

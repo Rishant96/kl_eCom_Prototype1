@@ -17,16 +17,21 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
     public class CustomersOrdersViewModel
     {
-        public List<Order> ActiveOrders { get; set; }
-        public Dictionary<int, List<OrderItem>> ActiveOrderItems { get; set; }
+        public List<int> NewOrders { get; set; }
 
-        public List<Order> PastOrders { get; set; }
-        public Dictionary<int, List<OrderItem>> PastOrderItems { get; set; }
+        public List<OrderItem> ActiveOrders { get; set; }
 
-        public List<Order> CancellationRequested { get; set; }
-        public Dictionary<int, List<OrderItem>> CancellationOrderItems { get; set; }
+        public List<OrderItem> PastOrders { get; set; }
 
-        public List<Order> OtherOrders { get; set; }
-        public Dictionary<int, List<OrderItem>> OtherOrderItems { get; set; }
+        public List<OrderItem> CancellationRequested { get; set; }
+
+        public List<OrderItem> OtherOrders { get; set; }
+    }
+
+    public class CustomersOrderDetailsViewModel
+    {
+        public OrderItem OrderItem { get; set; }
+    
+        public List<OrderStateInfo> StateInfo { get; set; }
     }
 }

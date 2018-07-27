@@ -21,6 +21,8 @@ namespace kl_eCom.Web.Entities
 
         public ICollection<Category> Categories { get; set; }
 
+        public string DefaultCurrencyType { get; set; }
+
         [Required]
         public string ApplicationUserId { get; set; }
         public ApplicationUser Vendor { get; set; }

@@ -54,7 +54,22 @@
             <text>Rs. </text>@order.TotalCost
         </td>
         <td>
-            @Html.ActionLink("Request Cancellation", "Cancellation", new { id = order.Id })
+            @{
+                bool flag = false;
+                foreach(var itm in order.OrderItems)
+                {
+                    if (itm.Status == kl_eCom.Web.Utilities.OrderStatus.ActiveOrder
+                        || itm.Status == kl_eCom.Web.Utilities.OrderStatus.NewOrder)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            @if (flag)
+            {
+                <text>@Html.ActionLink("Request Cancellation", "Cancellation", new { id = order.Id })</text>
+            }
         </td>
     </tr>
     }

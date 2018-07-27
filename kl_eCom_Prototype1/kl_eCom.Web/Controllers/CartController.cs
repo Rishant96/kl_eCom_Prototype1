@@ -158,6 +158,10 @@ namespace kl_eCom.Web.Controllers
 
                     var orderPerVendor = new Dictionary<string, List<int>>();
 
+                    string subj = "Order Confirmation for Order #" + order.OrderNumber;
+                    string msg = "Auto-genrated mail confirming the order you just placed via Khushlife E-Com,\n\n";
+                    msg += "Order Details:\n";
+
                     foreach (var itm in cart.CartItems)
                     {
                         var vendorId = itm.Stock.Store.ApplicationUserId;
@@ -187,7 +191,12 @@ namespace kl_eCom.Web.Controllers
                         db.Entry(order).State = EntityState.Modified;
                         db.Entry(stock).State = EntityState.Modified;
                         db.SaveChanges();
-                        
+
+                        msg += "\tProduct: " + dbOrderItm.ProductName + ", Quantity: " + dbOrderItm.Qty +
+                                ", Value = Rs. " + dbOrderItm.FinalCost + " (" + dbOrderItm.Price + " x " 
+                                + dbOrderItm.Qty + ")\n";
+
+
                         if (db.Refferals.FirstOrDefault(
                             m => m.CustomerId == usrId && m.VendorId == vendorId)
                             is Refferal refferal)
@@ -223,6 +232,10 @@ namespace kl_eCom.Web.Controllers
                             orderPerVendor[vendorId].Add(dbOrderItm.Id);
                         }
                     }
+
+                    msg += "\nRegards,\nKhushlife E-Com Team";
+                    FireEmail(db.Users.FirstOrDefault(m => m.Id == usrId).Email,
+                        subj, msg);
 
                     foreach (var vndrId in orderPerVendor.Keys.ToList())
                     {
@@ -271,7 +284,7 @@ namespace kl_eCom.Web.Controllers
                         db.Entry(cartItm).State = EntityState.Deleted;
                     }
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("MyOrders", "Customer");
                 }
                 else
                 {
@@ -279,6 +292,28 @@ namespace kl_eCom.Web.Controllers
                 }
             }
             return RedirectToAction("Checkout", new { addrErr = true });
+        }
+
+        private void FireEmail(string to, string subject, string message, bool isBodyHtml = false)
+        {
+            var klEmail = "khushlifeecommerce@gmail.com";
+            var klPass = "klEcom1234";
+            using (MailMessage mm = new MailMessage(klEmail, to))
+            {
+                mm.Subject = subject;
+                mm.Body = message;
+                mm.IsBodyHtml = isBodyHtml;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential NetworkCred = new NetworkCredential(klEmail, klPass);
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = 587;
+                    smtp.Send(mm);
+                }
+            }
         }
 
         public ActionResult ContinueShopping(string returnUrl = "")

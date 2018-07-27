@@ -86,6 +86,10 @@ namespace kl_eCom.Web.Models
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Refferal> Refferals { get; set; }
+        public DbSet<OrderStateInfo> OrderInformation { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<DiscountedItem> DiscountedItems { get; set; }
+        public DbSet<DiscountConstraint> DiscountConstraints { get; set; }
 
         public static ApplicationDbContext Create()
         {

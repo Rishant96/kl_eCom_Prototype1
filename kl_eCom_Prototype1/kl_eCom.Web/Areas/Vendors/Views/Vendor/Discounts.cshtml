@@ -1,0 +1,71 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorDiscountsViewModel
+
+@{
+    ViewBag.Title = "Discounts";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Discounts</h2>
+
+@Html.ActionLink("+ New Discount", "CreateDiscount")
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.Label("Id")
+        </th>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Start Date")
+        </th>
+        <th>
+            @Html.Label("Validity Period")
+        </th>
+        <th>
+            @Html.Label("Store Name")
+        </th>
+        <th>
+            @Html.Label("Value")
+        </th>
+        <th>
+            @Html.Label("Discount Type")
+        </th>
+    </tr>
+    @if (Model.Ids.Count == 0)
+    {
+        <tr>
+            <td colspan="7" style="text-align: center">
+                No Discounts Found
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var i in Model.Ids)
+        {
+        <tr>
+            <td>@i</td>
+            <td>
+                @Html.ActionLink(Model.Names[i], "DiscountDetails", new { id = Model.DiscountIds[i] })
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.StartDates[i])
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.ValidityPeriods[i])
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.StoreNames[i])
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.DiscountValues[i])
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.DiscountTypes[i])
+            </td>
+        </tr>
+        }
+    }
+</table>

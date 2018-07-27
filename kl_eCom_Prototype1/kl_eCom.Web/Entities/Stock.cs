@@ -20,6 +20,8 @@ namespace kl_eCom.Web.Entities
         [Required]
         public float Price { get; set; }
 
+        public string CurrencyType { get; set; }
+
         [Required]
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }

@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Entities;
+using System.Net.Mail;
+using System.Net;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -56,11 +58,487 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delivery(string userId)
+        {
+            var bulkDec = Request.Form["DeliverAll"];
+            if (!string.IsNullOrEmpty(bulkDec))
+            {
+                var vendorId = User.Identity.GetUserId();
+                var allactives = (string.IsNullOrEmpty(userId)) ?
+                                db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .Where(m => m.ApplicationUserId == vendorId
+                                    && (m.Status == Utilities.OrderStatus.ActiveOrder
+                                        || m.Status == Utilities.OrderStatus.NewOrder))
+                                    .OrderByDescending(m => m.Order.OrderDate)
+                                    .ToList()
+                                :
+                                db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .Where(m => m.ApplicationUserId == vendorId
+                                    && m.Order.ApplicationUserId == userId
+                                    && (m.Status == Utilities.OrderStatus.ActiveOrder
+                                        || m.Status == Utilities.OrderStatus.NewOrder))
+                                    .OrderByDescending(m => m.Order.OrderDate)
+                                    .ToList();
+                
+                if (bulkDec == "all")
+                {
+                    foreach (var itm in allactives)
+                    {
+                        string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Delivery Confirmation";
+                        string message = "Auto generated mail confirming successful delivery of the following product:\n\n";
+
+
+                        itm.Status = Utilities.OrderStatus.Delivered;
+                        db.Entry(itm).State = EntityState.Modified;
+
+                        int refId = db.Refferals.FirstOrDefault(
+                                        m => m.CustomerId == itm.Order.ApplicationUserId
+                                        && m.VendorId == itm.ApplicationUserId).Id;
+
+                        db.OrderInformation.Add(
+                            new Utilities.OrderStateInfo
+                            {
+                                Type = Utilities.ChangeType.Delivered,
+                                InitialDate = DateTime.Now,
+                                OrderItemId = itm.Id,
+                                RefferalId = refId
+                            }
+                        );
+
+                        message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                         ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                        message += "Regards,\nKhuslife E-com Team";
+
+                        FireEmail(itm.Order.Customer.Email, subject, message);
+                    }
+                }
+            }
+            else
+            {
+                var idStr = Request.Form["ActiveIds"];
+                if (idStr == null) idStr = "";
+
+                var idArr = idStr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(sValue => sValue.Trim()).ToArray() as string[];
+                
+                for (int i = 0; i < idArr.Count(); i++)
+                {
+                    switch (Request.Form["ActiveCheck" + idArr[i]])
+                    {
+                        case "1": { break; }
+                        case "2":
+                            {
+                                var itmId = int.Parse(idArr[i]);
+                                var itm = db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .FirstOrDefault(m => m.Id
+                                        == itmId);
+                                if (itm == null) return View("Error");
+                                itm.Status = Utilities.OrderStatus.Delivered;
+                                db.Entry(itm).State = EntityState.Modified;
+
+                                int refId = db.Refferals.FirstOrDefault(
+                                        m => m.CustomerId == itm.Order.ApplicationUserId
+                                        && m.VendorId == itm.ApplicationUserId).Id;
+
+                                db.OrderInformation.Add(
+                                    new Utilities.OrderStateInfo
+                                    {
+                                        Type = Utilities.ChangeType.Delivered,
+                                        InitialDate = DateTime.Now,
+                                        OrderItemId = itm.Id,
+                                        RefferalId = refId
+                                    }
+                                );
+
+                                string subject = "Khushlife Order #" +itm.Order.OrderNumber + ": Delivery Confirmation";
+                                string message = "Auto generated mail confirming successful delivery of the following product:\n\n";
+
+                                message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                                  ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                                message += "Regards,\nKhuslife E-com Team";
+
+                                FireEmail(itm.Order.Customer.Email, subject, message);
+
+                                break;
+                            }
+                        case "3":
+                            {
+                                var itmId = int.Parse(idArr[i]);
+                                var itm = db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .FirstOrDefault(m => m.Id
+                                        == itmId);
+                                if (itm == null) return View("Error");
+                                itm.Status = Utilities.OrderStatus.Undelivered;
+                                db.Entry(itm).State = EntityState.Modified;
+
+                                int refId = db.Refferals.FirstOrDefault(
+                                        m => m.CustomerId == itm.Order.ApplicationUserId
+                                        && m.VendorId == itm.ApplicationUserId).Id;
+
+                                db.OrderInformation.Add(
+                                    new Utilities.OrderStateInfo
+                                    {
+                                        Type = Utilities.ChangeType.DeliveryFailed,
+                                        InitialDate = DateTime.Now,
+                                        OrderItemId = itm.Id,
+                                        RefferalId = refId
+                                    }
+                                );
+
+                                string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Delivery Failed";
+                                string message = "Auto generated mail confirming unsuccessful delivery of the following product:\n\n";
+
+                                message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                                  ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                                message += "Regards,\nKhuslife E-com Team";
+
+                                FireEmail(itm.Order.Customer.Email, subject, message);
+
+                                break;
+                            }
+                        default:
+                            { break; }
+                    }
+                }
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("Orders", new { id = userId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Cancellation(string userId)
+        {
+            var bulkDec = Request.Form["CancelCheck"];
+            if (!string.IsNullOrEmpty(bulkDec))
+            {
+                var vendorId = User.Identity.GetUserId();
+                var allrequests = (string.IsNullOrEmpty(userId)) ?
+                                db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .Where(m => m.ApplicationUserId == vendorId
+                                    && m.Status == Utilities.OrderStatus.CancellationRequested)
+                                    .OrderByDescending(m => m.Order.OrderDate)
+                                    .ToList()
+                                :
+                                db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .Where(m => m.ApplicationUserId == vendorId
+                                    && m.Order.ApplicationUserId == userId
+                                    && m.Status == Utilities.OrderStatus.CancellationRequested)
+                                    .OrderByDescending(m => m.Order.OrderDate)
+                                    .ToList();
+
+                if (bulkDec == "all")
+                {
+                    foreach (var itm in allrequests)
+                    {
+                        itm.Status = Utilities.OrderStatus.Cancelled;
+                        db.Entry(itm).State = EntityState.Modified;
+
+                        var state = db.OrderInformation.FirstOrDefault(m => m.OrderItemId
+                            == itm.Id);
+                        state.IsChangePostive = true;
+                        state.FinalDate = DateTime.Now;
+                        db.Entry(state).State = EntityState.Modified;
+
+                        string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Cancellation Request Accepted";
+                        string message = "Auto generated mail confirming successful cancellaton of the following product:\n\n";
+
+                        message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                          ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                        message += "Regards,\nKhuslife E-com Team";
+
+                        FireEmail(itm.Order.Customer.Email, subject, message);
+                    }
+                }
+                else if (bulkDec == "none")
+                {
+                    foreach (var itm in allrequests)
+                    {
+                        itm.Status = Utilities.OrderStatus.ActiveOrder;
+                        db.Entry(itm).State = EntityState.Modified;
+
+                        var state = db.OrderInformation.FirstOrDefault(m => m.OrderItemId
+                            == itm.Id);
+                        state.IsChangePostive = false;
+                        state.FinalDate = DateTime.Now;
+                        db.Entry(state).State = EntityState.Modified;
+
+                        string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Cancellation Failed";
+                        string message = "Auto generated mail confirming rejection of the cancellaton request for the following product:\n\n";
+
+                        message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                          ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                        message += "Regards,\nKhuslife E-com Team";
+
+                        FireEmail(itm.Order.Customer.Email, subject, message);
+                    }
+                }
+
+            }
+            else
+            {
+
+                var idStr = Request.Form["CancelIds"];
+                if (idStr == null) idStr = "";
+
+                var idArr = idStr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(sValue => sValue.Trim()).ToArray() as string[];
+
+                var slctdStr = Request.Form["CancelOption"];
+                if (slctdStr == null) slctdStr = "";
+
+                var slctdArr = slctdStr.Split(',')
+                    .Select(sValue => sValue.Trim()).ToArray() as string[];
+
+                for (int i = 0; i < idArr.Count(); i++)
+                {
+                    switch (slctdArr[i])
+                    {
+                        case "0": { break; }
+                        case "1":
+                            {
+                                var itmId = int.Parse(idArr[i]);
+                                var itm = db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .FirstOrDefault(m => m.Id
+                                        == itmId);
+                                if (itm == null) return View("Error");
+                                itm.Status = Utilities.OrderStatus.Cancelled;
+                                db.Entry(itm).State = EntityState.Modified;
+
+
+                                var state = db.OrderInformation.FirstOrDefault(m => m.OrderItemId
+                                    == itm.Id);
+                                state.IsChangePostive = true;
+                                state.FinalDate = DateTime.Now;
+                                db.Entry(state).State = EntityState.Modified;
+
+                                string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Cancellation Request Accepted";
+                                string message = "Auto generated mail confirming successful cancellaton of the following product:\n\n";
+
+                                message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                                  ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                                message += "Regards,\nKhuslife E-com Team";
+
+                                FireEmail(itm.Order.Customer.Email, subject, message);
+
+                                break;
+                            }
+                        case "2":
+                            {
+                                var itmId = int.Parse(idArr[i]);
+                                var itm = db.OrderItems
+                                    .Include(m => m.Order)
+                                    .Include(m => m.Order.Customer)
+                                    .FirstOrDefault(m => m.Id
+                                        == itmId);
+                                if (itm == null) return View("Error");
+                                itm.Status = Utilities.OrderStatus.ActiveOrder;
+                                db.Entry(itm).State = EntityState.Modified;
+
+
+                                var state = db.OrderInformation.FirstOrDefault(m => m.OrderItemId
+                                    == itm.Id);
+                                state.IsChangePostive = false;
+                                state.FinalDate = DateTime.Now;
+                                db.Entry(state).State = EntityState.Modified;
+
+                                string subject = "Khushlife Order #" + itm.Order.OrderNumber + ": Cancellation Failed";
+                                string message = "Auto generated mail confirming rejection of the cancellaton request for the following product:\n\n";
+
+                                message += "\tProduct: " + itm.ProductName + ", Quantity: " + itm.Qty +
+                                  ", Value = Rs. " + itm.FinalCost + " (" + itm.Price + " x " + itm.Qty + ")\n";
+
+                                message += "Regards,\nKhuslife E-com Team";
+
+                                FireEmail(itm.Order.Customer.Email, subject, message);
+
+                                break;
+                            }
+                        default:
+                            { break; }
+                    }
+                }
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("Orders", new { id = userId });
+        }
+
         public ActionResult Orders(string id)
         {
+            ViewBag.UserId = id;
+            var vendorId = User.Identity.GetUserId();
+            var allOrders = (string.IsNullOrEmpty(id)) ? 
+                            db.OrderItems
+                                .Include(m => m.Order)
+                                .Where(m => m.ApplicationUserId == vendorId)
+                                .OrderByDescending(m => m.Order.OrderDate)
+                                .ToList() 
+                            : 
+                            db.OrderItems
+                                .Include(m => m.Order)
+                                .Where(m => m.ApplicationUserId == vendorId
+                                && m.Order.ApplicationUserId == id)
+                                .OrderByDescending(m => m.Order.OrderDate)
+                                .ToList();
 
+            CustomersOrdersViewModel model = new CustomersOrdersViewModel {
+                ActiveOrders = new List<Utilities.OrderItem>(),
+                CancellationRequested = new List<Utilities.OrderItem>(),
+                PastOrders = new List<Utilities.OrderItem>(),
+                OtherOrders = new List<Utilities.OrderItem>(),
+                NewOrders = new List<int>()
+            };
 
-            return View();
+            if (allOrders == null || allOrders.Count == 0)
+                return View(model);
+            else
+            {
+                foreach (var orderItm in allOrders)
+                {
+                    switch (orderItm.Status)
+                    {
+                        case Utilities.OrderStatus.ActiveOrder: {
+                                model.ActiveOrders.Add(orderItm);
+                                break;
+                            }
+
+                        case Utilities.OrderStatus.CancellationRequested: {
+                                model.CancellationRequested.Add(orderItm);
+                                break;
+                            }
+
+                        case Utilities.OrderStatus.Delivered: {
+                                model.PastOrders.Add(orderItm);
+                                break;
+                            }
+
+                        case Utilities.OrderStatus.NewOrder:
+                            {
+                                model.ActiveOrders.Add(orderItm);
+
+                                if (orderItm.Order.OrderDate.AddDays(1) <
+                                    DateTime.Now)
+                                {
+                                    orderItm.Status = Utilities.OrderStatus.ActiveOrder;
+                                    db.Entry(orderItm).State = EntityState.Modified;
+                                    db.SaveChanges();
+
+                                    int refId = db.Refferals.FirstOrDefault(
+                                        m => m.CustomerId == orderItm.Order.ApplicationUserId
+                                        && m.VendorId == orderItm.ApplicationUserId).Id;
+
+                                    db.OrderInformation.Add(
+                                        new Utilities.OrderStateInfo
+                                        {
+                                            Type = Utilities.ChangeType.Activated,
+                                            InitialDate = DateTime.Now,
+                                            OrderItemId = orderItm.Id,
+                                            RefferalId = refId
+                                        }
+                                    );
+                                }
+                                else
+                                {
+                                    model.NewOrders.Add(orderItm.Id);
+                                }
+
+                                break;
+                            }
+
+                        case Utilities.OrderStatus.Cancelled:
+                            {
+                                model.PastOrders.Add(orderItm);
+                                
+                                break;
+                            }
+
+                        case Utilities.OrderStatus.Undelivered:
+                            {
+                                model.PastOrders.Add(orderItm);
+                                break;
+                            }
+
+                        default:
+                            {
+                                model.OtherOrders.Add(orderItm);
+                                break;
+                            }
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        public ActionResult OrderDetails(int? id, string userId)
+        {
+            if (id == null) return View("Error");
+            ViewBag.UserId = userId;
+
+            var orderItem = db.OrderItems
+                            .Include(m => m.Order)
+                            .Include(m => m.Order.Customer)
+                            .Include(m => m.Order.Address)
+                            .FirstOrDefault(m => m.Id == id);
+            if (orderItem == null) return View("Error");
+
+            var stateInfoItms = db.OrderInformation
+                            .Include(m => m.Actors)
+                            .Where(m => m.OrderItemId == id)
+                            .ToList() ?? new List<Utilities.OrderStateInfo>();
+
+            var model = new CustomersOrderDetailsViewModel {
+                OrderItem = orderItem,
+                StateInfo = stateInfoItms
+            };
+
+            return View(model);
+        }
+
+        private void FireEmail(string to, string subject, string message, bool isBodyHtml = false)
+        {
+            var klEmail = "khushlifeecommerce@gmail.com";
+            var klPass = "klEcom1234";
+            using (MailMessage mm = new MailMessage(klEmail, to))
+            {
+                mm.Subject = subject;
+                mm.Body = message;
+                mm.IsBodyHtml = isBodyHtml;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential NetworkCred = new NetworkCredential(klEmail, klPass);
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = 587;
+                    smtp.Send(mm);
+                }
+            }
         }
     }
 }

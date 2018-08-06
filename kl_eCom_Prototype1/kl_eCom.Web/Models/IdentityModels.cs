@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using kl_eCom.Web.Entities;
@@ -53,21 +55,27 @@ namespace kl_eCom.Web.Models
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ApplicationUser>()
-            .HasMany(u => u.AssociatedCustomerOf) // <--
-            .WithRequired(r => r.Customer) // <--
-            .HasForeignKey(r => r.CustomerId)
-            .WillCascadeOnDelete(false);
+                .HasMany(u => u.AssociatedCustomerOf) // <--
+                .WithRequired(r => r.Customer) // <--
+                .HasForeignKey(r => r.CustomerId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ApplicationUser>()
-            .HasMany(u => u.AssociatedVendorOf) // <--
-            .WithRequired(r => r.Vendor) // <--
-            .HasForeignKey(r => r.VendorId)
-            .WillCascadeOnDelete(false);
+                .HasMany(u => u.AssociatedVendorOf) // <--
+                .WithRequired(r => r.Vendor) // <--
+                .HasForeignKey(r => r.VendorId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ActivePlan>()
-            .HasOptional(a => a.PaymentDetails)
-            .WithOptionalDependent()
-            .WillCascadeOnDelete(false);
+                .HasOptional(a => a.PaymentDetails)
+                .WithOptionalDependent()
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Discount>()
+                .Property(t => t.Name)
+                .HasColumnAnnotation(
+                    "Index",
+                    new IndexAnnotation(new IndexAttribute("IX_Name") { IsUnique = true }));
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -90,6 +98,10 @@ namespace kl_eCom.Web.Models
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<DiscountedItem> DiscountedItems { get; set; }
         public DbSet<DiscountConstraint> DiscountConstraints { get; set; }
+        public DbSet<BundledItem> BundledItems { get; set; }
+        public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<VoucherItem> VoucherItems { get; set; }
+        public DbSet<RedeemedVoucher> RedeemedVouchers { get; set; }
 
         public static ApplicationDbContext Create()
         {

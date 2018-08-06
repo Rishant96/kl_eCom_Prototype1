@@ -64,7 +64,7 @@
                     @Html.DisplayFor(m => itm.Qty)
                 </td>
                 <td>
-                    <text>@Model.Prices[itm].ToString()</text>
+                    <text>@Model.Prices[itm]</text>
                 </td>
                 <td>
                     @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })

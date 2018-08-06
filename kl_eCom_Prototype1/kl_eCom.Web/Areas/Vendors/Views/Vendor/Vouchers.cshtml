@@ -1,0 +1,313 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorVouchersIndexViewModel
+@{
+    ViewBag.Title = "Vouchers";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+    int i = 1;
+}
+
+<h2>Vouchers</h2>
+
+@Html.ActionLink("+ Create Voucher", "CreateVoucher")
+<div>
+    <h3>Active Vouchers</h3>
+    @if (Model.Vouchers.Where(m => m.IsActive).ToList().Count == 0)
+    {
+        <div style="text-align: center">
+            <label>No active vouchers</label>
+        </div>
+    }
+    else
+    {
+        <table>
+            <tr>
+                <th>
+                    @Html.Label("Id")
+                </th>
+                <th>
+                    @Html.Label("Name")
+                </th>
+                <th>
+                    @Html.Label("Constraints")
+                </th>
+                <th>
+                    @Html.Label("Value")
+                </th>
+                <th>
+                    @Html.Label("Start Date")
+                </th>
+                <th>
+                    @Html.Label("End Date")
+                </th>
+                <th>
+                    @Html.Label("Type")
+                </th>
+                <th>
+                    @Html.Label("Max per Customer")
+                </th>
+                <th>
+                    
+                </th>
+            </tr>
+            @foreach (var voucher in Model.Vouchers.Where(m => m.IsActive).ToList())
+            {
+            <tr>
+                <td>
+                    @Html.Display("#" + i++)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => voucher.Name)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var stockItm in voucher.VoucherItems)
+                        {
+                            <li>
+                                @Html.DisplayFor(m => stockItm.StockedProduct.Product.Name)
+                            </li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    @if (voucher.IsPercent)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.Value + "%")</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => m.DefaultCurrencyType
+                              + " " + voucher.Value)</text>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(m => voucher.StartDate)
+                </td>
+                <td>
+                    @if (voucher.IsExpirable)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.EndDate)</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => "\t-")</text>
+                    }
+                </td>
+                <td>
+                    @switch (voucher.IsAutomatic)
+                    {
+                        case true:
+                            {
+                                <text>@Html.DisplayFor(m => "Automated")</text>
+                                break;
+                            }
+
+                        case false:
+                            {
+                                <text>@Html.DisplayFor(m => "Manual")</text>
+                                break;
+                            }
+
+                        default:
+                            {
+                                <text>@Html.DisplayFor(m => "Prompts")</text>
+                                break;
+                            }
+                    }
+                </td>
+                <td>
+                    @if (voucher.IsLimited)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.MaxAvailPerCustomer + " times")</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => "Unlimited")</text>
+                    }
+                </td>
+                <td>
+
+                </td>
+            </tr>
+            }
+        </table>
+    }
+
+
+    <h3>Past Vouchers</h3>
+    @if (Model.Vouchers.Where(m => !m.IsActive).ToList().Count == 0)
+    {
+        <div style="text-align: center">
+            <label>No cancellation requests</label>
+        </div>
+    }
+    else
+    {
+        <table>
+            <tr>
+                <th>
+                    @Html.Label("Id")
+                </th>
+                <th>
+                    @Html.Label("Name")
+                </th>
+                <th>
+                    @Html.Label("Constraints")
+                </th>
+                <th>
+                    @Html.Label("Value")
+                </th>
+                <th>
+                    @Html.Label("Start Date")
+                </th>
+                <th>
+                    @Html.Label("End Date")
+                </th>
+                <th>
+                    @Html.Label("Type")
+                </th>
+                <th>
+                    @Html.Label("Max per Customer")
+                </th>
+                <th>
+
+                </th>
+            </tr>
+            @foreach (var voucher in Model.Vouchers.Where(m => !m.IsActive).ToList())
+            {
+            <tr>
+                <td>
+                    @Html.Display("#" + i++)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => voucher.Name)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var stockItm in voucher.VoucherItems)
+                        {
+                            <li>
+                                @Html.DisplayFor(m => stockItm.StockedProduct.Product.Name)
+                            </li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    @if (voucher.IsPercent)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.Value + "%")</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => m.DefaultCurrencyType
+                        + " " + voucher.Value)</text>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(m => voucher.StartDate)
+                </td>
+                <td>
+                    @if (voucher.IsExpirable)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.EndDate)</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => "\t-")</text>
+                    }
+                </td>
+                <td>
+                    @switch (voucher.IsAutomatic)
+                    {
+                        case true:
+                            {
+                                <text>@Html.DisplayFor(m => "Automated")</text>
+                                break;
+                            }
+
+                        case false:
+                            {
+                                <text>@Html.DisplayFor(m => "Manual")</text>
+                                break;
+                            }
+
+                        default:
+                            {
+                                <text>@Html.DisplayFor(m => "Prompts")</text>
+                                break;
+                            }
+                    }
+                </td>
+                <td>
+                    @if (voucher.IsLimited)
+                    {
+                        <text>@Html.DisplayFor(m => voucher.MaxAvailPerCustomer + " times")</text>
+                    }
+                    else
+                    {
+                        <text>@Html.DisplayFor(m => "Unlimited")</text>
+                    }
+                </td>
+                <td></td>
+            </tr>
+            }
+        </table>
+    }
+
+    <h3>Redeemed Vouchers</h3>
+    @if (Model.RedeemedVouchers.Count == 0)
+    {
+        <div style="text-align: center">
+            <label>No redeemed vouchers</label>
+        </div>
+    }
+    else
+    {
+        i = 1;
+        <table>
+            <tr>
+                <th>
+                    @Html.Label("Id")
+                </th>
+                <th>
+                    @Html.Label("Date")
+                </th>
+                <th>
+                    @Html.Label("Name")
+                </th>
+                <th>
+                    @Html.Label("Discount")
+                </th>
+                <th>
+                    @Html.Label("Saved Value")
+                </th>
+                <th>
+                    @Html.Label("# of Avails")
+                </th>
+            </tr>
+            @foreach (var availed in Model.RedeemedVouchers)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => "#" + i)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => availed.DateRedeemed)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => availed.Customer.FirstName
+                                         + " " + availed.Customer.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => availed.Voucher.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => availed.ValueSaved)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => availed.TimesAvailed)
+                </td>
+            </tr>
+                i++;
+            }
+        </table>
+    }
+</div>

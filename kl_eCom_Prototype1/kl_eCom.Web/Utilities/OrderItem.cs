@@ -16,8 +16,11 @@ namespace kl_eCom.Web.Utilities
         public int OrderId { get; set; }
         public Order Order { get; set; }
 
-        public int StockId { get; set; }
+        public int? StockId { get; set; }
         public Stock StockProduct { get; set; }
+
+        public int? DiscountConstraintId { get; set; }
+        public DiscountConstraint DiscountConstraint { get; set; }
 
         public string ApplicationUserId { get; set; }
         public ApplicationUser Vendor { get; set; }

@@ -20,10 +20,20 @@
             <div>
                 @Html.Label(string.Format("{0} - ", ++i), new { style = "margin-right: 10px" })
                 <label>
-                    @string.Format("{0} x {1} = Rs. {2}",
-                        itm.Stock.Product.Name,
-                        itm.Qty,
-                        Model.Prices[itm.Id])
+                    @if (itm.Stock != null)
+                    {
+                        <text>@string.Format("{0} x {1} = Rs. {2}",
+                                itm.Stock.Product.Name,
+                                itm.Qty,
+                                Model.Prices[itm.Id])</text>
+                    }
+                    else
+                    {
+                        <text>@string.Format("{0} x {1} = Rs. {2}",
+                             itm.Constraint.Discount.Name,
+                             itm.Qty,
+                             Model.Prices[itm.Id])</text>
+                    }
                 </label>
             </div>
             }

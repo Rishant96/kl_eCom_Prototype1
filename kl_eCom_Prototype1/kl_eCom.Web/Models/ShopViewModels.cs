@@ -1,5 +1,6 @@
 ﻿using kl_eCom.Web.Entities;
 using kl_eCom.Web.Infrastructure;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -36,6 +37,18 @@ namespace kl_eCom.Web.Models
         public int StockId { get; set; }
         public int AlreadyInCart { get; set; }
         public int Qty { get; set; }
+        public float? NewPrice { get; set; }
+        public List<DiscountConstraint> MinOrderDiscounts { get; set; }
+        public List<DiscountConstraint> BundleDiscounts { get; set; }
+        public Dictionary<DiscountConstraint, List<Stock>> BundleStocks { get; set; }
+        public Dictionary<DiscountConstraint, string> BundleOldPrices { get; set; }
+        public Dictionary<DiscountConstraint, string> BundleNewPrices { get; set; }
+        public List<DiscountConstraint> MinQtyDiscounts { get; set; }
+    }
+
+    public class ShopBundleOrderViewModel
+    {
+        public int[] StockIds { get; set; }
     }
 
     // Helpers: Price Selection, Rating Selection, Newest Arrivals Selection

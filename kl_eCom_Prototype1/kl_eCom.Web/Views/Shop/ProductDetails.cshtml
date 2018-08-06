@@ -14,123 +14,269 @@
     </div>
 
     <div class="row" style="max-height: 400px">
-        <div class="col-md-offset-1 col-md-5">
-            <div class="row">
-                <div class="col-md-6" style="margin-top: 40px">
-                    @{ int j = 0; }
-                    @if (Model.Stock.Product.ProductImages.Count != 0)
-                    {
-                        foreach (var img in Model.Stock.Product.ProductImages)
+        <div class="row">
+            <div class="col-md-offset-1 col-md-5">
+                <div class="row">
+                    <div class="col-md-6" style="margin-top: 40px">
+                        @{ int j = 0; }
+                        @if (Model.Stock.Product.ProductImages.Count != 0)
                         {
-                        <img id="@string.Format("Img{0}", j++)" class="col-md-6 thumb-images" 
-                             style="margin: 5px; min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                             src="@Url.Action("GetImage", "Product",
+                            foreach (var img in Model.Stock.Product.ProductImages)
+                            {
+                                <img id="@string.Format("Img{0}", j++)" class="col-md-6 thumb-images"
+                                     style="margin: 5px; min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                     src="@Url.Action("GetImage", "Product",
                                                 new { area = "Vendors", path = img.ImagePath, type = img.ImageMimeType })" />
+                            }
                         }
-                    }
-                    else
-                    {
-                        <img id="@string.Format("Img{0}", j++)" class="img-thumbnail thumb-images"
-                             style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                             src="@Url.Action("GetThumbnail", "Product",
+                        else
+                        {
+                            <img id="@string.Format("Img{0}", j++)" class="img-thumbnail thumb-images"
+                                 style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                 src="@Url.Action("GetThumbnail", "Product",
                                                 new { area = "Vendors", id = Model.Stock.ProductId })" />
-                    }
-                </div>
-                <div class="col-md-6">
-                    <img id="mainImg" width="320" height="215"
-                         style="min-height: 215px; min-width: 320px;
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <img id="mainImg" width="320" height="215"
+                             style="min-height: 215px; min-width: 320px;
                                 max-height: 215px; max-width: 320px;
                                 margin: 10px 25px; position: relative;
                                 right: 30px" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-offset-2 col-md-4"
-             style="position: relative; right: 30px">
-            @using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
+            <div class="col-md-offset-2 col-md-4"
+                 style="position: relative; right: 30px">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-                @Html.HiddenFor(m => m.StockId)
-                @Html.HiddenFor(m => m.ReturnUrl)
+                    @Html.HiddenFor(m => m.StockId)
+                    @Html.HiddenFor(m => m.ReturnUrl)
 
-                <div>
-                    <h2>@Model.Stock.Product.Name</h2>
-                </div>
-                <div>
-                    <label style="margin-right: 10px">Rating: </label>@Model.Stock.Product.Rating
-                </div>
-                <div>
-                    <label style="margin-right: 10px">Manufacturer: </label>@Model.Stock.Product.Manufacturer
-                </div>
-                <div>
-                    <p>@Model.Stock.Product.Description</p>
-                </div>
-                <div>
-                    @Html.Label("Price: " + string.Format("{0}", Model.Stock.Price))
-                </div>
-
-                <div>
-                    @{
-                        var inStock = true;
-                        var stockList = new List<int>();
-
-                        if (Model.Stock.CurrentStock == 0)
-                        {
-                            inStock = false;
-                        }
-                        else
-                        {
-                            var count = (Model.Stock.MaxAmtPerUser
-                                    < Model.Stock.CurrentStock) ?
-                                        Model.Stock.MaxAmtPerUser : Model.Stock.CurrentStock;
-
-                            for (int i = 1; i <= count - Model.AlreadyInCart; i++)
+                    <div>
+                        <h2>@Model.Stock.Product.Name</h2>
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">Rating: </label>@Model.Stock.Product.Rating
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">Manufacturer: </label>@Model.Stock.Product.Manufacturer
+                    </div>
+                    <div>
+                        <p>@Model.Stock.Product.Description</p>
+                    </div>
+                    <div>
+                        @Html.Label("Price: ")
+                        <div style="display: inline-block">
+                            <text>@(Model.Stock.Store.DefaultCurrencyType ?? "Rs.")</text>
+                            @if (Model.NewPrice != null)
                             {
-                                stockList.Add(i);
+                                <text><text style="text-decoration: line-through"> @Model.Stock.Price</text></text>
+                                <br />
+                                <text>@Model.NewPrice</text>
+                            }
+                            else
+                            {
+                                <text> @Model.Stock.Price</text>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            var inStock = true;
+                            var stockList = new List<int>();
+
+                            if (Model.Stock.CurrentStock == 0)
+                            {
+                                inStock = false;
+                            }
+                            else
+                            {
+                                var count = (Model.Stock.MaxAmtPerUser
+                                        < Model.Stock.CurrentStock) ?
+                                            Model.Stock.MaxAmtPerUser : Model.Stock.CurrentStock;
+
+                                for (int i = 1; i <= count - Model.AlreadyInCart; i++)
+                                {
+                                    stockList.Add(i);
+                                }
+                            }
+
+                            var qtyList = new SelectList(stockList);
+
+                            if (!inStock)
+                            {
+                                @Html.Label("Out Of Stock")
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(m => m.Qty, qtyList)
+                                <input type="submit" value="Add To Cart" />
                             }
                         }
-
-                        var qtyList = new SelectList(stockList);
-
-                        if (!inStock)
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" style="margin-top: 25px">
+                @Html.Label("Product Specifications:") <br />
+                <table class="table">
+                    <tr>
+                        @if (Model.Stock.Product.Category
+                                .Attributes == null 
+                            ||
+                            Model.Stock.Product.Category
+                            .Attributes.Count == 0)
                         {
-                            @Html.Label("Out Of Stock")
+                            <text>Empty</text>
                         }
                         else
                         {
-                            @Html.DropDownListFor(m => m.Qty, qtyList)
-                            <input type="submit" value="Add To Cart" />
+                            for (int i = 0; i < (Model.Stock
+                                    .Product.Category
+                                    .Attributes.Count); i++)
+                            {
+                                <td>
+                                    @Model.Stock.Product.Category.Attributes.ElementAt(i).Name
+                                </td>
+                                <td>
+                                    @Model.Stock.Product.Specifications.ElementAt(i).Value
+                                </td>
+                            }
                         }
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6" style="margin-top: 25px">
+                @if (Model.BundleDiscounts.Count > 0)
+                {
+                <div>
+                    <div>
+                        <label>Bundles</label>
+                    </div>
+                    @foreach (var bundle in Model.BundleDiscounts)
+                    {
+                        int i = 0;
+                        foreach (var stock in Model.BundleStocks[bundle])
+                        {
+                            <text>@stock.Product.Name</text>
+                            if (Model.BundleStocks[bundle].Count != ++i)
+                            {
+                                <text> + </text>
+                            }
+                        }
+                        <text> = </text>
+                        <text>
+                            <text style="text-decoration: line-through">
+                                @Model.BundleOldPrices[bundle]    
+                            </text>
+                        </text>
+                        <text><text style="margin-left: 5px">@Model.BundleNewPrices[bundle]</text></text>
+                        using (Html.BeginForm("BundleOrder", "Shop", new { id = bundle.Id,
+                                returnUrl = Request.Url.PathAndQuery },
+                            FormMethod.Post, null))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="submit" class="btn btn-default"
+                                   style="display: inline-block" value="Add to cart" />
+                        }
+                        <br />
                     }
                 </div>
-            }
-        </div>
-        <div class="col-md-offset-3 col-md-6 col-md-offset-3" style="margin-top: 50px">
-            @Html.Label("Product Specifications:") <br />
-            <table class="table">
-                <tr>
-                    @if (Model.Stock.Product.Category
-                            .Attributes == null)
-                    {
-                        <text>Empty</text>
-                    }
-                    else
-                    {
-                        for (int i = 0; i < (Model.Stock
-                                .Product.Category
-                                .Attributes.Count); i++)
+                }
+                @if (Model.MinOrderDiscounts.Count > 0)
+                {
+                <div>
+                    <div>
+                        <label>Minimum Orders</label>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>Description</th>
+                            <th>Discount</th>
+                        </tr>
+                        @foreach (var minOrder in Model.MinOrderDiscounts)
                         {
-                        <td>
-                            @Model.Stock.Product.Category.Attributes.ElementAt(i).Name
-                        </td>
-                        <td>
-                            @Model.Stock.Product.Specifications.ElementAt(i).Value
-                        </td>
+                            <tr>
+                                <td>
+                                    @minOrder.Discount.Description
+                                </td>
+                                <td>
+                                    @if (minOrder.Discount.IsPercent)
+                                    {
+                                        <text>@minOrder.Discount.Value</text>
+                                        <text>% Off</text>
+                                    }
+                                    else
+                                    {
+                                        <text>@minOrder.Discount.Store.DefaultCurrencyType </text>
+                                        <text>@minOrder.Discount.Value</text>
+                                    }
+                                </td>
+                            </tr>
                         }
-                    }
-                </tr>
-            </table>
+                        </table>
+                </div>
+                }
+                @if (Model.MinQtyDiscounts.Count > 0)
+                {
+                <div>
+                    <div>
+                        <label>Bulk Orders</label>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    Quantity
+                                </th>
+                                <th>
+                                    Discount
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                            @foreach (var minQty in Model.MinQtyDiscounts)
+                            {
+                                <tr>
+                                    <td>
+                                        <text>@minQty.MinQty Items</text>
+                                    </td>
+                                    <td>
+                                        @if (minQty.Discount.IsPercent)
+                                        {
+                                            <text>@minQty.Discount.Value</text>
+                                            <text>% Off</text>
+                                        }
+                                        else
+                                        {
+                                            <text>@minQty.Discount.Store.DefaultCurrencyType </text>
+                                            <text>@minQty.Discount.Value</text>
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("BulkOrder", "Shop", new { id = minQty.Id,
+                                        stockId = Model.StockId,
+                                        returnUrl = Request.Url.PathAndQuery },
+                                        FormMethod.Post, null))
+                                        {
+                                        @Html.AntiForgeryToken()
+                                        <input type="submit" class="btn btn-default"
+                                               style="display: inline-block" value="Add to Cart" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                }
+            </div>
         </div>
     </div>
 </div>

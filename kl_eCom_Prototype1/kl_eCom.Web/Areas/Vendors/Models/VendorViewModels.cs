@@ -105,12 +105,14 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
         public List<int> Ids { get; set; }
         public Dictionary<int, string> Names { get; set; }
+        public Dictionary<int, string> Statuses { get; set; }
         public Dictionary<int, int> DiscountIds { get; set; }
         public Dictionary<int, string> StartDates { get; set; }
         public Dictionary<int, string> ValidityPeriods { get; set; }
         public Dictionary<int, string> DiscountValues { get; set; }
         public Dictionary<int, string> StoreNames { get; set; }
-        public Dictionary<int, string> DiscountTypes { get; set; }
+        public Dictionary<int, List<string>> DiscountTypes { get; set; }
+        public Dictionary<int, List<string>> Products { get; set; }
     }
 
     public class VendorDiscountCreateViewModel
@@ -128,8 +130,49 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [Display(Name = "Is Expirable?")]
         public bool IsExpirable { get; set; }
+        
+        [Display(Name = "Validity Period")]
+        public int? ValidityPeriod { get; set; }
 
         [Required]
+        [Display(Name = "Is Active?")]
+        public bool IsActive { get; set; }
+        
+        [Required(ErrorMessage = "Please provide a value")]
+        public float Value { get; set; }
+        
+        public List<Category> AvailableCategories { get; set; }
+
+        public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
+
+        public string ExtraInfo { get; set; }
+    }
+
+    public class VendorDiscountDetailsViewModel
+    {
+        public Discount Discount { get; set; }
+        public DiscountConstraint Constraint { get; set; }
+        public List<Product> Products { get; set; }
+    }
+
+    public class VendorDiscountEditViewModel
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+        
+        [Required]
+        public string Description { get; set; }
+        
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        [Display(Name = "Is Expirable?")]
+        public bool IsExpirable { get; set; }
+
         [Display(Name = "Validity Period")]
         public int? ValidityPeriod { get; set; }
 
@@ -137,15 +180,81 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
 
-        [Required]
-        [Display(Name = "Advanced Discount")]
-        public bool IsConstrained { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Please provide a value")]
         public float Value { get; set; }
-        
+
         public List<Category> AvailableCategories { get; set; }
 
         public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
+
+        public string Type { get; set; }
+
+        public string ExtraInfo { get; set; }
+        
+        public int MaxAmt { get; set; }
+
+        [Required]
+        public DiscountConstraintType DiscountType { get; set; }
+
+        public int[] SelectedProducts { get; set; }
+    }
+
+    public class VendorVouchersIndexViewModel
+    {
+        public List<Voucher> Vouchers { get; set; }
+        public List<RedeemedVoucher> RedeemedVouchers { get; set; }
+        public string DefaultCurrencyType { get; set; }
+    }
+
+    public class VendorVoucherCreateViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public bool IsConstrained { get; set; }
+
+        [Required]
+        public bool IsPercent { get; set; }
+
+        [Required]
+        public bool IsLimited { get; set; }
+
+        [Required]
+        public bool IsExpirable { get; set; }
+
+        public bool? IsAutomatic { get; set; }
+
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public int? MaxAvailPerCustomer { get; set; }
+
+        [Required]
+        public float Value { get; set; }
+
+        public int[] ItemPartials { get; set; } 
+    }
+
+    public class VendorVoucherItemPartialModel
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        public bool IsProductSpecific { get; set; }
+
+        [Required]
+        public int ItemId { get; set; }
+    }
+
+    public class VendorVoucherEditViewModel
+    {
+
     }
 }

@@ -248,30 +248,27 @@
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
+    <Compile Include="Entities\Voucher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201807240941482_Init.cs" />
-    <Compile Include="Migrations\201807240941482_Init.Designer.cs">
-      <DependentUpon>201807240941482_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201808060810453_Init.cs" />
+    <Compile Include="Migrations\201808060810453_Init.Designer.cs">
+      <DependentUpon>201808060810453_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201807250951331_Additional_Order_Details_Added.cs" />
-    <Compile Include="Migrations\201807250951331_Additional_Order_Details_Added.Designer.cs">
-      <DependentUpon>201807250951331_Additional_Order_Details_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201808060955182_Vouchers_Added.cs" />
+    <Compile Include="Migrations\201808060955182_Vouchers_Added.Designer.cs">
+      <DependentUpon>201808060955182_Vouchers_Added.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201807270701251_Discounts_Added.cs" />
-    <Compile Include="Migrations\201807270701251_Discounts_Added.Designer.cs">
-      <DependentUpon>201807270701251_Discounts_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201808060956470_Vouchers_Added_2.cs" />
+    <Compile Include="Migrations\201808060956470_Vouchers_Added_2.Designer.cs">
+      <DependentUpon>201808060956470_Vouchers_Added_2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201807270748402_Discounts_Edited.cs" />
-    <Compile Include="Migrations\201807270748402_Discounts_Edited.Designer.cs">
-      <DependentUpon>201807270748402_Discounts_Edited.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807270801311_Discounts_Edited_2.cs" />
-    <Compile Include="Migrations\201807270801311_Discounts_Edited_2.Designer.cs">
-      <DependentUpon>201807270801311_Discounts_Edited_2.cs</DependentUpon>
+    <Compile Include="Migrations\201808061137379_Vouchers_Added_3.cs" />
+    <Compile Include="Migrations\201808061137379_Vouchers_Added_3.Designer.cs">
+      <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -294,12 +291,14 @@
     <Compile Include="Utilities\OrderStateInfo.cs" />
     <Compile Include="Utilities\PlanChangeRequest.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
+    <Compile Include="Utilities\RedeemedVoucher.cs" />
     <Compile Include="Utilities\Refferal.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
     <Compile Include="Utilities\VendorDetails.cs" />
     <Compile Include="Utilities\VendorPlan.cs" />
     <Compile Include="Utilities\VendorPaymentDetails.cs" />
+    <Compile Include="Utilities\VoucherItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\images\1-1355x565.jpg" />
@@ -391,6 +390,10 @@
     <Content Include="Areas\Vendors\Views\Customers\OrderDetails.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\Discounts.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\CreateDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DiscountDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\EditDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\StopDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Vouchers.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -478,20 +481,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201807240941482_Init.resx">
-      <DependentUpon>201807240941482_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808060810453_Init.resx">
+      <DependentUpon>201808060810453_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807250951331_Additional_Order_Details_Added.resx">
-      <DependentUpon>201807250951331_Additional_Order_Details_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808060955182_Vouchers_Added.resx">
+      <DependentUpon>201808060955182_Vouchers_Added.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807270701251_Discounts_Added.resx">
-      <DependentUpon>201807270701251_Discounts_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808060956470_Vouchers_Added_2.resx">
+      <DependentUpon>201808060956470_Vouchers_Added_2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807270748402_Discounts_Edited.resx">
-      <DependentUpon>201807270748402_Discounts_Edited.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807270801311_Discounts_Edited_2.resx">
-      <DependentUpon>201807270801311_Discounts_Edited_2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808061137379_Vouchers_Added_3.resx">
+      <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

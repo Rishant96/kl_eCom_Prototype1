@@ -34,9 +34,5 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public string Country { get; set; }
-
-        [Required]
-        public int StoreId { get; set; }
-        public Store Store { get; set; }
     }
 }

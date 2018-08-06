@@ -14,6 +14,7 @@ namespace kl_eCom.Web.Entities
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(20)]
         public string Name { get; set; }
 
         [Required]
@@ -30,8 +31,7 @@ namespace kl_eCom.Web.Entities
 
         [Required]
         public bool IsExpirable { get; set; }
-
-        [Required]
+        
         public int? ValidityPeriod { get; set; }
 
         [Required]
@@ -49,12 +49,7 @@ namespace kl_eCom.Web.Entities
         [Required]
         public int StoreId { get; set; }
         public Store Store { get; set; }
-
-
-        [Required]
-        public int DiscountConstraintId { get; set; }
-        public DiscountConstraint Constraint { get; set; }
-
+        
         public ICollection<DiscountedItem> DiscountedItems { get; set; }
     }
 }

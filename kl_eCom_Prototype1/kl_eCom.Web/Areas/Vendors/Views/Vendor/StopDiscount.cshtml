@@ -1,0 +1,55 @@
+﻿@model kl_eCom.Web.Entities.Discount
+@{
+    ViewBag.Title = "Stop - Discount";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Stop - Discount</h2>
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.Description, new { @class = "form-control", style = "width: 280px; height: 110px;" })
+            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Value, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.Value, new { @class = "form-control", style = "width: 280px; height: 110px;" })
+            @Html.ValidationMessageFor(m => m.Value, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.IsActive, new { @class = "form-control", style = "width: 280px; height: 110px;" })
+            @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    
+    @using (Html.BeginForm("StopDiscount", "Vendor",
+        new { id = Model.Id },
+                FormMethod.Post, null))
+    {
+        @Html.AntiForgeryToken()
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Stop" class="btn btn-default" />
+        </div>
+    </div>
+    }
+
+</div>

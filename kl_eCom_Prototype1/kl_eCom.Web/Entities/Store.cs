@@ -17,6 +17,7 @@ namespace kl_eCom.Web.Entities
         public string Name { get; set; }
 
         [Required]
+        public int StoreAddressId { get; set; }
         public StoreAddress Address { get; set; }
 
         public ICollection<Category> Categories { get; set; }

@@ -23,18 +23,69 @@ namespace kl_eCom.Web.Controllers
         {
             var cart = GetCart();
             var total = 0.0f;
-            var prices = new Dictionary<CartItem, float>();
+            var prices = new Dictionary<CartItem, string>();
             var names = new Dictionary<CartItem, string>();
             ViewBag.Flag = flag;
             ViewBag.CheckoutErr = checkoutErr;
             foreach (var itm in cart.CartItems)
             {
-                var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
-                var cost = itm.Qty * stock.Price;
-                var prod = db.Products.FirstOrDefault(m => m.Id == stock.ProductId);
-                names.Add(itm, prod.Name);
-                prices.Add(itm, cost);
-                total += cost;
+                if (itm.StockId != null)
+                {
+                    var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
+                    var cost = itm.Qty * stock.Price;
+                    var prod = db.Products.FirstOrDefault(m => m.Id == stock.ProductId);
+                    names.Add(itm, prod.Name);
+                    prices.Add(itm, cost.ToString());
+                    total += cost;
+                }
+                else
+                {
+                    var cartItm = db.CartItems
+                                           .Include(m => m.Constraint)
+                                           .Include(m => m.Constraint.Discount)
+                                           .Include(m => m.Constraint.BundledItems)
+                                           .FirstOrDefault(m => m.Id == itm.Id);
+
+                    var bundledItems = cartItm
+                                        .Constraint
+                                        .BundledItems
+                                        .ToList();
+
+                    var totalPrice = 0.0f;
+
+                    names.Add(itm, cartItm.Constraint.Discount.Name + "\n(");
+                    foreach (var bndldItm in bundledItems)
+                    {
+                        var bndl = db.BundledItems
+                                           .Include(m => m.Stock)
+                                           .Include(m => m.Stock.Product)
+                                           .FirstOrDefault(m => m.Id == bndldItm.Id);
+
+                        names[itm] +=  bndl.Stock.Product.Name;
+
+                        totalPrice += bndl.Stock.Price;
+
+                        if (bundledItems.Last() != bndldItm)
+                        {
+                            names[itm] += ", ";
+                        }
+                    }
+
+                    names[itm] += ")";
+                    totalPrice *= itm.Qty;
+
+                    if (cartItm.Constraint.Discount.IsPercent)
+                    {
+                        totalPrice *= (100 - cartItm.Constraint.Discount.Value) / 100;
+                    }
+                    else
+                    {
+                        totalPrice -= cartItm.Constraint.Discount.Value;
+                    }
+
+                    prices.Add(itm, totalPrice.ToString());
+                    total += totalPrice;
+                }
             }
 
             if (Url.IsLocalUrl(returnUrl))
@@ -64,8 +115,9 @@ namespace kl_eCom.Web.Controllers
                 if (User.Identity.IsAuthenticated)
                 {
                     cartItm = db.CartItems.FirstOrDefault(m => m.Id == id);
-                    var entry = db.Entry(cartItm);
-                    if (entry.State == EntityState.Detached)
+                    
+                    var entry2 = db.Entry(cartItm);
+                    if (entry2.State == EntityState.Detached)
                         db.CartItems.Attach(cartItm);
                     db.CartItems.Remove(cartItm);
                     db.SaveChanges();
@@ -73,6 +125,7 @@ namespace kl_eCom.Web.Controllers
                 else
                 {
                     cartItm = cart.CartItems.FirstOrDefault(m => m.Id == id);
+
                     cart.CartItems.Remove(cartItm);
                 }
 
@@ -109,14 +162,48 @@ namespace kl_eCom.Web.Controllers
                         .Where(m => m.ApplicationUserId == usrId)
                         .ToList();
             var totalPrice = 0.0f;
-            var cartItems = cart.CartItems.ToList();
+            var cartItems = new List<CartItem>();
+            foreach (var itm in cart.CartItems)
+            {
+                cartItems.Add(db.CartItems
+                    .Include(m => m.Constraint)
+                    .Include(m => m.Constraint.Discount)
+                    .Include(m => m.Stock)
+                    .FirstOrDefault(m => m.Id == itm.Id));
+            }
             var prices = new Dictionary<int, float>();
             foreach (var itm in cartItems)
             {
-                var miniTotal = itm.Qty * itm.Stock.Price;
+                var miniTotal = 0.0f;
+                if (itm.Stock != null)
+                {
+                    miniTotal = itm.Qty * itm.Stock.Price;
+                }
+                else
+                {
+                    var bundle = db.DiscountConstraints
+                                        .Include(m => m.Discount)
+                                        .Include(m => m.BundledItems)
+                                        .FirstOrDefault(m => m.Id 
+                                            == itm.DiscountConstraintId);
+
+                    foreach (var bundleItm in bundle.BundledItems)
+                    {
+                        var stock = db.Stocks.FirstOrDefault(
+                                        m => m.Id == bundleItm.StockId);
+
+                        miniTotal += stock.Price;
+                    }
+                    miniTotal *= itm.Qty;
+                    if (bundle.Discount.IsPercent)
+                        miniTotal *= (100 - bundle.Discount.Value) / 100;
+                    else
+                        miniTotal -= bundle.Discount.Value;
+                }
                 prices.Add(itm.Id, miniTotal);
                 totalPrice += miniTotal;
             }
+
             return View(new CheckoutViewModel {
                 Addresses = addrs,
                 CartItems = cartItems,
@@ -164,32 +251,83 @@ namespace kl_eCom.Web.Controllers
 
                     foreach (var itm in cart.CartItems)
                     {
-                        var vendorId = itm.Stock.Store.ApplicationUserId;
+                        var vendorId = "";
+                        CartItem orderItem;
+                        OrderItem dbOrderItm;
 
-                        var orderItem = db.CartItems
-                            .Include(m => m.Stock)
-                            .Include(m => m.Stock.Store)
-                            .Include(m => m.Stock.Product)
-                            .FirstOrDefault(m => m.Id == itm.Id);
+                        if (itm.StockId != null)
+                        {
+                            vendorId = itm.Stock.Store.ApplicationUserId;
 
-                        var dbOrderItm = db.OrderItems.Add(new OrderItem {
-                            OrderId = order.Id,
-                            Order = order,
-                            Qty = itm.Qty,
-                            Price = itm.Stock.Price,
-                            ProductName = itm.Stock.Product.Name,
-                            StockId = itm.StockId,
-                            FinalCost = itm.Qty * itm.Stock.Price,
-                            ApplicationUserId = vendorId,
-                            Status = OrderStatus.NewOrder
-                        });
+                            orderItem = db.CartItems
+                                        .Include(m => m.Stock)
+                                        .Include(m => m.Stock.Store)
+                                        .Include(m => m.Stock.Product)
+                                        .FirstOrDefault(m => m.Id == itm.Id);
+                            
+                            dbOrderItm = db.OrderItems.Add(new OrderItem
+                            {
+                                OrderId = order.Id,
+                                Order = order,
+                                Qty = itm.Qty,
+                                Price = itm.Stock.Price,
+                                ProductName = itm.Stock.Product.Name,
+                                StockId = (int)itm.StockId,
+                                FinalCost = itm.Qty * itm.Stock.Price,
+                                ApplicationUserId = vendorId,
+                                Status = OrderStatus.NewOrder
+                            });
+                        }
+                        else
+                        {
+                            vendorId = (db.DiscountConstraints
+                                          .Include(m => m.Discount)
+                                          .Include(m => m.Discount.Store)
+                                          .FirstOrDefault(m => m.Id == itm.DiscountConstraintId))
+                                          .Discount.Store.ApplicationUserId;
 
-                        var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
+                            orderItem = db.CartItems
+                                        .Include(m => m.Constraint)
+                                        .Include(m => m.Constraint.Discount)
+                                        .Include(m => m.Constraint.Discount.Store)
+                                        .Include(m => m.Constraint.BundledItems)
+                                        .FirstOrDefault(m => m.Id == itm.Id);
+
+                            var price = 0.0f;
+                            foreach (var bundleItm in itm.Constraint.BundledItems)
+                            {
+                                if (bundleItm.Stock == null || bundleItm.Stock.Product == null)
+                                    bundleItm.Stock = db.Stocks
+                                        .Include(m => m.Product)
+                                        .FirstOrDefault(m => m.Id == bundleItm.StockId);
+                                price += bundleItm.Stock.Price;
+                            }
+
+                            if (itm.Constraint.Discount.IsPercent)
+                                price *= (100 - itm.Constraint.Discount.Value) / 100;
+                            else
+                                price -= itm.Constraint.Discount.Value;
+
+                            dbOrderItm = db.OrderItems.Add(new OrderItem
+                            {
+                                OrderId = order.Id,
+                                Order = order,
+                                Qty = itm.Qty,
+                                Price = price,
+                                ProductName = itm.Constraint.Discount.Name,
+                                DiscountConstraintId = (int)itm.DiscountConstraintId,
+                                FinalCost = itm.Qty * price,
+                                ApplicationUserId = vendorId,
+                                Status = OrderStatus.NewOrder
+                            });
+                        }
+
+                        // here
+
                         // stock.CurrentStock -= itm.Qty;
 
                         order.TotalCost += dbOrderItm.FinalCost;
                         db.Entry(order).State = EntityState.Modified;
-                        db.Entry(stock).State = EntityState.Modified;
                         db.SaveChanges();
 
                         msg += "\tProduct: " + dbOrderItm.ProductName + ", Quantity: " + dbOrderItm.Qty +
@@ -233,6 +371,7 @@ namespace kl_eCom.Web.Controllers
                         }
                     }
 
+                    msg += "\nTotal Cost = Rs. " + order.TotalCost + "\n";
                     msg += "\nRegards,\nKhushlife E-Com Team";
                     FireEmail(db.Users.FirstOrDefault(m => m.Id == usrId).Email,
                         subj, msg);
@@ -255,8 +394,6 @@ namespace kl_eCom.Web.Controllers
                             foreach(var orderItmId in orderPerVendor[vendor.Id])
                             {
                                 var orderItm = db.OrderItems
-                                    .Include(m => m.StockProduct)
-                                    .Include(m => m.StockProduct.Product)
                                     .FirstOrDefault(m => m.Id == orderItmId);
 
                                 mm.Body += "\tItem #" + ++i + ": Product Name - " + orderItm.ProductName +
@@ -378,33 +515,93 @@ namespace kl_eCom.Web.Controllers
         private int AddToCart(CartAddViewModel model, bool fromUpdate = false)
         {
             var cart = GetCart(fromUpdate);
-
-            var stock = db.Stocks.FirstOrDefault(m => m.Id == model.StockId);
-            if (stock is null) return -1;
-
-            var isPresent = false;
-            foreach (CartItem itm in cart.CartItems)
+            CartItem newCartItem = null;
+            
+            var stock = db.Stocks.FirstOrDefault(m => m.Id == model.ItemId);
+            if (stock != null)
             {
-                if (itm.StockId == model.StockId)
+                var isPresent = false;
+                foreach (CartItem itm in cart.CartItems)
                 {
-                    isPresent = true;
-                    if ((itm.Qty + model.Qty) <= stock.CurrentStock)
+                    if (itm.StockId == model.ItemId)
                     {
-                        cart.CartItems.First(m => m.Id == itm.Id).Qty += model.Qty;
+                        isPresent = true;
+                        if (stock.MaxAmtPerUser >= (itm.Qty + model.Qty))
+                        {
+                            cart.CartItems.First(m => m.Id == itm.Id).Qty += model.Qty;
+                        }
+                        else
+                            return -2;
                     }
-                    else
-                        return -2;
+                }
+                
+                if (!isPresent)
+                {
+                    newCartItem = new CartItem
+                    {
+                        StockId = model.ItemId,
+                        Qty = model.Qty,
+                        DiscountConstraintId = null,
+                        IsEditable = true
+                    };
+
+                    cart.CartItems.Add(newCartItem);
                 }
             }
-
-            if (!isPresent)
+            else
             {
-                cart.CartItems.Add(new CartItem
+                if (model.Type is null) return -5;
+
+                var constraint = db.DiscountConstraints
+                                    .FirstOrDefault(m => m.Id == model.ItemId 
+                                        && m.Type == model.Type);
+                if (constraint is null) return -6;
+
+                switch (constraint.Type)
                 {
-                    StockId = model.StockId,
-                    Qty = model.Qty
-                });
-            }
+                    case DiscountConstraintType.Bundle:
+                        {
+                            var isPresent = false;
+                            foreach (CartItem itm in cart.CartItems)
+                            {
+                                if (itm.StockId == null 
+                                    && itm.DiscountConstraintId == constraint.Id)
+                                {
+                                    isPresent = true;
+                                    if (constraint.MaxAmt >= (itm.Qty + model.Qty))
+                                    {
+                                        cart.CartItems.First(m => m.Id == itm.Id).Qty += model.Qty;
+                                    }
+                                    else
+                                        return -2;
+                                }
+                            }
+
+                            if (!isPresent)
+                            {
+                                newCartItem = new CartItem
+                                {
+                                    StockId = null,
+                                    Qty = model.Qty,
+                                    DiscountConstraintId = constraint.Id,
+                                    IsEditable = true
+                                };
+
+                                if (!User.Identity.IsAuthenticated)
+                                    newCartItem.Id = DateTime.Now.GetHashCode();
+
+                                cart.CartItems.Add(newCartItem);
+                            }
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            return -7;
+                        }
+                }
+            }            
 
             if (User.Identity.IsAuthenticated)
             {
@@ -436,7 +633,36 @@ namespace kl_eCom.Web.Controllers
                 var guestCart = JsonConvert.DeserializeObject<Cart>(cookie.Value);
                 foreach (var itm in guestCart.CartItems)
                 {
-                    AddToCart(new CartAddViewModel { StockId = itm.StockId, Qty = itm.Qty }, true);
+                    if (itm.StockId != null && itm.DiscountConstraintId == null)
+                    {
+                        AddToCart(
+                            new CartAddViewModel
+                            {
+                                ItemId = (int)itm.StockId,
+                                Qty = itm.Qty,
+                                Type = null
+                            },
+                            true
+                        );
+                    }
+                    else if (itm.StockId == null && itm.DiscountConstraintId != null)
+                    {
+                        AddToCart(
+                            new CartAddViewModel
+                            {
+                                ItemId = (int)itm.DiscountConstraintId,
+                                Qty = itm.Qty,
+                                Type = db.DiscountConstraints
+                                          .FirstOrDefault(m => m.Id == 
+                                               itm.DiscountConstraintId).Type
+                            },
+                            true
+                        );
+                    }
+                    else
+                    {
+                        return -1;
+                    }
                 }
                 db.Entry(cart).State = EntityState.Modified;
                 db.SaveChanges();

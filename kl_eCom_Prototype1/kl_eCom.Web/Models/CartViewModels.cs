@@ -12,14 +12,15 @@ namespace kl_eCom.Web.Models
     {
         public Cart Cart { get; set; }
         public float TotalCost { get; set; }
-        public Dictionary<CartItem, float> Prices { get; set; }
+        public Dictionary<CartItem, string> Prices { get; set; }
         public Dictionary<CartItem, string> ProductNames { get; set; }
     }
 
     public class CartAddViewModel
     {
-        public int StockId { get; set; }
+        public int ItemId { get; set; }
         public int Qty { get; set; }
+        public DiscountConstraintType? Type { get; set; }
     }
 
     public class CheckoutViewModel

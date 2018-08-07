@@ -1,0 +1,168 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorVoucherCreateViewModel
+@{
+    /**/
+
+    ViewBag.Title = "Create - Voucher";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create - Voucher</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="form-horizontal">
+            @Html.ValidationSummary()
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.StartDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.IsExpirable, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.IsExpirable, new { htmlAttributes = new { @class = "checkbox" } })
+                        @Html.ValidationMessageFor(m => m.IsExpirable, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.EndDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.IsConstrained, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.IsConstrained, new { htmlAttributes = new { @class = "checkbox" } })
+                        @Html.ValidationMessageFor(m => m.IsConstrained, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Automation", new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        <div style="display: flex; justify-content: space-around; margin-right: 80px; margin-top: 10px; margin-bottom: 10px">
+                            <div>
+                                <input type="radio" name="Automation"
+                                       value="1" checked />
+                                <label>Manually</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="Automation"
+                                       value="2" />
+                                <label>Prompts</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="Automation"
+                                       value="3" />
+                                <label>Automatic</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.IsLimited, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.IsLimited, new { htmlAttributes = new { @class = "checkbox" } })
+                        @Html.ValidationMessageFor(m => m.IsLimited, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.MaxAvailPerCustomer, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.MaxAvailPerCustomer, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.MaxAvailPerCustomer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Value, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        <div style="display: flex; justify-content: space-around; margin-right: 80px; margin-top: 10px; margin-bottom: 10px">
+                            <div>
+                                <input type="radio" name="IsInPercent"
+                                       value="1" checked />
+                                <label>In Percent</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="IsInPercent"
+                                       value="2" />
+                                <label>In Currency</label>
+                            </div>
+                        </div>
+                        @Html.EditorFor(m => m.Value, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Value, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" id="divConstraints">
+                <div style="display: flex; justify-content: space-between; margin-right: 30px;">
+                    <label style="font-size: medium">Constraints:</label>
+                    <input type="button" id="btnAddConstraints" class="btn btn-sm btn-success"
+                           value="Add Constraints" style="margin-right: 20px; position: relative;
+                            bottom: 7px" />
+                </div>
+
+                <div id="divAddConstraints">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div style="display: flex; justify-content: center">
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-info" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    var count = 0;
+    $("#btnAddConstraints").click(function () {
+        var dataString = "id=" + (count + 1);
+        $.ajax({
+            url: '@HttpUtility.UrlDecode(@Url.Action("AddVoucherConstraint", "Vendor"))',
+            data: dataString,
+            type: "GET",
+            dataType: "html",
+            success: function (data, textStatus, XMLHttpRequest) {
+                SetData(data);
+            }
+        });
+        count++;
+    });
+
+    function SetData(data) {
+        $("#divAddConstraints").append(data);
+    }
+});
+</script>

@@ -394,6 +394,8 @@
     <Content Include="Areas\Vendors\Views\Vendor\EditDiscount.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\StopDiscount.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\Vouchers.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\CreateVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\AddVoucherConstraint.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />

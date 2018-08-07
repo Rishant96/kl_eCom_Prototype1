@@ -1,0 +1,59 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorVoucherItemPartialModel
+
+@{ 
+    int urlId = Model.Count;
+    int count = ViewBag.Count;
+}
+
+<div class="form-group" id="divCnstrntNew" style="margin: 10px 50px 0px 30px;">
+    <div style="display: flex; justify-content: space-between">
+        @Html.Label("#" + count + " (Select Products):", new { @class = "control-label" })
+        @Html.Label("Delete", new { id = "dltCnstrntNew" + urlId, @class = "btn btn-link",
+                                style = "margin-right: 15px" })
+    </div>
+    <input type="hidden" id="catCount" value="@Model.AvailableCategories.Count" />
+    <div class="row">
+        @foreach (var cat in Model.AvailableCategories)
+        {
+            <div class="col-md-offset-1 col-md-4 col-md-offset-1">
+                <div>
+                    <div>
+                        <text style="margin: auto 5px">@cat.Name</text>
+                        <input type="checkbox" class="checkbox-inline all-select"
+                                style="display: inline; position: relative; left: 23px;"
+                                value="@string.Format("{0}-{1}", count, cat.Id)" name="CategoryChecks" />
+                    </div>
+                    <hr style="margin-top: 5px; margin-bottom: 15px" />
+                </div>
+                <div>
+                    <table class="table-striped table-bordered">
+                        @foreach (var prod in Model.AvailableProducts[cat])
+                        {
+                            <tr>
+                                <td style="padding: 5px 10px">
+                                    @Html.DisplayFor(m => prod.Name)
+                                </td>
+                                <td style="padding: 5px 10px">
+                                    <input type="checkbox" name="ProductChecks"
+                                           class="@string.Format("cat{0}-{1}", count, prod.Id)"
+                                           id="@string.Format("prod{0}-{1}", count, prod.Id)"
+                                           value="@string.Format("{0}-{1}", count, prod.Id)" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#divCnstrntNew").attr('id', 'divCnstrntNew' + @urlId);
+        $("#dltCnstrntNew" + @urlId).click(function () {
+            $("#divCnstrntNew" + @urlId).remove();
+        });
+    });    
+</script>

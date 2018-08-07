@@ -212,45 +212,52 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
 
         [Required]
+        [Display(Name = "Has Constraints?")]
         public bool IsConstrained { get; set; }
 
         [Required]
-        public bool IsPercent { get; set; }
-
-        [Required]
+        [Display(Name = "Limited Use")]
         public bool IsLimited { get; set; }
 
         [Required]
+        [Display(Name = "Does Expire?")]
         public bool IsExpirable { get; set; }
-
-        public bool? IsAutomatic { get; set; }
-
+        
         [Required]
+        [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        [Display(Name = "Expiry Date")]
+        public DateTime EndDate { get; set; }
 
+        [Display(Name = "per Customer Limit")]
         public int? MaxAvailPerCustomer { get; set; }
 
         [Required]
         public float Value { get; set; }
-
-        public int[] ItemPartials { get; set; } 
     }
 
     public class VendorVoucherItemPartialModel
     {
-        [Required]
-        public int Id { get; set; }
-
+        private static int _counter = 0;
+        
         [Required]
         public int Quantity { get; set; }
 
         [Required]
         public bool IsProductSpecific { get; set; }
-
+        
         [Required]
-        public int ItemId { get; set; }
+        public int Count { get; set; }
+
+        public List<Category> AvailableCategories { get; set; }
+
+        public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
+
+        public VendorVoucherItemPartialModel()
+        {
+            Count = _counter++;
+        }
     }
 
     public class VendorVoucherEditViewModel

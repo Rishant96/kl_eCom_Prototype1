@@ -1025,6 +1025,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult CreateVoucher()
         {
+            if (TempData["Count"] != null)
+                TempData["Count"] = null;
+
             var oldDate = DateTime.Now;
             var date = oldDate.AddDays(1);
             date = date.AddHours(-1 * oldDate.Hour);
@@ -1033,11 +1036,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             var model = new VendorVoucherCreateViewModel {
                 StartDate = date,
-                IsAutomatic = null,
+                EndDate = date.AddDays(30),
                 IsExpirable = true,
                 IsLimited = true,
                 Value = 10.0f,
-                ItemPartials = new int[5] { 0, 0, 0, 0, 0 },
+                MaxAvailPerCustomer = 1
             };
 
             return View(model);
@@ -1047,13 +1050,81 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateVoucher(VendorVoucherCreateViewModel model)
         {
+            var automation = Request.Form["Automation"];
+            var isPercent = Request.Form["IsInPercent"];
+            
             if (ModelState.IsValid)
             {
+                if (model.IsConstrained)
+                {
+                    var categoryChecks = Request.Form["CategoryChecks"];
+                    var productChecks = Request.Form["ProductChecks"];
+
+                    if (categoryChecks == null) categoryChecks = "";
+                    if (productChecks == null) productChecks = "";
+
+
+                    if (!(categoryChecks.Split(',').Select(sValue => sValue.Trim())
+                                                     .ToArray() is string[] catStrWithCount))
+                        catStrWithCount = new string[] { };
+
+                    if (!(productChecks.Split(',').Select(sValue => sValue.Trim())
+                                                     .ToArray() is string[] prodStrWithCount))
+                        prodStrWithCount = new string[] { };
+
+                    
+                }
 
                 return RedirectToAction("Vouchers");
             }
 
             return View(model);
+        }
+
+        public ActionResult AddVoucherConstraint()
+        {
+            if (TempData["Count"] == null)
+                TempData["Count"] = 1;
+            else
+                TempData["Count"] = (int)TempData["Count"] + 1;
+
+            ViewBag.Count = (int)TempData["Count"];
+            TempData["Count"] = (int)ViewBag.Count;
+
+            var model = new VendorVoucherItemPartialModel {
+                IsProductSpecific = true,
+                Quantity = 1,
+                AvailableCategories = new List<Category>(),
+                AvailableProducts = new Dictionary<Category, List<Product>>()
+            };
+
+            var vendorId = User.Identity.GetUserId();
+            var stores = db.Stores
+                        .Include(m => m.Categories)
+                        .Where(m => m.ApplicationUserId == vendorId)
+                        .ToList();
+
+            foreach (var store in stores)
+            {
+                model.AvailableCategories = new List<Category>();
+                foreach (var cat in store.Categories)
+                {
+                    var prods = db.Products
+                                .Where(m => m.CategoryId == cat.Id
+                                && (db.Stocks.FirstOrDefault(n =>
+                                        n.ProductId == m.Id)
+                                != null))
+                                .ToList();
+
+                    if (prods != null && prods.Count > 0)
+                    {
+                        model.AvailableCategories.Add(cat);
+                        model.AvailableProducts.Add(cat, prods);
+                    }
+                }
+            }
+
+            return PartialView("AddVoucherConstraint", model);
         }
     }
 }

@@ -15,6 +15,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
     [Authorize(Roles = "Vendor")]
     public class CategoryController : Controller
     {
+        public CategoryController()
+        {
+        }
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Vendors/Category

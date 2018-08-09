@@ -114,20 +114,27 @@
                         @Html.ValidationMessageFor(m => m.Value, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.IsActive, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(m => m.IsActive, new { htmlAttributes = new { @class = "checkbox" } })
+                        @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
             <div class="col-md-6" id="divConstraints">
                 <div style="display: flex; justify-content: space-between; margin-right: 30px;">
                     <label style="font-size: medium">Constraints:</label>
                     <input type="button" id="btnAddConstraints" class="btn btn-sm btn-success"
                            value="Add Constraints" style="margin-right: 20px; position: relative;
-                            bottom: 7px" />
+                            bottom: 5px" />
                 </div>
-
+                <input type="hidden" id="MaxCount" name="MaxCount" value="0" />
                 <div id="divAddConstraints">
                 </div>
             </div>
         </div>
-        
     </div>
 
     <div style="display: flex; justify-content: center">
@@ -159,6 +166,7 @@ $(document).ready(function () {
             }
         });
         count++;
+        $("#MaxCount").val(count);
     });
 
     function SetData(data) {

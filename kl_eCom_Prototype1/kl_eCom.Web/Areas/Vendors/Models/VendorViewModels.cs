@@ -222,7 +222,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [Display(Name = "Does Expire?")]
         public bool IsExpirable { get; set; }
-        
+
+        [Required]
+        [Display(Name = "Is Active?")]
+        public bool IsActive { get; set; }
+
         [Required]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }

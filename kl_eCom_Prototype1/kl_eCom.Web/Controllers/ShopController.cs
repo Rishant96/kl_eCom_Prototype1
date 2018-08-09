@@ -505,7 +505,10 @@ namespace kl_eCom.Web.Controllers
 
             var discountIds = db.DiscountedItems
                                 .Include(m => m.Discount)
-                                .Where(m => m.StockId == id && m.Discount.IsActive)
+                                .Where(m => m.StockId == id && m.Discount.IsActive
+                                    && m.Discount.StartDate < DateTime.Now 
+                                    && (!m.Discount.IsExpirable 
+                                        || m.Discount.EndDate > DateTime.Now))
                                 .Select(m => m.DiscountId)
                                 .ToList();
 

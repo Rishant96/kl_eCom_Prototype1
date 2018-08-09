@@ -37,7 +37,8 @@
     <div class="form-group">
         @Html.LabelFor(m => m.IsExpirable, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.IsExpirable, new { htmlAttributes = new { @class = "checkbox" } })
+            @Html.EditorFor(m => m.IsExpirable, new { htmlAttributes =
+                                                new { @class = "checkbox", id = "IsExpirable" } })
             @Html.ValidationMessageFor(m => m.IsExpirable, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -45,7 +46,8 @@
     <div class="form-group">
         @Html.LabelFor(m => m.ValidityPeriod, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.ValidityPeriod, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(m => m.ValidityPeriod, new { htmlAttributes =
+                                                   new { @class = "form-control", id = "ValidityTxtBox" } })
             @Html.ValidationMessageFor(m => m.ValidityPeriod, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -55,6 +57,14 @@
         <div class="col-md-10">
             @Html.EditorFor(m => m.Price, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.GST, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.GST, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.GST, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -85,3 +95,20 @@
 <div>
     @Html.ActionLink("Back to List", "Plans", controllerName: "Admin")
 </div>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $('#ValidityTxtBox').prop('disabled', true);
+
+        $('#IsExpirable').click(function () {
+            if ($('#IsExpirable').prop('checked')) {
+                $('#ValidityTxtBox').prop('disabled', false);
+            }
+            else {
+                $('#ValidityTxtBox').prop('disabled', true);
+            }
+        });
+    });
+</script>
+}

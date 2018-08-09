@@ -40,6 +40,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string State { get; set; }
 
         [Required]
+        public string CurrencyType { get; set; }
+
+        [Required]
         public string Country { get; set; }
     }
 
@@ -50,6 +53,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         
         public StoreAddress Address { get; set; }
+        
+        public string CurrencyType { get; set; }
 
         public ICollection<Category> Categories { get; set; }
 
@@ -63,6 +68,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
         [Required]
         public string Name { get; set; }
+
+        [Required]
+        public string CurrencyType { get; set; }
 
         [Display(Name = "Address Name")]
         public string AddrName { get; set; }

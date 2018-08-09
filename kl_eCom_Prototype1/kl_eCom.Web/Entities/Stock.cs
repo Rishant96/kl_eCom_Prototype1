@@ -19,6 +19,7 @@ namespace kl_eCom.Web.Entities
 
         [Required]
         public float Price { get; set; }
+        public float GST { get; set; }
 
         public string CurrencyType { get; set; }
 

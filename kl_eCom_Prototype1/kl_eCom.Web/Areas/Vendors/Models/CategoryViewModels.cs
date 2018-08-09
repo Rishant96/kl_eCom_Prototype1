@@ -15,6 +15,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
         public List<CategoryAttribute> Attributes { get; set; }
     }
 
@@ -25,6 +26,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
         public List<CategoryAttribute> Attributes { get; set; }
         [Display(Name = "Reflect Changes in Products")]
         [Required]

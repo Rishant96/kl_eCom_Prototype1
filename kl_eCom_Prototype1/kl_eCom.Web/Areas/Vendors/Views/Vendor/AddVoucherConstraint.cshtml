@@ -8,6 +8,15 @@
 <div class="form-group" id="divCnstrntNew" style="margin: 10px 50px 0px 30px;">
     <div style="display: flex; justify-content: space-between">
         @Html.Label("#" + count + " (Select Products):", new { @class = "control-label" })
+        @{ 
+            var list = new List<int>();
+            for (int i=1; i <= 10; i++)
+            {
+                list.Add(i);
+            }
+            var selectList = new SelectList(list);
+        }
+        @Html.DropDownList(string.Format("Qty{0}", count), selectList)
         @Html.Label("Delete", new { id = "dltCnstrntNew" + urlId, @class = "btn btn-link",
                                 style = "margin-right: 15px" })
     </div>
@@ -19,9 +28,10 @@
                 <div>
                     <div>
                         <text style="margin: auto 5px">@cat.Name</text>
-                        <input type="checkbox" class="checkbox-inline all-select"
+                        <input type="radio" class="checkbox-inline"
                                 style="display: inline; position: relative; left: 23px;"
-                                value="@string.Format("{0}-{1}", count, cat.Id)" name="CategoryChecks" />
+                                value="@string.Format("c{0}", cat.Id)" 
+                                name="@string.Format("ItemRadio{0}", count)" />
                     </div>
                     <hr style="margin-top: 5px; margin-bottom: 15px" />
                 </div>
@@ -34,10 +44,8 @@
                                     @Html.DisplayFor(m => prod.Name)
                                 </td>
                                 <td style="padding: 5px 10px">
-                                    <input type="checkbox" name="ProductChecks"
-                                           class="@string.Format("cat{0}-{1}", count, prod.Id)"
-                                           id="@string.Format("prod{0}-{1}", count, prod.Id)"
-                                           value="@string.Format("{0}-{1}", count, prod.Id)" />
+                                    <input type="radio" name="@string.Format("ItemRadio{0}", count)"
+                                           value="@string.Format("p{0}", prod.Id)" />
                                 </td>
                             </tr>
                         }

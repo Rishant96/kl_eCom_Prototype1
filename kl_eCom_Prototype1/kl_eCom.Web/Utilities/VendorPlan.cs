@@ -23,6 +23,9 @@ namespace kl_eCom.Web.Utilities
         public string Name { get; set; }
         [Required]
         public float Price { get; set; }
+        [Required]
+        [Range(minimum: 0.0, maximum: 100.0, ErrorMessage = "Please enter a value between 0.0 to 100.0")]
+        public float GST { get; set; }
         public int? ValidityPeriod { get; set; }
     }
 }

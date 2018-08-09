@@ -42,7 +42,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
             ViewBag.StoreId = storeId;
-            return View(new CategoryCreateViewModel());
+            return View(new CategoryCreateViewModel {
+                DefaultGST = 10.0f
+            });
         }
 
         [HttpPost]
@@ -96,6 +98,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     IsBase = (catId == null) ? true : false,
                     Description = model.Description,
                     Attributes = model.Attributes,
+                    DefaultGST = model.DefaultGST,
                     CategoryId = catId,
                     StoreId = (int)storeId
                 };

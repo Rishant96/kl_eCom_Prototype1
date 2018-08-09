@@ -18,10 +18,7 @@ namespace kl_eCom.Web.Utilities
 
         [Required]
         public int Quantity { get; set; }
-
-        [Required]
-        public bool IsProductSpecific { get; set; }
-
+        
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
 

@@ -270,6 +270,18 @@
     <Compile Include="Migrations\201808061137379_Vouchers_Added_3.Designer.cs">
       <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808071016507_VoucherItem_Edited_2.cs" />
+    <Compile Include="Migrations\201808071016507_VoucherItem_Edited_2.Designer.cs">
+      <DependentUpon>201808071016507_VoucherItem_Edited_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808081115452_GST_Added.cs" />
+    <Compile Include="Migrations\201808081115452_GST_Added.Designer.cs">
+      <DependentUpon>201808081115452_GST_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808090523147_Plan-GST-Added.cs" />
+    <Compile Include="Migrations\201808090523147_Plan-GST-Added.Designer.cs">
+      <DependentUpon>201808090523147_Plan-GST-Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -396,6 +408,8 @@
     <Content Include="Areas\Vendors\Views\Vendor\Vouchers.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\CreateVoucher.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\AddVoucherConstraint.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DeactivateVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DeleteVoucher.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -494,6 +508,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808061137379_Vouchers_Added_3.resx">
       <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808071016507_VoucherItem_Edited_2.resx">
+      <DependentUpon>201808071016507_VoucherItem_Edited_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808081115452_GST_Added.resx">
+      <DependentUpon>201808081115452_GST_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808090523147_Plan-GST-Added.resx">
+      <DependentUpon>201808090523147_Plan-GST-Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -17,6 +17,7 @@ namespace kl_eCom.Web.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
 
         [Required]
         public bool IsBase { get; set; }

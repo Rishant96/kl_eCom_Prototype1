@@ -21,6 +21,7 @@ namespace kl_eCom.Web.Entities
         public bool IsCategoryListable { get; set; }
         public bool IsActive { get; set; }
         public bool HasStock { get; set; }
+        public float DefaultGST { get; set; }
 
         [Range(0.0, 5.0)]
         public float Rating { get; set; }

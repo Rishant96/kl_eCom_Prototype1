@@ -35,6 +35,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     .Where(m => m.StoreId == store.Id)
                     .Include(m => m.Product)
                     .Include(m => m.Product.Category)
+                    .Include(m => m.Store)
                     .ToList()
                 );
             }
@@ -71,7 +72,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 {
                     Name = model.Name,
                     Address = storeAddr,
-                    ApplicationUserId = vendorId
+                    ApplicationUserId = vendorId,
+                    DefaultCurrencyType = model.CurrencyType
                 };
                 db.Stores.Add(store);
                 db.SaveChanges();
@@ -96,7 +98,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Name = store.Name,
                 Address = store.Address,
                 Vendor = store.Vendor,
-                Categories = store.Categories
+                Categories = store.Categories,
+                CurrencyType = store.DefaultCurrencyType
             });
         }
 
@@ -112,6 +115,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Id = store.Id,
                 Name = store.Name,
                 AddrName = store.Address.Name,
+                CurrencyType = store.DefaultCurrencyType,
                 Line1 = store.Address.Line1,
                 Line2 = store.Address.Line2,
                 Line3 = store.Address.Line3,
@@ -140,6 +144,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 store.Address.Zip = model.Zip;
                 store.Address.State = model.State;
                 store.Address.Country = model.Country;
+                store.DefaultCurrencyType = model.CurrencyType;
 
                 db.Entry(store).State = EntityState.Modified;
                 db.Entry(store.Address).State = EntityState.Modified;

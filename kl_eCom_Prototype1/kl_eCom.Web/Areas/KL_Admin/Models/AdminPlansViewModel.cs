@@ -23,6 +23,9 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         [DataType(DataType.Currency)]
         public float Price { get; set; }
         [Required]
+        [Range(minimum: 0.0, maximum: 100.0, ErrorMessage = "Please enter a value between 0.0 to 100.0")]
+        public float GST { get; set; }
+        [Required]
         public bool IsExpirable { get; set; }
         [Required]
         public bool IsEnabled { get; set; }
@@ -42,6 +45,9 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         [Required]
         [DataType(DataType.Currency)]
         public float Price { get; set; }
+        [Required]
+        [Range(minimum: 0.0, maximum: 100.0, ErrorMessage = "Please enter a value between 0.0 to 100.0")]
+        public float GST { get; set; }
         [Required]
         public bool IsExpirable { get; set; }
         [Required]

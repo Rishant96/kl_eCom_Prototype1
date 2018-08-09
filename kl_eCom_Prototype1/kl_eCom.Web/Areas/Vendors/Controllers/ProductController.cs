@@ -84,7 +84,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var parent = db.Categories.Include(m => m.Attributes).FirstOrDefault(m => m.Id == catId);
             var model = new ProductCreateViewModel {
                 Specifications = new Dictionary<string, string>(),
-                IsActive = true
+                IsActive = true,
+                DefaultGST = parent.DefaultGST
             };
             model.Attributes = new Dictionary<string, int>();
             while (parent != null)
@@ -118,7 +119,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     CategoryId = (int)catId,
                     Specifications = new List<Specification>(),
                     DateAdded = DateTime.Now,
-                    IsActive = model.IsActive
+                    IsActive = model.IsActive,
+                    DefaultGST = model.DefaultGST
                 };
 
                 if (model.Specifications == null) model.Specifications = new Dictionary<string, string>();
@@ -161,6 +163,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 ThumbnailPath = prod.ThumbnailPath,
                 ThumbnailMimeType = prod.ThumbnailMimeType
             };
+
             var catIds = new List<int>();
             var cat = prod.Category;
             while(cat != null)
@@ -234,7 +237,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     if (hpf.ContentLength != 0)
                     {
                         if (prod.ThumbnailPath != null
-                            || prod.ThumbnailMimeType == null)
+                            && prod.ThumbnailMimeType == null)
                             System.IO.File.Delete(prod.ThumbnailPath);
 
                         prod.ThumbnailMimeType = hpf.ContentType;
@@ -375,15 +378,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
+            var prod = db.Products.FirstOrDefault(m => m.Id == prodId);
             var model = new ProductStockViewModel {
-                Product = db.Products.FirstOrDefault(m => m.Id == prodId),
-                MaxPerUser = 10
+                Product = prod,
+                MaxPerUser = 10,
+                GST = prod.DefaultGST
             };
             if (oldStock != null)
             {
                 model.Price = oldStock.Price;
                 model.Stock = oldStock.CurrentStock;
                 model.MaxPerUser = oldStock.MaxAmtPerUser;
+                model.GST = oldStock.GST;
             }
             if (model.Product == null) return RedirectToAction("Index", controllerName: "Store");
             return View(model);
@@ -412,7 +418,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             StoreId = (int)storeId,
                             StockingDate = DateTime.Now,
                             Status = model.Status,
-                            MaxAmtPerUser = model.MaxPerUser
+                            MaxAmtPerUser = model.MaxPerUser,
+                            GST = model.GST
                         }
                     );
                 }
@@ -422,6 +429,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     oldStock.Price = model.Price;
                     oldStock.Status = model.Status;
                     oldStock.MaxAmtPerUser = model.MaxPerUser;
+                    oldStock.GST = model.GST;
                     db.Entry(oldStock).State = EntityState.Modified;
                 }
 

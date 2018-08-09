@@ -20,6 +20,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
         public List<string> AttributeNames { get; set; }
         public Dictionary<string, int> Attributes { get; set; }
         public Dictionary<string, string> Specifications { get; set; } 
@@ -34,6 +35,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
         [DataType(DataType.DateTime)]
         [Required]
         public DateTime DateAdded { get; set; }
@@ -52,6 +54,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public int Stock { get; set; }
         [Required]
         public float Price { get; set; }
+        public float GST { get; set; }
         public Dictionary<string, int> Stores { get; set; }
         [Required]
         [Display(Name = "Max Per Customer")]

@@ -17,7 +17,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         // GET: KL_Admin/Plans/Create
         public ActionResult Create()
         {
-            return View(new AdminPlansCreateViewModel() { ValidityPeriod = 1, MaxProducts = 10 });
+            return View(new AdminPlansCreateViewModel() { ValidityPeriod = 1, MaxProducts = 10, GST = 10.0f });
         }
 
         [HttpPost]
@@ -33,7 +33,8 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                     Price = model.Price,
                     IsActive = model.IsActive,
                     MaxProducts = model.MaxProducts,
-                    IsEnabled = model.IsEnabled
+                    IsEnabled = model.IsEnabled,
+                    GST = model.GST
                 });
                 db.SaveChanges();
                 return RedirectToAction("Plans", controllerName: "Admin");
@@ -55,7 +56,8 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 Price = model.Price,
                 MaxProducts = model.MaxProducts,
                 IsExpirable = (model.ValidityPeriod != null) ? true : false,
-                IsEnabled = model.IsEnabled
+                IsEnabled = model.IsEnabled,
+                GST = model.GST
             });
         }
 
@@ -73,6 +75,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 plan.Price = model.Price;
                 plan.IsEnabled = model.IsEnabled;
                 plan.MaxProducts = model.MaxProducts;
+                plan.GST = model.GST;
                 db.Entry(plan).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = model.Id });

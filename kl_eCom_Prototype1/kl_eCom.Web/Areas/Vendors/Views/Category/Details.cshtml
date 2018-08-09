@@ -26,6 +26,14 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.Category.DefaultGST)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.DefaultGST)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Category.IsBase)
         </dt>
 
@@ -45,8 +53,8 @@
             @if (Model.HasThumbnail)
             {
                 <text>
-                <img class="img-thumbnail" width="75" height="75"
-                     src="@Url.Action("GetThumbnail", "Category",
+                    <img class="img-thumbnail" width="75" height="75"
+                         src="@Url.Action("GetThumbnail", "Category",
                             new { Model.Category.Id })" />
                 </text>
             }

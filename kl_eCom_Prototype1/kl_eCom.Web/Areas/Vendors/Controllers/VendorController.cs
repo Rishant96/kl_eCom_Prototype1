@@ -986,32 +986,28 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                              .ToList();
 
             var currencyType = "";
-            var flag = true;
             foreach (var voucher in vouchers)
             {
                 foreach (var voucherItem in voucher.VoucherItems)
                 {
-                    if (flag)
-                    {
-                        currencyType = db.Stocks
-                                           .Include(m => m.Store)
-                                           .FirstOrDefault(m => m.Id
-                                                  == voucherItem.StockId)
-                                           .Store
-                                           .DefaultCurrencyType;
-                        flag = false;
-                    }
-                    voucherItem.StockedProduct = db.Stocks
-                                                   .Include(m => m.Product)
-                                                   .FirstOrDefault(m => m.Id
-                                                        == voucherItem.StockId);
+                    if (voucherItem.StockId != null)
+                        voucherItem.StockedProduct = db.Stocks.Include(m => m.Product)
+                                                    .FirstOrDefault(m => m.Id
+                                                    == voucherItem.StockId);
+                    else if (voucherItem.CategoryId != null)
+                        voucherItem.Category = db.Categories.Include(m => m.Store)
+                                                    .FirstOrDefault(m => m.Id
+                                                    == voucherItem.CategoryId);
+                    else
+                        return View("Error");
                 }
             }
 
+            var voucherIds = vouchers.Select(m => m.Id).ToList();
             var redeemedVouchers = db.RedeemedVouchers
                                      .Include(m => m.Customer)
                                      .Include(m => m.Voucher)
-                                     .Where(m => vouchers.Contains(m.Voucher))
+                                     .Where(m => voucherIds.Contains(m.VoucherId))
                                      .ToList();
 
             var model = new VendorVouchersIndexViewModel {
@@ -1039,6 +1035,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 EndDate = date.AddDays(30),
                 IsExpirable = true,
                 IsLimited = true,
+                IsActive = true,
                 Value = 10.0f,
                 MaxAvailPerCustomer = 1
             };
@@ -1055,25 +1052,63 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             
             if (ModelState.IsValid)
             {
+                string vendorId = User.Identity.GetUserId();
+                var voucher = new Voucher
+                {
+                    Name = model.Name,
+                    ApplicationUserId = vendorId,
+                    StartDate = model.StartDate,
+                    IsActive = model.IsActive,
+                    Value = model.Value,
+                    IsConstrained = model.IsConstrained,
+                    IsLimited = model.IsLimited,
+                    IsExpirable = model.IsExpirable,
+                    MaxAvailPerCustomer = model.MaxAvailPerCustomer,
+                    EndDate = (model.IsExpirable) ? model.EndDate : null as DateTime?
+                };
+
+                if (automation == "1") voucher.IsAutomatic = false;
+                else if (automation == "2") voucher.IsAutomatic = null;
+                else voucher.IsAutomatic = true;
+
+                if (isPercent == "1") voucher.IsPercent = true;
+                else if (isPercent == "2") voucher.IsPercent = false;
+                else return View("Error");
+
+                voucher = db.Vouchers.Add(voucher);
+
                 if (model.IsConstrained)
                 {
-                    var categoryChecks = Request.Form["CategoryChecks"];
-                    var productChecks = Request.Form["ProductChecks"];
+                    int MaxCount = int.Parse(Request.Form["MaxCount"]);
+                    for (int i = 1; i <= MaxCount; i++)
+                    {
+                        var qty = int.Parse(Request.Form["Qty" + i]);
+                        var item = new VoucherItem {
+                            VoucherId = voucher.Id,
+                            Quantity = qty
+                        };
 
-                    if (categoryChecks == null) categoryChecks = "";
-                    if (productChecks == null) productChecks = "";
+                        string selection = Request.Form["ItemRadio" + i];
 
+                        if (!string.IsNullOrEmpty(selection))
+                        {
+                            if (selection.ElementAt(0) == 'c')
+                            {
+                                item.CategoryId = int.Parse(selection.Substring(1));
+                            }
+                            else if (selection.ElementAt(0) == 'p')
+                            {
+                                item.StockId = int.Parse(selection.Substring(1));
 
-                    if (!(categoryChecks.Split(',').Select(sValue => sValue.Trim())
-                                                     .ToArray() is string[] catStrWithCount))
-                        catStrWithCount = new string[] { };
+                            }
+                            else
+                                return View("Error");
+                        }
 
-                    if (!(productChecks.Split(',').Select(sValue => sValue.Trim())
-                                                     .ToArray() is string[] prodStrWithCount))
-                        prodStrWithCount = new string[] { };
-
-                    
+                        db.VoucherItems.Add(item);
+                    }
                 }
+                db.SaveChanges();
 
                 return RedirectToAction("Vouchers");
             }
@@ -1123,8 +1158,59 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     }
                 }
             }
-
             return PartialView("AddVoucherConstraint", model);
+        }
+
+        public ActionResult DeactivateVoucher(int? id)
+        {
+            if (id == null) return View("Error");
+            var voucher = db.Vouchers
+                            .Include(m => m.VoucherItems)
+                            .FirstOrDefault(m => m.Id == id);
+            return View(voucher);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeactivateVoucher(Voucher voucher)
+        {
+            if (voucher.Id != 0)
+            {
+                var voucherEntry = db.Vouchers
+                                     .FirstOrDefault(m => m.Id 
+                                        == voucher.Id);
+                voucherEntry.IsActive = false;
+                db.Entry(voucherEntry).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Vouchers");
+            }
+            return View("Error");
+        }
+
+        public ActionResult DeleteVoucher(int? id)
+        {
+            if (id == null) return View("Error");
+            var voucher = db.Vouchers
+                            .Include(m => m.VoucherItems)
+                            .FirstOrDefault(m => m.Id == id);
+            return View(voucher);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteVoucher(Voucher voucher)
+        {
+            if (voucher.Id != 0)
+            {
+
+                var voucherEntry = db.Vouchers
+                                     .FirstOrDefault(m => m.Id
+                                        == voucher.Id);
+                db.Entry(voucherEntry).State = EntityState.Deleted;
+                db.SaveChanges();
+                return RedirectToAction("Vouchers");
+            }
+            return View("Error");
         }
     }
 }

@@ -49,7 +49,7 @@
                         <text>
                             <img class="img-thumbnail" width="45" height="45"
                                  src="@Url.Action("GetThumbnail", "Product",
-                            new { stkProd.Product.Id })" />
+new { stkProd.Product.Id })" />
                         </text>
                     }
                     else
@@ -70,7 +70,10 @@
                     @Html.DisplayFor(m => stkProd.CurrentStock)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Price)
+                    @{
+                        var cost = ((100 + stkProd.GST)/100) * stkProd.Price;
+                    }
+                    <p>@stkProd.Store.DefaultCurrencyType @cost</p>
                 </td>
                 <td>
                     @Html.ActionLink("Delete", "DeleteStock", new { id = stkProd.Id })

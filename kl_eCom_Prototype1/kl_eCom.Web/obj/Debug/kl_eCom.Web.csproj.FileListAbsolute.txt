@@ -279,11 +279,7 @@ C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\ob
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_2.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_updated_3.resources
 C:\Users\naren\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.new_migrations1.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Init.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.New_Init.resources
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csproj.GenerateResource.cache
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Vouchers_Added.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Vouchers_Added_2.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Vouchers_Added_3.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.VoucherItem_Edited_2.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.GST_Added.resources
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.PlanGSTAdded.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Model_Edited_2.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Plan_Models_Edit_1.resources

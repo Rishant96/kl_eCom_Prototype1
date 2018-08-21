@@ -88,6 +88,49 @@ namespace kl_eCom.Web.Controllers
                 }
             }
 
+           var vouchers = new List<int>();
+            if (HttpContext.Request.Cookies["Vouchers"] is HttpCookie cookie)
+                vouchers = JsonConvert.DeserializeObject<List<int>>(cookie.Value);
+            
+            foreach (var voucherId in vouchers)
+            {
+                var voucher = db.Vouchers
+                        .Include(m => m.VoucherItems)        
+                        .FirstOrDefault(m => m.Id == voucherId);
+
+                var flags = new List<bool>();
+                foreach (var voucherItm in voucher.VoucherItems)
+                {
+                    var isIn = false;
+                    foreach (var cartItm in cart.CartItems)
+                    {
+                        if (cartItm.StockId == voucherItm.StockId &&
+                                cartItm.Qty >= voucherItm.Quantity)
+                        {
+                            isIn = true;
+                            break;
+                        }
+                    }
+                    if (isIn)
+                        flags.Add(true);
+                    else
+                        flags.Add(false);
+                }
+
+                var allIn = true;
+                foreach (var itm in flags)
+                    if (!itm) allIn = false;
+                
+                if (allIn)
+                {
+                    total -= (voucher.IsPercent) ?
+                        (total * (voucher.Value / 100)) : voucher.Value;
+
+                    ViewBag.Vouchers += voucher.Name + " ";
+                    
+                }
+            }
+
             if (Url.IsLocalUrl(returnUrl))
             {
                 ViewBag.ReturnUrl = returnUrl;
@@ -451,6 +494,42 @@ namespace kl_eCom.Web.Controllers
                     smtp.Send(mm);
                 }
             }
+        }
+
+        public ActionResult VoucherPartial()
+        {
+            return PartialView("VoucherPartial");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult VoucherPartial(CartVoucherViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.VoucherName = model.VoucherName.ToUpper();
+                var voucher = db.Vouchers
+                    .Include(m => m.VoucherItems)
+                    .FirstOrDefault(m =>
+                        m.IsActive && m.StartDate < DateTime.Now &&
+                        (!m.IsExpirable || m.EndDate > DateTime.Now) &&
+                        m.Name == model.VoucherName);
+                
+                var vouchers = new List<int>();
+                if (HttpContext.Request.Cookies["Vouchers"] is HttpCookie cookie)
+                    vouchers = JsonConvert.DeserializeObject<List<int>>(cookie.Value);
+
+                if (!vouchers.Contains(voucher.Id))
+                    vouchers.Add(voucher.Id);
+
+                cookie = new HttpCookie("Vouchers")
+                {
+                    Expires = DateTime.Now.AddMinutes(60),
+                    Value = JsonConvert.SerializeObject(vouchers)
+                };
+                Response.Cookies.Add(cookie);
+            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult ContinueShopping(string returnUrl = "")

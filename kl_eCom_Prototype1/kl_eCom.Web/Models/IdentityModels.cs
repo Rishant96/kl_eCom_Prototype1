@@ -65,12 +65,7 @@ namespace kl_eCom.Web.Models
                 .WithRequired(r => r.Vendor) // <--
                 .HasForeignKey(r => r.VendorId)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ActivePlan>()
-                .HasOptional(a => a.PaymentDetails)
-                .WithOptionalDependent()
-                .WillCascadeOnDelete(false);
-
+            
             modelBuilder.Entity<Discount>()
                 .Property(t => t.Name)
                 .HasColumnAnnotation(
@@ -89,7 +84,8 @@ namespace kl_eCom.Web.Models
         public DbSet<Specification> Specifications { get; set; }
         public DbSet<VendorPlan> VendorPlans { get; set; }
         public DbSet<ActivePlan> ActivePlans { get; set; }
-        public DbSet<PlanChangeRequest> PlanChangeRequests { get; set; }
+        public DbSet<VendorPlanChangeRecord> VendorPlanChangeRecord { get; set; }
+        public DbSet<VendorDetails> VendorDetails { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -102,6 +98,7 @@ namespace kl_eCom.Web.Models
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<VoucherItem> VoucherItems { get; set; }
         public DbSet<RedeemedVoucher> RedeemedVouchers { get; set; }
+        public DbSet<VendorPlanDowngradeRecord> VendorDowngradeRecords { get; set; }
 
         public static ApplicationDbContext Create()
         {

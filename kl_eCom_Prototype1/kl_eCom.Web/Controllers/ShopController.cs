@@ -158,29 +158,6 @@ namespace kl_eCom.Web.Controllers
                         }
                     };
 
-            //if (prodModel.FilteringOptions != null && prodModel.FilterViewModel != null)
-            //{
-            //    if (prodModel.FilteringOptions.PriceOption != null)
-            //        prodModel.FilterViewModel.PriceSelection.PriceItemSelected
-            //            = prodModel.FilterViewModel.PriceSelection.PriceSelectionItems
-            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.PriceOption);
-
-            //    if (prodModel.FilteringOptions.RatingOption != null)
-            //        prodModel.FilterViewModel.RatingSelection.RatingItemSelected
-            //            = prodModel.FilterViewModel.RatingSelection.RatingSelectionItems
-            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.RatingOption);
-
-            //    if (prodModel.FilteringOptions.ArrivalOption != null)
-            //        prodModel.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected
-            //            = prodModel.FilterViewModel.AvailabilitySelection.AvailabilitySelectionItems
-            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.AvailabilityOption);
-
-            //    if (prodModel.FilteringOptions.AvailabilityOption != null)
-            //        prodModel.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected
-            //            = prodModel.FilterViewModel.NewestArrivalSelection.NewestArrivalSelectionItems
-            //                .FirstOrDefault(m => m.Id == prodModel.FilteringOptions.ArrivalOption);
-            //}
-
             return View(prodModel);
         }
         
@@ -313,24 +290,30 @@ namespace kl_eCom.Web.Controllers
             selectedOptions.RatingFilterSelected = int.Parse(ratingOption);
             selectedOptions.NewArrivalFilterSelected = int.Parse(newArrivalsOption);
             selectedOptions.AvailabilityFilterSelected = int.Parse(availabilityOption);
-            return RedirectToAction("Products", new { storeId = db.Categories.FirstOrDefault(m => m.Id == model.CategoryId).StoreId, catId = model.CategoryId,
-                
-                Price_MinValue = options.Price_MinValue, Price_MaxValue = options.Price_MaxValue, Rating_Min = options.Rating_Min,
-                Allowed_Days = options.Allowed_Days, Availability = options.Availability,
-                PriceFilterSelected = selectedOptions.PriceFilterSelected, 
-                RatingFilterSelected = selectedOptions.RatingFilterSelected,
-                NewArrivalFilterSelected = selectedOptions.NewArrivalFilterSelected,
-                AvailabilityFilterSelected = selectedOptions.AvailabilityFilterSelected,
+            return RedirectToAction("Products", new { storeId = (model.CategoryId == null) ? 
+                                                                null as int?    : 
+                                                                db.Categories
+                                                                  .FirstOrDefault(m => m.Id == model.CategoryId)
+                                                                  .StoreId,
+                                                                catId = model.CategoryId,
+                options.Price_MinValue, options.Price_MaxValue,
+                options.Rating_Min, options.Allowed_Days,
+                options.Availability,
+                selectedOptions.PriceFilterSelected, 
+                selectedOptions.RatingFilterSelected,
+                selectedOptions.NewArrivalFilterSelected,
+                selectedOptions.AvailabilityFilterSelected,
                 SortOption = model.SelectedOption
             });
         }
 
         public ActionResult Products(int? storeId, int? catId, [Form] ShopFilteringOptions filteringOptions,
                                 [Form] SelectedFilters selectedFilters,
-                                [Form] QueryOptions queryOptions, bool flag = false)
+                                [Form] QueryOptions queryOptions,
+                                string searchQuery = null, bool flag = false)
         {
             if (queryOptions == null) queryOptions = new QueryOptions();
-            if(storeId == null || catId == null) return RedirectToAction("Index", "Market");
+           
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
             bool? recFlag = TempData["flag"] as bool?;
@@ -344,17 +327,16 @@ namespace kl_eCom.Web.Controllers
                 TempData["flag"] = flag;
             }
             ViewBag.Flag = flag;
-            var store = db.Stores.FirstOrDefault(m => m.Id == storeId);
-            if (store == null) return View("Error");
-            var parent = db.Categories.FirstOrDefault(m => m.Id == catId);
-            if (parent == null) return View("Error");
+            var store = db.Stores.FirstOrDefault(m => m.Id == (storeId ?? 0));
+            var parent = db.Categories.FirstOrDefault(m => m.Id == (catId ?? 0));
             var parentList = new Dictionary<string, int>();
             while (parent != null)
             {
                 parentList.Add(parent.Name, parent.Id);
                 parent = db.Categories.FirstOrDefault(m => m.Id == parent.CategoryId);
             }
-            var catProdIds = db.Products.Where(m => m.CategoryId == catId).Select(m => m.Id).ToList();
+            var catProdIds = db.Products.Where(m => m.CategoryId == (catId ?? m.CategoryId))
+                                        .Select(m => m.Id).ToList();
             var thresholdDate = DateTime.Now;
             bool dateFlag = false;
             if (filteringOptions.Allowed_Days == -1)
@@ -365,12 +347,40 @@ namespace kl_eCom.Web.Controllers
             {
                 thresholdDate = thresholdDate.AddDays(-1 * filteringOptions.Allowed_Days);
             }
+
+            SearchParam search = null;
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                var stocks = db.Stocks
+                             .Include(m => m.Product)
+                             .Where(m => m.Product.Name.Contains(searchQuery))
+                             .OrderBy(m => m.Product.Name)
+                             .Select(m => m.Id)
+                             .Distinct()
+                             .ToArray();
+
+                var categories = db.Categories
+                                 .Where(m => m.Name.Contains(searchQuery))
+                                 .OrderBy(m => m.Name)
+                                 .Select(m => m.Id)
+                                 .Distinct()
+                                 .ToArray();
+                
+                TempData["Search"] = searchQuery;
+
+                search = new SearchParam {
+                    Categories = categories,
+                    Stocks = stocks
+                };
+            }
+
             var model = new ShopProductsViewModel
             {
-                CategoryId = (int)catId,
-                Stocks = db.Stocks
+                CategoryId = catId,
+                Stocks = (search == null || (search.Categories == null && search.Stocks == null)) ?
+                          db.Stocks
                             .Include(m => m.Product)
-                            .Where(m => m.StoreId == storeId 
+                            .Where(m => m.StoreId == (storeId ?? m.StoreId)
                                 && catProdIds.Contains(m.ProductId)
                                 && m.Price >= filteringOptions.Price_MinValue 
                                 && m.Price <= filteringOptions.Price_MaxValue
@@ -378,14 +388,49 @@ namespace kl_eCom.Web.Controllers
                                 && m.Product.IsActive == true
                                 && (filteringOptions.Availability || m.Status == StockStatus.InStock))
                             .OrderBy(queryOptions.Sort) 
-                            .ToList(),
+                            .ToList()
+                         :
+                           null,
                 Max = new Dictionary<int, int>(),
-                Breadcrum = new Dictionary<string, int>(),
+                Breadcrum = (store != null && parent != null) ? new Dictionary<string, int>()
+                                                                : null,
                 SelectedOption = queryOptions.SortOption,
-                StoreId = (int)storeId,
+                StoreId = storeId,
                 FilteringOptions = filteringOptions
             };
-            var stockList = model.Stocks;
+
+            if (search != null)
+            {
+                if (search.Categories != null && search.Categories.Count() > 0)
+                {
+                    model.Stocks = db.Stocks
+                                    .Include(m => m.Product)
+                                    .Where(m => search.Categories.Contains(m.Product.CategoryId)
+                                        && m.Price >= filteringOptions.Price_MinValue
+                                        && m.Price <= filteringOptions.Price_MaxValue
+                                        && m.Product.Rating >= filteringOptions.Rating_Min
+                                        && m.Product.IsActive == true
+                                        && (filteringOptions.Availability || m.Status == StockStatus.InStock))
+                                    .OrderBy(queryOptions.Sort)
+                                    .ToList();
+                }
+            
+                if (search.Stocks != null && search.Stocks.Count() > 0)
+                {
+                    model.Stocks.Concat(db.Stocks
+                        .Include(m => m.Product)
+                        .Where(m => search.Stocks.Contains(m.Id)
+                            && m.Price >= filteringOptions.Price_MinValue
+                            && m.Price <= filteringOptions.Price_MaxValue
+                            && m.Product.Rating >= filteringOptions.Rating_Min
+                            && m.Product.IsActive == true
+                            && (filteringOptions.Availability || m.Status == StockStatus.InStock))
+                        .OrderBy(queryOptions.Sort)
+                        .ToList());
+                }
+            }
+
+            var stockList = model.Stocks ?? new List<Stock>();
             foreach (var stock in stockList)
             {
                 if (!dateFlag && (stock.StockingDate - thresholdDate).Days < 0)
@@ -393,18 +438,21 @@ namespace kl_eCom.Web.Controllers
                     model.Stocks.Remove(stock);
                 }
             }
-            model.Breadcrum.Add(store.Name, store.Id);
-
-            var keys = parentList.Keys.ToList();
-            keys.Reverse();
-            foreach(var key in keys)
+            if (model.Breadcrum != null)
             {
-                model.Breadcrum.Add(key, parentList[key]);
+                model.Breadcrum.Add(store.Name, store.Id);
+
+                var keys = parentList.Keys.ToList();
+                keys.Reverse();
+                foreach (var key in keys)
+                {
+                    model.Breadcrum.Add(key, parentList[key]);
+                }
             }
 
             var cart = GetCart();
 
-            foreach (var stk in model.Stocks)
+            foreach (var stk in model.Stocks ?? new List<Stock>())
             {
                 var available = 0;
                 if (stk.MaxAmtPerUser < stk.CurrentStock)
@@ -436,6 +484,8 @@ namespace kl_eCom.Web.Controllers
             model.FilterViewModel.RatingSelection.RatingItemSelected = selectedFilters.RatingFilterSelected;
             model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected = selectedFilters.NewArrivalFilterSelected;
             model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected = selectedFilters.AvailabilityFilterSelected;
+            model.FilterViewModel.MinValue = filteringOptions.Price_MinValue;
+            model.FilterViewModel.MaxValue = filteringOptions.Price_MaxValue;
 
             return View(model);
         }
@@ -446,8 +496,6 @@ namespace kl_eCom.Web.Controllers
         {
             int? storeID = TempData["storeId"] as int?;
             int? catID = TempData["catId"] as int?;
-            if (storeID == null || catID == null || stockId == null)
-                return RedirectToAction("Index", "Market");
 
             if(model.Qty == 0 || ModelState.IsValid)
             {
@@ -462,12 +510,11 @@ namespace kl_eCom.Web.Controllers
         }
         
         [HttpPost]
-        public ActionResult FilterSortProducts()
+        public ActionResult FilterSortProducts([Form] ShopFilteringOptions filteringOptions,
+                                [Form] SelectedFilters selectedFilters)
         {
             int? storeID = TempData["storeId"] as int?;
             int? catID = TempData["catId"] as int?;
-            if (storeID == null || catID == null)
-                return RedirectToAction("Index", "Market");
             var formOption = Request.Form["SortOption"];
             SortOption sortOption = (SortOption)Enum.Parse(typeof(SortOption), formOption);
 
@@ -475,7 +522,16 @@ namespace kl_eCom.Web.Controllers
                 new {
                     SortOption = sortOption,
                     storeId = storeID,
-                    catId = catID
+                    catId = catID,
+                    filteringOptions.Price_MinValue,
+                    filteringOptions.Price_MaxValue,
+                    filteringOptions.Rating_Min,
+                    filteringOptions.Allowed_Days,
+                    filteringOptions.Availability,
+                    selectedFilters.PriceFilterSelected,
+                    selectedFilters.RatingFilterSelected,
+                    selectedFilters.NewArrivalFilterSelected,
+                    selectedFilters.AvailabilityFilterSelected
                 });
         } 
 
@@ -701,9 +757,11 @@ namespace kl_eCom.Web.Controllers
                 {
                     cart = new Cart() { CartItems = new List<CartItem>() };
                     var cartCookie = JsonConvert.SerializeObject(cart);
-                    cookie = new HttpCookie("guestCart");
-                    cookie.Expires = DateTime.Now.AddMinutes(60);
-                    cookie.Value = cartCookie;
+                    cookie = new HttpCookie("guestCart")
+                    {
+                        Expires = DateTime.Now.AddMinutes(60),
+                        Value = cartCookie
+                    };
                     Response.Cookies.Add(cookie);
                 }
 

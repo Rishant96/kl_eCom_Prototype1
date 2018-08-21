@@ -23,6 +23,12 @@ namespace kl_eCom.Web.Models
         public DiscountConstraintType? Type { get; set; }
     }
 
+    public class CartVoucherViewModel
+    {
+        [Required]
+        public string VoucherName { get; set; }
+    }
+
     public class CheckoutViewModel
     {
         public List<CartItem> CartItems { get; set; }

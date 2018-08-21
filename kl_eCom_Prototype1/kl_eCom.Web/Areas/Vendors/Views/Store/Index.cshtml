@@ -31,6 +31,9 @@
                 @Html.Label("Stock")
             </th>
             <th>
+                @Html.Label("Taxes")
+            </th>
+            <th>
                 @Html.Label("Price")
             </th>
             <th>
@@ -70,10 +73,10 @@ new { stkProd.Product.Id })" />
                     @Html.DisplayFor(m => stkProd.CurrentStock)
                 </td>
                 <td>
-                    @{
-                        var cost = ((100 + stkProd.GST)/100) * stkProd.Price;
-                    }
-                    <p>@stkProd.Store.DefaultCurrencyType @cost</p>
+                    @Html.DisplayFor(m => stkProd.GST)%
+                </td>
+                <td>
+                    <p>@stkProd.Store.DefaultCurrencyType @stkProd.Price</p>
                 </td>
                 <td>
                     @Html.ActionLink("Delete", "DeleteStock", new { id = stkProd.Id })

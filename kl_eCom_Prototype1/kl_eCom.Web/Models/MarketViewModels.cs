@@ -15,4 +15,10 @@ namespace kl_eCom.Web.Models
     {
         public List<Store> Shops { get; set; }
     }
+
+    public class MarketSearchViewModel
+    {
+        public List<Product> Products { get; set; }
+        public List<Category> Categories { get; set; }
+    } 
 }

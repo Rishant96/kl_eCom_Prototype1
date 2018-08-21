@@ -73,11 +73,16 @@
         }
     </table>
 
+    <div>
+        @Html.Partial("VoucherPartial", new kl_eCom.Web.Models.CartVoucherViewModel())
+        <text style="text-decoration: underline">Applied Vouchers</text> : @ViewBag.Vouchers<br />
+    </div>
+
     <div class="row">
-        <div class="col-md-2 text-right">
+        <div class="col-md-3 text-right">
             @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
         </div>
-        <div class="col-md-4 text-center">
+        <div class="col-md-3 text-center">
             @Html.Label("Total Cost: ")
             @Html.DisplayFor(m => m.TotalCost)
         </div>

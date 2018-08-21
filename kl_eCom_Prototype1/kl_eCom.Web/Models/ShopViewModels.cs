@@ -20,8 +20,8 @@ namespace kl_eCom.Web.Models
     {
         public ShopFilteringOptions FilteringOptions { get; set; }
         public ShopFilterViewModel FilterViewModel { get; set; }
-        public int CategoryId { get; set; }
-        public int StoreId { get; set; }
+        public int? CategoryId { get; set; }
+        public int? StoreId { get; set; }
         public Dictionary<string, int> Breadcrum { get; set; }
         public List<Stock> Stocks { get; set; }
         public int Qty { get; set; }

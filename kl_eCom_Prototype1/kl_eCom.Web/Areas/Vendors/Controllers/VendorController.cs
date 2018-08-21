@@ -64,10 +64,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.Id == vendorId);
             
-
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
-                        vendor.VendorDetails.ActivePlan.VendorPlanId);
+                            vendor.VendorDetails.ActivePlan.VendorPlanId);
 
             var prods = db.Products
                         .Include(m => m.Category)
@@ -91,6 +90,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Details()
         {
             var userId = User.Identity.GetUserId();
+
             return View(db.Users
                 .Include(m => m.VendorDetails)
                 .FirstOrDefault(m => m.Id == userId)
@@ -101,9 +101,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             // Encrypt UserId when editing
             var userId = User.Identity.GetUserId();
+
             var user = db.Users
                 .Include(m => m.VendorDetails)
                 .FirstOrDefault(m => m.Id == userId);
+
             return View(new VendorEditViewModel {
                 BusinessName = user.VendorDetails.BusinessName,
                 FirstName = user.FirstName,
@@ -180,14 +182,19 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
-                                .Include(m => m.PaymentDetails)
+                                .Include(m => m.PaymentDetail)
                                 .FirstOrDefault(m => m.ApplicationUserId 
                                     == userId);
+
             return View(new VendorPlanIndexViewModel {
                 UserName = User.Identity.GetUserName(),
                 CurrentPackage = db.VendorPlans
                     .FirstOrDefault(m => m.Id == activePlan.VendorPlanId),
-                PaymentDetails = activePlan.PaymentDetails
+                PaymentDetails = activePlan.PaymentDetail,
+                ExpiryDate = activePlan.EndDate,
+                DaysLeft = (activePlan.PaymentStatus) ? null as int? :
+                             30 - (DateTime.Now - activePlan.StartDate).Days,
+                Balance = activePlan.Balance ?? 0.0f
             });
         }
 
@@ -195,7 +202,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
-                                .Include(m => m.PaymentDetails)
+                                .Include(m => m.PaymentDetail)
                                 .FirstOrDefault(m => m.ApplicationUserId
                                     == userId);
 
@@ -216,21 +223,142 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pkg = db.VendorPlans.FirstOrDefault(m => m.DisplayName == model.SelectedPackage);
-                if (pkg == null) return View("Error");
-                var usrId = User.Identity.GetUserId();
-                
-                db.PlanChangeRequests.Add(new Utilities.PlanChangeRequest {
-                    ApplicationUserId = usrId,
-                    VendorPlanId = pkg.Id,
-                    Status = Utilities.RequestStatus.Pending,
-                    RequestDate = DateTime.Now
-                });
-                db.SaveChanges();
-                // raise alert
-                return RedirectToAction("Details");
+                var pkg = db.VendorPlans.FirstOrDefault(m => m.DisplayName == model.SelectedPackage).Id;
+                if (pkg == 0) return View("Error");
+                return RedirectToAction("PlanChangeConfirmation", new { id = pkg });
             }
-            return View(model);
+            return RedirectToAction("ChangePlan");
+        }
+
+        public ActionResult PlanChangeConfirmation(int? id)
+        {
+            if (id == null || id == 0) return View("Error");
+            var userId = User.Identity.GetUserId();
+            var activePlan = db.ActivePlans
+                             .Include(m => m.Plan)
+                             .FirstOrDefault(m => m.ApplicationUserId == userId);
+            var currPlan = activePlan.Plan;
+            var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
+            var vendor = db.Users
+                           .Include(m => m.VendorDetails)
+                           .FirstOrDefault(m => m.Id == userId);
+
+            if (currPlan.Price < nextPlan.Price)
+            {
+                var diff = 0.0f;
+                diff = ((nextPlan.Price / 365) * 
+                         ((activePlan.EndDate - DateTime.Now).Days))
+                         * (1 + (nextPlan.GST / 100));
+                return View("PlanUpgradeConfirmation", new VendorPlanConfirmViewModel
+                {
+                    CurrentPlan = currPlan,
+                    NewPlan = nextPlan,
+                    UserName = vendor.FirstName + " " + vendor.LastName,
+                    EndDate = activePlan.EndDate,
+                    Difference = diff
+                });
+            }
+            else
+            {
+                return View("PlanDowngradeConfirmation", new VendorPlanConfirmViewModel
+                {
+                    CurrentPlan = currPlan,
+                    NewPlan = nextPlan,
+                    UserName = vendor.FirstName + " " + vendor.LastName,
+                    EndDate = activePlan.EndDate
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PlanUpgradeConfirmation(float? amount, int? id)
+        {
+            if (amount == null || id == null || id == 0)
+                return View("Error");
+            var paymentType = int.Parse(Request.Form["Payment"]);
+
+            var userId = User.Identity.GetUserId();
+            var activePlan = db.ActivePlans
+                             .Include(m => m.Plan)
+                             .FirstOrDefault(m => m.ApplicationUserId == userId);
+            var currPlan = activePlan.Plan;
+            var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
+            var vendor = db.Users
+                           .Include(m => m.VendorDetails)
+                           .FirstOrDefault(m => m.Id == userId);
+
+            switch (paymentType)
+            {
+                case 1:
+                    {
+                        db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
+                            ApplicationUserId = User.Identity.GetUserId(),
+                            StartDate = activePlan.StartDate,
+                            TimeStamp = DateTime.Now,
+                            VendorPlanId = nextPlan.Id,
+                            VendorPlanPaymentDetailId = activePlan.VendorPlanPaymentDetailId,
+                            PlanName = nextPlan.Name,
+                            Balance = ((nextPlan.Price / 365) *
+                                        ((activePlan.EndDate - DateTime.Now).Days))
+                                        * (1 + (nextPlan.GST / 100))
+                        });
+                        
+                        activePlan.VendorPlanPaymentDetailId = null;
+                        activePlan.VendorPlanId = nextPlan.Id;
+                        activePlan.PaymentStatus = false;
+                        activePlan.StartDate = DateTime.Now;
+                        activePlan.Balance += ((nextPlan.Price / 365) *
+                                        ((activePlan.EndDate - DateTime.Now).Days))
+                                        * (1 + (nextPlan.GST / 100));
+
+                        activePlan.Balance = (float)Math.Floor((float)activePlan.Balance);
+                        if (activePlan.Balance >= -5 && activePlan.Balance <= 5)
+                            activePlan.Balance = 0.0f;
+                        db.Entry(activePlan).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        return RedirectToAction("Plan");
+                    }
+                case 2:
+                    {
+
+                        break;
+                    }
+                default:
+                    {
+                        return View("Error");
+                    }
+            }
+            return View("Error");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PlanDowngradeConfirmation(int? id)
+        {
+            if (id == null) return View("Error");
+
+            var userId = User.Identity.GetUserId();
+
+            if (db.VendorDowngradeRecords
+                .FirstOrDefault(m => m.ApplicationUserId == userId)
+                != null) return View("Error");
+
+            var activePlanId = db.ActivePlans
+                             .FirstOrDefault(m => m.ApplicationUserId == userId)
+                             .Id;
+            var newPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
+            if (newPlan == null) return View("Error");
+
+            db.VendorDowngradeRecords.Add(new VendorPlanDowngradeRecord {
+                ApplicationUserId = userId,
+                ActivePlanId = activePlanId,
+                VendorPlanId = newPlan.Id
+            });
+            db.SaveChanges();
+
+            return RedirectToAction("Plan");
         }
 
         private void AddErrors(IdentityResult result)

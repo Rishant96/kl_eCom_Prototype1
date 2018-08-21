@@ -1,4 +1,5 @@
 ﻿using kl_eCom.Web.Areas.KL_Admin.Models;
+using kl_eCom.Web.Entities;
 using kl_eCom.Web.Models;
 using kl_eCom.Web.Utilities;
 using System;
@@ -17,7 +18,13 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         // GET: KL_Admin/Plans/Create
         public ActionResult Create()
         {
-            return View(new AdminPlansCreateViewModel() { ValidityPeriod = 1, MaxProducts = 10, GST = 10.0f });
+            return View(new AdminPlansCreateViewModel() {
+                ValidityPeriod = 1,
+                MaxProducts = 10,
+                GST = 10.0f,
+                IsActive = true,
+                IsEnabled = true
+            });
         }
 
         [HttpPost]
@@ -26,7 +33,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.VendorPlans.Add(new Utilities.VendorPlan {
+                db.VendorPlans.Add(new VendorPlan {
                     Name = model.Name,
                     DisplayName = model.DisplayName,
                     ValidityPeriod = (model.IsExpirable) ? model.ValidityPeriod : null,

@@ -5,12 +5,10 @@
 
 <h2>Change Plan - Vendor</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(new { flag = (Model.DowngradeRecord == null) ? false : true }))
 {
     @Html.AntiForgeryToken()
-
     @Html.HiddenFor(m => m.VendorId)
-    @Html.HiddenFor(m => m.NewPlanId)
 
 <div class="form-horizontal">
     <div class="form-group">
@@ -21,68 +19,123 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.CurrentPackage, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.ActivePlan.Plan.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.CurrentPackage, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DisplayFor(m => m.ActivePlan.Plan.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.NewPlanName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.ActivePlan.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.NewPlanName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DisplayFor(m => m.ActivePlan.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePlan.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePlan.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    @if (Model.DowngradeRecord != null)
+    {
+    @Html.HiddenFor(m => m.Amount)
+    <div class="form-group">
+        @Html.LabelFor(m => m.DowngradeRecord.NewPlan.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.DowngradeRecord.NewPlan.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div>
+        <div>
+            <input type="radio" name="BalanceType" value="1" />
+            <text>Clear Balance</text>
+        </div>
+        <div>
+            <input type="radio" name="BalanceType" value="2" />
+            <text>Credit Account</text>
+        </div>
+    </div>
+    }
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePlan.Balance, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ActivePlan.Balance, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    @if (Model.DowngradeRecord == null)
+    {
+    <div class="form-group">
+        @Html.LabelFor(m => m.ActivePlan.PaymentStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @if (Model.ActivePlan.PaymentStatus)
+            {
+                <text>Paid</text>
+            }
+            else
+            {
+                <text>Un-Paid</text>
+            }
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.NewPlanMaxProds, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.NewPlanMaxProds, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(m => m.Amount, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.IsAccepted, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.IsAccepted, new { htmlAttributes = new { @class = "checkbox", Id = "isPaidFor" } })
-            @Html.ValidationMessageFor(m => m.IsAccepted, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="col-md-offset-1" id="acceptOrReject">
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.IsPaidFor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.IsPaidFor, new { htmlAttributes = new { @class = "checkbox", Id = "isPaidFor" } })
-                @Html.ValidationMessageFor(m => m.IsPaidFor, "", new { @class = "text-danger" })
+            <div>
+                <input type="radio" value="1" name="Mode" />
+                <text>Cash</text>
             </div>
-        </div>
-
-        <div id="paymentDetails">
-            <div class="form-group">
-                @Html.LabelFor(m => m.PaymentMode, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m.PaymentMode, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(m => m.PaymentMode, "", new { @class = "text-danger" })
-                </div>
+            <div>
+                <input type="radio" value="2" name="Mode" />
+                <text>Net-Banking</text>
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m.Notes, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
-                </div>
+            <div>
+                <input type="radio" value="3" name="Mode" />
+                <text>References</text>
+            </div>
+            <div>
+                <input type="radio" value="4" name="Mode" />
+                <text>Other</text>
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(m => m.Notes, new
+       {
+           htmlAttributes = new
+           {
+               @class = "form-control",
+               style = "max-width: 300px; max-height: 200px"
+           }
+       })
+        </div>
+    </div>
+    }
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Submit" class="btn btn-default" />
         </div>
     </div>
+
+    <div>
+        @Html.ActionLink("Back to Details", "Details", new { id = Model.VendorId })
+    </div>
 </div>
 }
-@Html.ActionLink("Back to Details", "Details", new { id = Model.VendorId })

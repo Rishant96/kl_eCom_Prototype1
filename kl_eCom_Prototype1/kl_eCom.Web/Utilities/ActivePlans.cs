@@ -1,8 +1,8 @@
-﻿using kl_eCom.Web.Models;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -11,20 +11,23 @@ namespace kl_eCom.Web.Utilities
     public class ActivePlan
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Required]
         public int VendorPlanId { get; set; }
         public VendorPlan Plan { get; set; }
-        
-        public bool? IsPaidFor { get; set; }
 
-        public int? VendorPaymentDetailsId { get; set; }
-        public VendorPaymentDetails PaymentDetails { get; set; }
+        [Required]
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser Vendor { get; set; }
+        
+        public bool PaymentStatus { get; set; }
+        public float? Balance { get; set; }
+
+        public int? VendorPlanPaymentDetailId { get; set; }
+        public VendorPlanPaymentDetail PaymentDetail { get; set; }
     }
 }

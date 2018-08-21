@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

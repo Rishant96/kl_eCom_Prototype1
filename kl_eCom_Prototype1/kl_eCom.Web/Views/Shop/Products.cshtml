@@ -3,9 +3,16 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutProdList.cshtml";
-    ViewBag.Title = Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1);
-    var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
-    var count = Model.Breadcrum.Keys.Count;
+    ViewBag.Title = (Model.Breadcrum != null) ?
+        Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1)
+        : "Products";
+    var store = (Model.Breadcrum != null) ?
+            new { Id = Model.Breadcrum.First().Value,
+                Name = Model.Breadcrum.First().Key }
+            : new { Id = 0, Name = "" };
+
+    var count = (Model.Breadcrum != null) ? Model.Breadcrum.Keys.Count : 0;
+
     var width = "160px";
     var height = "100px";
 }
@@ -39,8 +46,19 @@
         <div class="col-md-9">
             <div class="row" id="sortPanel" style="margin-bottom: 5px">
                 @Html.Label("Sort By:", new { @class = "col-md-offset-8 col-md-2", style = "padding-left: 60px" })
-                @using (Html.BeginForm("FilterSortProducts", "Shop"
-                    , FormMethod.Post, new { id = "sortForm" }))
+                @using (Html.BeginForm("FilterSortProducts", "Shop",
+                    new {
+                        Price_MinValue = Model.FilteringOptions.Price_MinValue,
+                        Price_MaxValue = Model.FilteringOptions.Price_MaxValue,
+                        Rating_Min = Model.FilteringOptions.Rating_Min,
+                        Allowed_Days = Model.FilteringOptions.Allowed_Days,
+                        Availability = Model.FilteringOptions.Availability,
+                        PriceFilterSelected = Model.FilterViewModel.PriceSelection.PriceItemSelected,
+                        RatingFilterSelected = Model.FilterViewModel.RatingSelection.RatingItemSelected,
+                        NewArrivalFilterSelected = Model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected,
+                        AvailabilityFilterSelected = Model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected
+                    },
+                    FormMethod.Post, new { id = "sortForm" }))
                 {
                     <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
                         <option @if ((int)Model.SelectedOption == 0) { <text> selected="selected" </text> } value="0">Relevance</option>
@@ -66,7 +84,7 @@
                     </text>
                 }
                 <div class="row">
-                    @foreach (var stock in Model.Stocks)
+                    @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
                     {
                         using (Html.BeginForm(new { stockId = stock.Id }))
                         {
@@ -118,7 +136,6 @@
                                 }
                             </div>
                         }
-
                     }
                 </div>
             </div>

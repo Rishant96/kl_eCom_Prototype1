@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using kl_eCom.Web.Areas.KL_Admin.Models;
 using kl_eCom.Web.Models;
+using kl_eCom.Web.Utilities;
 
 namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 {
@@ -19,6 +20,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return View(new AdminVendorsIndexViewModel {
                 Vendors = db.Users
                             .Include(m => m.VendorDetails)
+                            .Include(m => m.VendorDetails.ActivePlan)
                             .Where(m => m.PrimaryRole == "Vendor")
                             .ToList()
             });
@@ -34,13 +36,11 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return View(new AdminVendorsDetailsViewModel {
                 Vendor = vendor,
                 VendorDetails = vendor.VendorDetails,
-                ChangeRequest = db.PlanChangeRequests
-                                  .FirstOrDefault(m => m.ApplicationUserId == vendor.Id 
-                                  && m.Status == Utilities.RequestStatus.Pending),
                 ActivePackage = db.ActivePlans
                                   .Include(m => m.Plan)
-                                  .Include(m => m.PaymentDetails)
-                                  .FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
+                                  .Include(m => m.PaymentDetail)
+                                  .FirstOrDefault(m => m.ApplicationUserId == vendor.Id),
+                DowngradeRequest = db.VendorDowngradeRecords.FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
             });
         }
 
@@ -53,7 +53,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return View(new AdminVendorsDomainEditViewModel {
                 FullName = vendor.FirstName + " " + vendor.LastName,
                 RegisterDate = vendor.VendorDetails.RegistrationDate,
-                DomainDate = (DateTime) vendor.VendorDetails.DomainRegistrationDate
+                DomainDate = vendor.VendorDetails.DomainRegistrationDate
             });
         }
 
@@ -65,8 +65,33 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             {
                 var vendor = db.Users
                             .Include(m => m.VendorDetails)
+                            .Include(m => m.VendorDetails.ActivePlan)
+                            .Include(m => m.VendorDetails.ActivePlan.Plan)
                             .FirstOrDefault(m => m.Id == model.Id);
                 vendor.VendorDetails.DomainRegistrationDate = model.DomainDate;
+
+                var date = (DateTime)model.DomainDate;
+                var daysNotToCharge = (vendor.VendorDetails.ActivePlan.EndDate -
+                                          date.AddYears(DateTime.Now.Year - date.Year + 1))
+                                          .Days;
+                var validRefund = ((vendor.VendorDetails.ActivePlan.Plan.Price
+                                    * (1 + (vendor.VendorDetails.ActivePlan.Plan.GST / 100)))
+                                    / 365) * daysNotToCharge;
+
+                db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
+                    ApplicationUserId = vendor.Id,
+                    Balance = vendor.VendorDetails.ActivePlan.Balance ?? 0.0f,
+                    VendorPlanPaymentDetailId = null,
+                    PlanName = vendor.VendorDetails.ActivePlan.Plan.DisplayName,
+                    StartDate = vendor.VendorDetails.ActivePlan.StartDate,
+                    TimeStamp = DateTime.Now,
+                    VendorPlanId = vendor.VendorDetails.ActivePlan.Plan.Id,
+                });
+
+                vendor.VendorDetails.ActivePlan.Balance -= validRefund;
+                vendor.VendorDetails.ActivePlan.EndDate = date.AddYears(DateTime.Now.Year - date.Year + 1);
+                vendor.VendorDetails.ActivePlan.StartDate = DateTime.Now;
+                
                 db.Entry(vendor).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = model.Id });
@@ -80,92 +105,126 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                         .Include(m => m.VendorDetails)
                         .FirstOrDefault(m => m.Id == id);
             if (vendor == null || vendor.VendorDetails == null) return View("Error");
-            var chngRqst = db.PlanChangeRequests
-                             .Include(m => m.RequestedPackage)
-                             .FirstOrDefault(m => m.ApplicationUserId == vendor.Id 
-                                    && m.Status == Utilities.RequestStatus.Pending);
             var activePckg = db.ActivePlans
                                   .Include(m => m.Plan)
-                                  .Include(m => m.PaymentDetails)
+                                  .Include(m => m.PaymentDetail)
                                   .FirstOrDefault(m => m.ApplicationUserId == vendor.Id);
             return View(new AdminVendorsPlanChangeViewModel {
                 VendorName = vendor.FirstName + " " + vendor.LastName,
                 VendorId = vendor.Id,
-                CurrentPackage = activePckg.Plan.DisplayName,
-                NewPlanId = chngRqst.VendorPlanId,
-                NewPlanName = chngRqst.RequestedPackage.DisplayName,
-                NewPlanMaxProds = chngRqst.RequestedPackage.MaxProducts
+                ActivePlan = activePckg,
+                Amount = activePckg.Balance ?? 0.0f,
+                DowngradeRecord = db.VendorDowngradeRecords
+                    .Include(m => m.NewPlan)
+                    .FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PlanChange(AdminVendorsPlanChangeViewModel model)
+        public ActionResult PlanChange(AdminVendorsPlanChangeViewModel model, bool flag)
         {
-            if (ModelState.IsValid)
+            if (flag)
             {
-                var changeRequest = db.PlanChangeRequests
-                                      .Include(m => m.RequestedPackage)
-                                      .FirstOrDefault(m => m.ApplicationUserId == model.VendorId
-                                        && m.Status == Utilities.RequestStatus.Pending);
-                if (!model.IsAccepted)
-                    changeRequest.Status = Utilities.RequestStatus.Dismissed;
-                else
+                var activePkg = db.ActivePlans
+                        .Include(m => m.Plan)
+                        .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+
+                var downgradeRecord = db.VendorDowngradeRecords
+                                .Include(m => m.NewPlan)
+                                .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+
+                var changeRecord = new VendorPlanChangeRecord
                 {
-                    var oldPkg = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
-                    db.ActivePlans.Remove(oldPkg);
+                    Balance = activePkg.Balance ?? 0.0f,
+                    PlanName = activePkg.Plan.DisplayName,
+                    StartDate = activePkg.StartDate,
+                    TimeStamp = DateTime.Now,
+                    VendorPlanId = downgradeRecord.VendorPlanId,
+                    VendorPlanPaymentDetailId = null
+                };
+                db.VendorPlanChangeRecord.Add(changeRecord);
 
-                    changeRequest.Status = Utilities.RequestStatus.Accepted;
-
-                    var vendor = db.Users
-                                .Include(m => m.VendorDetails)
-                                .FirstOrDefault(m => m.Id == model.VendorId);
-
-                    var pkg = db.VendorPlans.FirstOrDefault(m => m.Id == model.NewPlanId);
-
-                    if (!model.IsPaidFor)
-                    {
-                        vendor.VendorDetails.ActivePlan = new Utilities.ActivePlan
+                var balanceType = int.Parse(Request.Form["BalanceType"]);
+                switch (balanceType)
+                {
+                    case 1:
                         {
-                            ApplicationUserId = model.VendorId,
-                            IsPaidFor = false,
-                            Plan = pkg,
-                            VendorPlanId = model.NewPlanId,
-                            VendorPaymentDetailsId = null
-                        };
-                    }
-                    else
-                    {
-                        vendor.VendorDetails.ActivePlan = new Utilities.ActivePlan
+                            activePkg.Balance = 0.0f;
+                            activePkg.PaymentStatus = true;
+                            break;
+                        }
+                    case 2:
                         {
-                            ApplicationUserId = model.VendorId,
-                            IsPaidFor = true,
-                            Plan = pkg,
-                            VendorPlanId = model.NewPlanId,
-                            PaymentDetails = new Utilities.VendorPaymentDetails
-                            {
-                                ApplicationUserId = model.VendorId,
-                                VendorPlanId = model.NewPlanId,
-                                PaymentMode = model.PaymentMode,
-                                Details = model.Notes
-                            }
-                        };
-                    }
-                    
-                    db.Entry(vendor).State = EntityState.Modified;
-                    db.SaveChanges();
-
-                    var vendor2 = db.Users
-                                .Include(m => m.VendorDetails)
-                                .Include(m => m.VendorDetails.ActivePlan)
-                                .FirstOrDefault(m => m.Id == model.VendorId);
+                            var balance = ((activePkg.Plan.Price - downgradeRecord.NewPlan.Price) / 365)
+                                            * (activePkg.EndDate - DateTime.Now).Days;
+                            activePkg.Balance -= balance;
+                            activePkg.Balance = (float)Math.Floor((float)activePkg.Balance);
+                            if (activePkg.Balance >= -5 && activePkg.Balance <= 5)
+                                activePkg.Balance = 0.0f;
+                            if (activePkg.Balance <= 0.0f) activePkg.PaymentStatus = true;
+                            break;
+                        }
+                    default:
+                        {
+                            return View("Error");
+                        }
                 }
-                changeRequest.DecisionDate = DateTime.Now;
-                db.Entry(changeRequest).State = EntityState.Modified;
+                activePkg.VendorPlanId = downgradeRecord.VendorPlanId;
+
+                db.Entry(activePkg).State = EntityState.Modified;
+                db.Entry(downgradeRecord).State = EntityState.Deleted;
                 db.SaveChanges();
-                return RedirectToAction("Details", new { id  = model.VendorId });
+                return RedirectToAction("Details", new { id = model.VendorId });
             }
-            return View(model);
+
+            var mode = int.Parse(Request.Form["Mode"]);
+            if (!string.IsNullOrEmpty(model.VendorId))
+            {
+                var activePkg = db.ActivePlans
+                        .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+                activePkg.PaymentDetail = new VendorPlanPaymentDetail {
+                    AmountPaid = model.Amount,
+                    PaymentDate = DateTime.Now,
+                    Notes = model.Notes
+                };
+                switch (mode)
+                {
+                    case 1:
+                        {
+                            activePkg.PaymentDetail.PaymentType = PaymentType.Cash;
+                            break;
+                        }
+                    case 2:
+                        {
+                            activePkg.PaymentDetail.PaymentType = PaymentType.NetBanking;
+                            break;
+                        }
+                    case 3:
+                        {
+                            activePkg.PaymentDetail.PaymentType = PaymentType.References;
+                            break;
+                        }
+                    case 4:
+                        {
+                            activePkg.PaymentDetail.PaymentType = PaymentType.Other;
+                            break;
+                        }
+                    default:
+                        {
+                            return View("Error");
+                        }
+                }
+                activePkg.Balance -= model.Amount;
+                activePkg.Balance =  (float)Math.Floor((float)activePkg.Balance);
+                if (activePkg.Balance >= -5 && activePkg.Balance <= 5)
+                    activePkg.Balance = 0.0f;
+                activePkg.PaymentStatus = (activePkg.Balance == 0.0f) ? true : false;
+                db.Entry(activePkg).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = model.VendorId });
+            }
+            return View("Error");
         }
 
 

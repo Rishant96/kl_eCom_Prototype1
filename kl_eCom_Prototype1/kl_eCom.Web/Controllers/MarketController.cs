@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using kl_eCom.Web.Entities;
+using kl_eCom.Web.Utilities;
 
 namespace kl_eCom.Web.Controllers
 {
@@ -49,6 +51,38 @@ namespace kl_eCom.Web.Controllers
             return View(new MarketShopsViewModel {
                 Shops = shops    
             });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Search()
+        {
+            var searchQuery = Request.Form["SearchQuery"];
+            
+            return RedirectToAction("Products", "Shop", new {
+                searchQuery
+            });
+        }
+        
+        [HttpPost]
+        public JsonResult Autocomplete(string prefix)
+        {
+            var prodList = db.Products
+                             .Where(m => m.Name.Contains(prefix))
+                             .OrderBy(m => m.Name)
+                             .Select(m => new { m.Name, ID = m.Name })
+                             .Distinct()
+                             .ToList();
+
+            var catList = db.Categories
+                             .Where(m => m.Name.Contains(prefix))
+                             .OrderBy(m => m.Name)
+                             .Select(m => new { m.Name, ID = m.Name })
+                             .Distinct()
+                             .ToList();
+
+            var result = catList.Concat(prodList).ToList();
+            return Json( result, JsonRequestBehavior.AllowGet);
         }
     }
 }

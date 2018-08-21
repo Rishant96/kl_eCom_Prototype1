@@ -29,6 +29,13 @@
     </div>
 
     <div class="form-group">
+        @Html.LabelFor(m => m.ExpiryDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.ExpiryDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
         @Html.LabelFor(m => m.CurrentPackage.Price, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.DisplayFor(m => m.CurrentPackage.Price, new { htmlAttributes = new { @class = "form-control" } })
@@ -36,9 +43,23 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.ExpiryDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.Balance, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.ExpiryDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DisplayFor(m => m.Balance, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Payment Status", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @if (Model.DaysLeft != null)
+            {
+                <text><text style="color: orangered">@Html.DisplayFor(m => m.DaysLeft) Days left</text></text>
+            }
+            else
+            {
+                <text><text style="color: forestgreen">Paid</text></text>
+            }
         </div>
     </div>
 

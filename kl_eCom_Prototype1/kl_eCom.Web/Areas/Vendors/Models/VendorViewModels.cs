@@ -13,39 +13,30 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [Display(Name = "Username")]
         public string UserName { get; set; }
-
         [Required]
         [Display(Name = "Business Name")]
         public string BusinessName { get; set; }
-
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
-
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-
         [Required]
         [DataType(DataType.EmailAddress, ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
-
         [Required]
         [Display(Name = "Mobile No.")]
         [DataType(DataType.PhoneNumber, ErrorMessage = "Please enter a valid mobile number")]
         [MaxLength(10, ErrorMessage = "Please enter a 10 digit mobile number")]
-        [MinLength(10, ErrorMessage = "Please enter a 10 digit mobile number")]
         public string Mobile { get; set; }
-
         [Display(Name = "Website URL")]
         [DataType(DataType.Url, ErrorMessage = "Please enter a valid URL")]
         public string WebsiteUrl { get; set; }
-
         [Required]
         [Display(Name = "Zip / Postal Code")]
         [DataType(DataType.PostalCode, ErrorMessage = "Please enter a valid Zip / Postal Code")]
         public string Zip { get; set; }
-
         [Required]
         public string State { get; set; }
 
@@ -62,7 +53,6 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         //[DataType(DataType.Password)]
         //[Compare("Password", ErrorMessage = "Passwords do not match")]
         //public string Confirm_Password { get; set; }
-
     }
 
     public class VendorPasswordChangeViewModel
@@ -72,11 +62,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string OldPassword { get; set; }
-
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string NewPassword { get; set; }
-
         [Required]
         [Display(Name = "Confirm Password")]
         [DataType(DataType.Password)]
@@ -88,8 +76,10 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
         public string UserName { get; set; }
         public VendorPlan CurrentPackage { get; set; }
-        public VendorPaymentDetails PaymentDetails { get; set; }
+        public VendorPlanPaymentDetail PaymentDetails { get; set; }
         public DateTime? ExpiryDate { get; set; }
+        public int? DaysLeft { get; set; }
+        public float Balance { get; set; }
     }
 
     public class VendorPlanChangeViewModel
@@ -99,6 +89,16 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public List<string> Packages { get; set; }
         [Required]
         public string SelectedPackage { get; set; }
+    }
+
+    public class VendorPlanConfirmViewModel
+    {
+        public string UserName { get; set; }
+        public VendorPlan CurrentPlan { get; set; }
+        public VendorPlan NewPlan { get; set; }
+        public float Difference { get; set; }
+        public bool IsUpgrade { get; set; }
+        public DateTime EndDate { get; set; }
     }
 
     public class VendorDiscountsViewModel
@@ -119,32 +119,23 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
         [Required]
         public string Name { get; set; }
-
         [Required]
         public string Description { get; set; }
-
         [Required]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
-        
         [Required]
         [Display(Name = "Is Expirable?")]
         public bool IsExpirable { get; set; }
-        
         [Display(Name = "Validity Period")]
         public int? ValidityPeriod { get; set; }
-
         [Required]
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
-        
         [Required(ErrorMessage = "Please provide a value")]
         public float Value { get; set; }
-        
         public List<Category> AvailableCategories { get; set; }
-
         public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
-
         public string ExtraInfo { get; set; }
     }
 
@@ -159,43 +150,29 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
         [Required]
         public int Id { get; set; }
-
         [Required]
         public string Name { get; set; }
-        
         [Required]
         public string Description { get; set; }
-        
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
-
         [Required]
         [Display(Name = "Is Expirable?")]
         public bool IsExpirable { get; set; }
-
         [Display(Name = "Validity Period")]
         public int? ValidityPeriod { get; set; }
-
         [Required]
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
-
         [Required(ErrorMessage = "Please provide a value")]
         public float Value { get; set; }
-
         public List<Category> AvailableCategories { get; set; }
-
         public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
-
         public string Type { get; set; }
-
         public string ExtraInfo { get; set; }
-        
         public int MaxAmt { get; set; }
-
         [Required]
         public DiscountConstraintType DiscountType { get; set; }
-
         public int[] SelectedProducts { get; set; }
     }
 
@@ -210,33 +187,25 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
         [Required]
         public string Name { get; set; }
-
         [Required]
         [Display(Name = "Has Constraints?")]
         public bool IsConstrained { get; set; }
-
         [Required]
         [Display(Name = "Limited Use")]
         public bool IsLimited { get; set; }
-
         [Required]
         [Display(Name = "Does Expire?")]
         public bool IsExpirable { get; set; }
-
         [Required]
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
-
         [Required]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
-
         [Display(Name = "Expiry Date")]
         public DateTime EndDate { get; set; }
-
         [Display(Name = "per Customer Limit")]
         public int? MaxAvailPerCustomer { get; set; }
-
         [Required]
         public float Value { get; set; }
     }
@@ -244,20 +213,14 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class VendorVoucherItemPartialModel
     {
         private static int _counter = 0;
-        
         [Required]
         public int Quantity { get; set; }
-
         [Required]
         public bool IsProductSpecific { get; set; }
-        
         [Required]
         public int Count { get; set; }
-
         public List<Category> AvailableCategories { get; set; }
-
         public Dictionary<Category, List<Product>> AvailableProducts { get; set; }
-
         public VendorVoucherItemPartialModel()
         {
             Count = _counter++;

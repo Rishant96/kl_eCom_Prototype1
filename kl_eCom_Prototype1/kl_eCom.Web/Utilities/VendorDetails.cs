@@ -11,27 +11,20 @@ namespace kl_eCom.Web.Utilities
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         public string BusinessName { get; set; }
-
         [DataType(DataType.Url)]
         public string WebsiteUrl { get; set; }
-
         [Required]
         [DataType(DataType.PostalCode)]
         public string Zip { get; set; }
-
         [Required]
         public string State { get; set; }
-
         public int? ActivePlanId { get; set; }
         [Display(Name = "Active Plan")]
         public ActivePlan ActivePlan { get; set; }
-        
         [Required]
         public DateTime RegistrationDate { get; set; }
-        
         public DateTime? DomainRegistrationDate { get; set; }
     }
 }

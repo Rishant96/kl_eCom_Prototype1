@@ -26,6 +26,10 @@
                     <div style="padding-left: 15px; margin-top: 5px">
                         @Html.TextBoxFor(m => m.FilterViewModel.MinValue, new { @class = "PriceTxt", style = "max-width: 130px" })
                         <text> to </text>
+                        @if (Model.FilterViewModel.MaxValue == int.MaxValue)
+                        {
+                            Model.FilterViewModel.MaxValue = 0;
+                        }
                         @Html.TextBoxFor(m => m.FilterViewModel.MaxValue, new { @class = "PriceTxt", style = "max-width: 130px" })
                     </div>
                 </div>

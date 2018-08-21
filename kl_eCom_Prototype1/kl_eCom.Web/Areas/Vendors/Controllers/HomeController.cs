@@ -92,7 +92,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    PhoneNumber = model.Mobile.ToString(),
+                    PhoneNumber = model.Mobile,
                     PrimaryRole = "Vendor",
                     VendorDetails = new Utilities.VendorDetails
                     {
@@ -107,7 +107,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(vendor.Id, "Vendor");
-                    ActivePlan pkg;
                     try
                     {
                         var plan = db.VendorPlans
@@ -117,9 +116,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         db.ActivePlans.Add(new Utilities.ActivePlan
                         {
                             ApplicationUserId = vendor.Id,
-                            IsPaidFor = null,
                             VendorPlanId = plan.Id,
-                            VendorPaymentDetailsId = null
+                            VendorPlanPaymentDetailId = null,
+                            StartDate = DateTime.Now,
+                            EndDate = DateTime.Now.AddYears(1),
+                            PaymentStatus = true
                         });
                         db.SaveChanges();
 
@@ -131,9 +132,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         return RedirectToAction("Index", controllerName: "Vendor");
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
+                        db.SaveChanges();
                         UserManager.Delete(vendor);
                         return View("Error");
                     }

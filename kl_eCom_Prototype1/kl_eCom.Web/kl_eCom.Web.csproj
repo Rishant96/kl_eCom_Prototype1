@@ -240,7 +240,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MarketController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
-    <Compile Include="Entities\ActivePlans.cs" />
     <Compile Include="Entities\Cart.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Discount.cs" />
@@ -248,39 +247,24 @@
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
+    <Compile Include="Entities\VendorPlans.cs" />
     <Compile Include="Entities\Voucher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201808060810453_Init.cs" />
-    <Compile Include="Migrations\201808060810453_Init.Designer.cs">
-      <DependentUpon>201808060810453_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201808170740040_New_Init.cs" />
+    <Compile Include="Migrations\201808170740040_New_Init.Designer.cs">
+      <DependentUpon>201808170740040_New_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808060955182_Vouchers_Added.cs" />
-    <Compile Include="Migrations\201808060955182_Vouchers_Added.Designer.cs">
-      <DependentUpon>201808060955182_Vouchers_Added.cs</DependentUpon>
+    <Compile Include="Migrations\201808171035182_Model_Edited_2.cs" />
+    <Compile Include="Migrations\201808171035182_Model_Edited_2.Designer.cs">
+      <DependentUpon>201808171035182_Model_Edited_2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808060956470_Vouchers_Added_2.cs" />
-    <Compile Include="Migrations\201808060956470_Vouchers_Added_2.Designer.cs">
-      <DependentUpon>201808060956470_Vouchers_Added_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808061137379_Vouchers_Added_3.cs" />
-    <Compile Include="Migrations\201808061137379_Vouchers_Added_3.Designer.cs">
-      <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808071016507_VoucherItem_Edited_2.cs" />
-    <Compile Include="Migrations\201808071016507_VoucherItem_Edited_2.Designer.cs">
-      <DependentUpon>201808071016507_VoucherItem_Edited_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808081115452_GST_Added.cs" />
-    <Compile Include="Migrations\201808081115452_GST_Added.Designer.cs">
-      <DependentUpon>201808081115452_GST_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808090523147_Plan-GST-Added.cs" />
-    <Compile Include="Migrations\201808090523147_Plan-GST-Added.Designer.cs">
-      <DependentUpon>201808090523147_Plan-GST-Added.cs</DependentUpon>
+    <Compile Include="Migrations\201808200554565_Plan_Models_Edit_1.cs" />
+    <Compile Include="Migrations\201808200554565_Plan_Models_Edit_1.Designer.cs">
+      <DependentUpon>201808200554565_Plan_Models_Edit_1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -301,15 +285,16 @@
     <Compile Include="Utilities\DiscountedItem.cs" />
     <Compile Include="Utilities\OrderItem.cs" />
     <Compile Include="Utilities\OrderStateInfo.cs" />
-    <Compile Include="Utilities\PlanChangeRequest.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
     <Compile Include="Utilities\RedeemedVoucher.cs" />
     <Compile Include="Utilities\Refferal.cs" />
+    <Compile Include="Utilities\SearchParams.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
     <Compile Include="Utilities\VendorDetails.cs" />
-    <Compile Include="Utilities\VendorPlan.cs" />
-    <Compile Include="Utilities\VendorPaymentDetails.cs" />
+    <Compile Include="Utilities\VendorPlanChangeRecord.cs" />
+    <Compile Include="Utilities\VendorPlanDowngradeRecords.cs" />
+    <Compile Include="Utilities\VendorPlanPaymentDetails.cs" />
     <Compile Include="Utilities\VoucherItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -332,6 +317,47 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\dropzone.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -410,6 +436,8 @@
     <Content Include="Areas\Vendors\Views\Vendor\AddVoucherConstraint.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\DeactivateVoucher.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\DeleteVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\PlanUpgradeConfirmation.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\PlanDowngradeConfirmation.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -418,6 +446,8 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -477,6 +507,7 @@
     <Content Include="Views\Shared\_LayoutProdList.cshtml" />
     <Content Include="Views\Customer\MyOrders.cshtml" />
     <Content Include="Views\Customer\Cancellation.cshtml" />
+    <Content Include="Views\Cart\VoucherPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -497,26 +528,14 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808060810453_Init.resx">
-      <DependentUpon>201808060810453_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808170740040_New_Init.resx">
+      <DependentUpon>201808170740040_New_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808060955182_Vouchers_Added.resx">
-      <DependentUpon>201808060955182_Vouchers_Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808171035182_Model_Edited_2.resx">
+      <DependentUpon>201808171035182_Model_Edited_2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808060956470_Vouchers_Added_2.resx">
-      <DependentUpon>201808060956470_Vouchers_Added_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808061137379_Vouchers_Added_3.resx">
-      <DependentUpon>201808061137379_Vouchers_Added_3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808071016507_VoucherItem_Edited_2.resx">
-      <DependentUpon>201808071016507_VoucherItem_Edited_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808081115452_GST_Added.resx">
-      <DependentUpon>201808081115452_GST_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808090523147_Plan-GST-Added.resx">
-      <DependentUpon>201808090523147_Plan-GST-Added.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808200554565_Plan_Models_Edit_1.resx">
+      <DependentUpon>201808200554565_Plan_Models_Edit_1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -16,7 +16,7 @@
 <div>
     <div class="row">
         @{ var i = 1; }
-        @if (Model.VendorPackages == null) { Model.VendorPackages = new List<kl_eCom.Web.Utilities.VendorPlan>(); }
+        @if (Model.VendorPackages == null) { Model.VendorPackages = new List<kl_eCom.Web.Entities.VendorPlan>(); }
         @foreach (var package in Model.VendorPackages)
         {
             <div class="card col-md-4" style="padding: 30px; display: flex; flex-direction: column">

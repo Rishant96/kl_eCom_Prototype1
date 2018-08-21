@@ -20,7 +20,10 @@
     </tr>
     @foreach (var vndr in Model.Vendors)
     {
-        <tr>
+        <tr 
+        @if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
+            <text>style="color: orangered"</text>        
+        }>
             <td>@Html.ActionLink(vndr.UserName, "Details", new { id = vndr.Id })</td>
             <td>@Html.DisplayFor(m => vndr.Email)</td>
             <td>@Html.DisplayFor(m => vndr.PhoneNumber)</td>

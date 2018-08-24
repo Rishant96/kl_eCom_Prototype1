@@ -518,8 +518,11 @@ namespace kl_eCom.Web.Controllers
                 var vouchers = new List<int>();
                 if (HttpContext.Request.Cookies["Vouchers"] is HttpCookie cookie)
                     vouchers = JsonConvert.DeserializeObject<List<int>>(cookie.Value);
-
-                if (!vouchers.Contains(voucher.Id))
+                
+                if ( voucher.MaxAvailPerCustomer > vouchers
+                     .Where(m => m == voucher.Id)
+                     .ToList()
+                     .Count)
                     vouchers.Add(voucher.Id);
 
                 cookie = new HttpCookie("Vouchers")

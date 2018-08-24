@@ -65,11 +65,6 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string NewPassword { get; set; }
-        [Required]
-        [Display(Name = "Confirm Password")]
-        [DataType(DataType.Password)]
-        [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
-        public string Confirm_Password { get; set; }
     }
 
     public class VendorPlanIndexViewModel
@@ -85,10 +80,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class VendorPlanChangeViewModel
     {
         public string UserName { get; set; }
-        public VendorPlan CurrentPackage { get; set; }
-        public List<string> Packages { get; set; }
+        public int CurrentPlan { get; set; }
+        public List<VendorPlan> AvailablePlans { get; set; }
         [Required]
-        public string SelectedPackage { get; set; }
+        [Range((int)1, int.MaxValue, ErrorMessage = "Please select a valid plan")]
+        public int Selection { get; set; }
     }
 
     public class VendorPlanConfirmViewModel

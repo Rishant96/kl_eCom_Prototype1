@@ -133,7 +133,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 user.Email = model.Email;
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
-                user.PhoneNumber = model.LastName;
+                user.PhoneNumber = model.Mobile;
                 user.UserName = model.UserName;
                 user.VendorDetails.BusinessName = model.BusinessName;
                 user.VendorDetails.WebsiteUrl = model.WebsiteUrl;
@@ -158,17 +158,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async System.Threading.Tasks.Task<ActionResult> ChangePasswordAsync(VendorPasswordChangeViewModel model)
+        public ActionResult ChangePassword(VendorPasswordChangeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+                var result = UserManager.ChangePassword(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                    var user = UserManager.FindById(User.Identity.GetUserId());
                     if (user != null)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        SignInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
                     }
                     return RedirectToAction("Details");
                 }
@@ -198,8 +198,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             });
         }
 
-        public ActionResult ChangePlan()
+        public ActionResult ChangePlan(string errors = "")
         {
+            ViewBag.Errors = errors;
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
                                 .Include(m => m.PaymentDetail)
@@ -208,11 +209,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             return View(new VendorPlanChangeViewModel {
                 UserName = User.Identity.GetUserName(),
-                CurrentPackage = db.VendorPlans
-                    .FirstOrDefault(m => m.Id == activePlan.VendorPlanId),
-                Packages = db.VendorPlans
-                    .Where(m => m.Id != activePlan.VendorPlanId && m.IsEnabled == true)
-                    .Select(m => m.DisplayName)
+                CurrentPlan = db.VendorPlans
+                    .FirstOrDefault(m => m.Id == activePlan.VendorPlanId).Id,
+                AvailablePlans = db.VendorPlans
+                    .Where(m => m.IsActive && m.IsEnabled)
+                    .OrderBy(m => m.MaxProducts)
                     .ToList()
             });
         }
@@ -223,11 +224,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pkg = db.VendorPlans.FirstOrDefault(m => m.DisplayName == model.SelectedPackage).Id;
-                if (pkg == 0) return View("Error");
-                return RedirectToAction("PlanChangeConfirmation", new { id = pkg });
+                var pkg = db.VendorPlans.FirstOrDefault(m => m.Id == model.Selection);
+                if (pkg == null) return View("Error");
+                return RedirectToAction("PlanChangeConfirmation", new { id = pkg.Id });
             }
-            return RedirectToAction("ChangePlan");
+            return RedirectToAction("ChangePlan", new { errors = "Please select a valid plan" });
         }
 
         public ActionResult PlanChangeConfirmation(int? id)

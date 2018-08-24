@@ -18,6 +18,12 @@ namespace kl_eCom.Web.Controllers
     public class ShopController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        public bool isExternal = false;
+
+        public ShopController()
+        {
+            // Take care of external urls   
+        }
 
         // GET: Shop
         public ActionResult Index(int? id, int? catId)

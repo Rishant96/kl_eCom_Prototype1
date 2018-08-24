@@ -12,7 +12,9 @@ namespace kl_eCom.Web.Utilities
         [Key]
         public int Id { get; set; }
 
+        [Required]
         public string CustomerId { get; set; }
+        [Required]
         public string VendorId { get; set; }
         
         public ApplicationUser Customer { get; set; }
@@ -20,6 +22,8 @@ namespace kl_eCom.Web.Utilities
 
         public bool? IsRegisteredUser { get; set; }
         public bool? IsBuyer { get; set; }
+
+        public DateTime? UrlDate { get; set; }
 
         public DateTime? DateBuyerAdded { get; set; }
         public DateTime? DateOfRegistration { get; set; }

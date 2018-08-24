@@ -51,6 +51,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string Password { get; set; }
+
+        public string Key { get; set; }
+        public DateTime? TimeStamp { get; set; }
         
         //public List<VendorPackage> AvailablePackages { get; set; }
         

@@ -63,9 +63,23 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View();
         }
 
-        public ActionResult Register()
+        public ActionResult Register(string id = "", string datetimestr = "")
         {
             // External Urls
+            var datetimeparts = datetimestr.Split('_');
+            DateTime? datetime = null;
+            try
+            {
+                datetime = new DateTime(int.Parse(datetimeparts[2]),
+                                        int.Parse(datetimeparts[1]),
+                                        int.Parse(datetimeparts[0]));
+
+            }
+            catch (Exception ex)
+            {
+                id = "";
+                datetime = null;
+            }
 
             var db = new ApplicationDbContext();
             var availablePackages = db.VendorPlans
@@ -76,6 +90,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             //    AvailablePackages = availablePackages,
             //    VendorPackageSelected = (availablePackages
             //        .FirstOrDefault(m => m.Price == 0.0f)).Id
+                Key = id,
+                TimeStamp = datetime
             });
         }
 
@@ -131,6 +147,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
                         db.SaveChanges();
                         SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
+
+                        if (model.TimeStamp is DateTime && 
+                            db.Users.FirstOrDefault(m => m.Id == model.Key) 
+                                is ApplicationUser refferer)
+                        {
+                            db.Refferals.Add(new Refferal {
+                                CustomerId = vendor.Id,
+                                VendorId = refferer.Id,
+                                DateOfRegistration = DateTime.Now,
+                                UrlDate = model.TimeStamp
+                            });
+                        }
 
                         return RedirectToAction("Index", controllerName: "Vendor");
                     }

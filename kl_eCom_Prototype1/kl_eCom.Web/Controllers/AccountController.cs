@@ -144,9 +144,26 @@ namespace kl_eCom.Web.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string datetimestr = "", string id = "")
         {
-            return View();
+            var datetimeparts = datetimestr.Split('_');
+            DateTime? datetime = null;
+            try
+            {
+                datetime = new DateTime(int.Parse(datetimeparts[2]), 
+                                        int.Parse(datetimeparts[1]),
+                                        int.Parse(datetimeparts[0]));
+
+            }
+            catch (Exception ex)
+            {
+                id = "";
+                datetime = null;
+            }
+            return View(new RegisterViewModel {
+                Key = id,
+                TimeStamp = datetime
+            });
         }
 
         //
@@ -177,6 +194,25 @@ namespace kl_eCom.Web.Controllers
                         // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                         await UserManager.AddToRolesAsync(user.Id, "Customer");
+
+
+                        if (!string.IsNullOrEmpty(model.Key))
+                        {
+                            var db = new ApplicationDbContext();
+                            if (model.TimeStamp is DateTime && db.Users.FirstOrDefault(m => m.Id == model.Key)
+                                    is ApplicationUser vendor)
+                            {
+                                db.Refferals.Add(new Utilities.Refferal
+                                {
+                                    CustomerId = user.Id,
+                                    VendorId = vendor.Id,
+                                    DateOfRegistration = DateTime.Now,
+                                    IsRegisteredUser = true,
+                                    UrlDate = model.TimeStamp
+                                });
+                                db.SaveChanges();
+                            }
+                        }
 
                         return RedirectToAction("Index", "Home");
                     }

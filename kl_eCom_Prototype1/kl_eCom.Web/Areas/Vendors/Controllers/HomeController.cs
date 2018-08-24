@@ -65,6 +65,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Register()
         {
+            // External Urls
+
             var db = new ApplicationDbContext();
             var availablePackages = db.VendorPlans
                      .Where(m => m.IsActive == true)

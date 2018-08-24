@@ -17,5 +17,11 @@ namespace kl_eCom.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_BeginRequest()
+        {
+            string[] urlParts = Request.RawUrl.Split('/');
+            string lastPart = urlParts.Last();        
+        }
     }
 }

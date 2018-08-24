@@ -55,11 +55,5 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         //public List<VendorPackage> AvailablePackages { get; set; }
         
         //public int VendorPackageSelected { get; set; }
-
-        [Required]
-        [Display(Name = "Confirm Password")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
-        public string Confirm_Password { get; set; }
     }
 }

@@ -1,91 +1,85 @@
 ﻿@model kl_eCom.Web.Models.ApplicationUser
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Vendor Details";
 }
 
-<h2>Details</h2>
+<h2 style="margin-left: 35px">Vendor Details</h2>
+
+<dl class="dl-horizontal" style="margin-left: 70px; margin-top: 20px">
+    <dt>
+        @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+
+    <dt>
+        @Html.LabelFor(m => m.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.VendorDetails.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.VendorDetails.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.VendorDetails.RegistrationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Model.VendorDetails.RegistrationDate.ToLongDateString()
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.VendorDetails.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.VendorDetails.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.VendorDetails.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.VendorDetails.Zip, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.VendorDetails.State, htmlAttributes: new { @class = "control-label col-md-2" })
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.VendorDetails.State, new { htmlAttributes = new { @class = "form-control" } })
+    </dd>
+</dl>
 
 <div class="form-horizontal">
 
     <div class="form-group">
-        @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.VendorDetails.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.VendorDetails.BusinessName, new { htmlAttributes = new { @class = "checkbox" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.VendorDetails.RegistrationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Model.VendorDetails.RegistrationDate.ToLongDateString()
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.VendorDetails.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.VendorDetails.WebsiteUrl, new { htmlAttributes = new { @class = "checkbox" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.VendorDetails.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.VendorDetails.Zip, new { htmlAttributes = new { @class = "checkbox" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.VendorDetails.State, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.VendorDetails.State, new { htmlAttributes = new { @class = "checkbox" } })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10" style="position: relative; right: 10px">
+        <div class="col-md-offset-1" style="position: relative; right: 10px">
             @Html.ActionLink("Change Password", "ChangePassword", null, new { @class = "btn btn-link" })<text>|</text>
-            @Html.ActionLink("My Plan", "Plan", null, new { @class = "btn btn-link" })
+            @Html.ActionLink("KL Vendor Plan", "Plan", null, new { @class = "btn btn-link" })
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Edit", "Edit", null, new { @class = "btn btn-success" })
+        <div class="col-md-offset-1">
+            @Html.ActionLink("Edit Profile", "Edit", null, new { @class = "btn btn-success" })
         </div>
     </div>
 </div>

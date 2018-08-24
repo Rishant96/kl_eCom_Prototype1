@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@using System.Data.Entity
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", new { area = "" },
@@ -8,8 +9,20 @@
 
     <ul class="nav navbar-nav navbar-right">
         <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Details", "Vendor",
-           routeValues: new { area = "Vendors" }, htmlAttributes: new { title = "Manage" })
+            @{
+                var db = new kl_eCom.Web.Models.ApplicationDbContext();
+                var id = User.Identity.GetUserId();
+                var vendor = db.Users
+                               .Include(m => m.VendorDetails)
+                               .FirstOrDefault(m => m.Id == id);
+                var greeting = vendor.UserName;
+                if (vendor.VendorDetails != null && !string.IsNullOrEmpty(vendor.VendorDetails.BusinessName))
+                {
+                    greeting = vendor.VendorDetails.BusinessName;
+                }
+             }
+            @Html.ActionLink("Hello " + greeting, "Details", "Vendor",
+                routeValues: new { area = "Vendors" }, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>

@@ -46,7 +46,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
-            if (db.Stores.FirstOrDefault(m => m.ApplicationUserId == id) != null) return View("MultipleStores");
+            //if (db.Stores.FirstOrDefault(m => m.ApplicationUserId == id) != null) return View("MultipleStores");
             var vendor = db.Users
                         .Include(m => m.VendorDetails)
                         .FirstOrDefault(m => m.Id == id);
@@ -54,7 +54,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View(new StoreCreateViewModel() {
                 State = vendor.VendorDetails.State,
                 Zip = vendor.VendorDetails.Zip,
-                Country = "India"
+                Country = "India",
+                Name = vendor.VendorDetails.BusinessName,
+                CurrencyType = "₹"
             });
         }
 

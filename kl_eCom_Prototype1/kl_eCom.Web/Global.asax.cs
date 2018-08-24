@@ -1,4 +1,5 @@
-﻿using System;
+﻿using kl_eCom.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -20,8 +21,14 @@ namespace kl_eCom.Web
 
         protected void Application_BeginRequest()
         {
-            string[] urlParts = Request.RawUrl.Split('/');
-            string lastPart = urlParts.Last();        
+            var querystring = Request.QueryString;
+            string source = querystring["source"];
+            var db = new ApplicationDbContext();
+            if (db.Users.FirstOrDefault(m => m.Id == source) 
+                    is ApplicationUser vendor)
+            {
+                // Begin Lockout
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace kl_eCom.Web.Models
@@ -79,6 +80,9 @@ namespace kl_eCom.Web.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public string Key { get; set; }
+        public DateTime? TimeStamp { get; set; }
     }
 
     public class ResetPasswordViewModel

@@ -5,9 +5,11 @@ using Microsoft.Owin;
 using Owin;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System.Linq;
+using System;
 
 [assembly: OwinStartupAttribute(typeof(kl_eCom.Web.Startup))]
 namespace kl_eCom.Web
@@ -57,10 +59,14 @@ namespace kl_eCom.Web
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-            var admin = userManager.FindByName("klAdmin");
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            var admin = db.EcomUsers
+                          .Include(m => m.User)
+                          .FirstOrDefault(m => m.User.UserName == "klAdmin");
             if (admin is null)
             {
-                var user = new ApplicationUser { UserName = "klAdmin", Email = "khushlife@gmail.com", PrimaryRole = "Admin" };
+                var user = new ApplicationUser { UserName = "klAdmin", Email = "khushlife@gmail.com"/*, PrimaryRole = "Admin"*/ };
                 user.FirstName = "FirstName";
                 user.LastName = "LastName";
 
@@ -71,6 +77,19 @@ namespace kl_eCom.Web
 
                     if (result.Succeeded)
                     {
+                        db.EcomUsers.Add(new EcomUser {
+                            ApplicationUserId = user.Id,
+                            PrimaryRole = "Admin" 
+                        });
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            userManager.Delete(user);
+                        }
+
                         // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                         // Send an email with this link
                         // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

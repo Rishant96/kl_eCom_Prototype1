@@ -59,10 +59,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Index()
         {
             var vendorId = User.Identity.GetUserId();
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
             
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
@@ -71,7 +71,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var prods = db.Products
                         .Include(m => m.Category)
                         .Include(m => m.Category.Store)
-                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id)
+                        .Where(m => m.Category.Store.EcomUserId 
+                            == vendor.Id)
                         .ToList();
 
             var prodCount = prods.Count;
@@ -91,9 +92,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var userId = User.Identity.GetUserId();
 
-            return View(db.Users
+            return View(db.EcomUsers
+                .Include(m => m.User)
                 .Include(m => m.VendorDetails)
-                .FirstOrDefault(m => m.Id == userId)
+                .FirstOrDefault(m => m.ApplicationUserId == userId)
             );
         }
 
@@ -102,17 +104,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             // Encrypt UserId when editing
             var userId = User.Identity.GetUserId();
 
-            var user = db.Users
+            var user = db.EcomUsers
                 .Include(m => m.VendorDetails)
-                .FirstOrDefault(m => m.Id == userId);
+                .Include(m => m.User)
+                .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             return View(new VendorEditViewModel {
                 BusinessName = user.VendorDetails.BusinessName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                Email = user.Email,
-                Mobile = user.PhoneNumber,
+                FirstName = user.User.FirstName,
+                LastName = user.User.LastName,
+                UserName = user.User.UserName,
+                Email = user.User.Email,
+                Mobile = user.User.PhoneNumber,
                 WebsiteUrl = user.VendorDetails.WebsiteUrl,
                 Zip = user.VendorDetails.Zip,
                 State = user.VendorDetails.State
@@ -126,15 +129,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if(ModelState.IsValid && User.Identity.IsAuthenticated)
             {
                 var userId = User.Identity.GetUserId();
-                var user = db.Users
+                var user = db.EcomUsers
+                    .Include(m => m.User)
                     .Include(m => m.VendorDetails)
-                    .FirstOrDefault(m => m.Id == userId);
+                    .FirstOrDefault(m => m.ApplicationUserId == userId);
 
-                user.Email = model.Email;
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.PhoneNumber = model.Mobile;
-                user.UserName = model.UserName;
+                user.User.Email = model.Email;
+                user.User.FirstName = model.FirstName;
+                user.User.LastName = model.LastName;
+                user.User.PhoneNumber = model.Mobile;
+                user.User.UserName = model.UserName;
                 user.VendorDetails.BusinessName = model.BusinessName;
                 user.VendorDetails.WebsiteUrl = model.WebsiteUrl;
                 user.VendorDetails.Zip = model.Zip;
@@ -240,9 +244,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                              .FirstOrDefault(m => m.ApplicationUserId == userId);
             var currPlan = activePlan.Plan;
             var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
-            var vendor = db.Users
+            var vendor = db.EcomUsers
+                           .Include(m => m.User)
                            .Include(m => m.VendorDetails)
-                           .FirstOrDefault(m => m.Id == userId);
+                           .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             if (currPlan.Price < nextPlan.Price)
             {
@@ -254,7 +259,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 {
                     CurrentPlan = currPlan,
                     NewPlan = nextPlan,
-                    UserName = vendor.FirstName + " " + vendor.LastName,
+                    UserName = vendor.User.FirstName + " " + vendor.User.LastName,
                     EndDate = activePlan.EndDate,
                     Difference = diff
                 });
@@ -265,7 +270,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 {
                     CurrentPlan = currPlan,
                     NewPlan = nextPlan,
-                    UserName = vendor.FirstName + " " + vendor.LastName,
+                    UserName = vendor.User.FirstName + " " + vendor.User.LastName,
                     EndDate = activePlan.EndDate
                 });
             }
@@ -285,9 +290,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                              .FirstOrDefault(m => m.ApplicationUserId == userId);
             var currPlan = activePlan.Plan;
             var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
-            var vendor = db.Users
+            var vendor = db.EcomUsers
+                           .Include(m => m.User)
                            .Include(m => m.VendorDetails)
-                           .FirstOrDefault(m => m.Id == userId);
+                           .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             switch (paymentType)
             {
@@ -535,9 +541,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             };
 
             var vendorId = User.Identity.GetUserId();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
             var stores = db.Stores
                         .Include(m => m.Categories)
-                        .Where(m => m.ApplicationUserId == vendorId)
+                        .Where(m => m.EcomUserId == user.Id)
                         .ToList();
 
             foreach (var store in stores)
@@ -608,9 +616,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     model.AvailableCategories = new List<Category>();
                     model.AvailableProducts = new Dictionary<Category, List<Product>>();
 
+                    var user2 = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+                    if (user2 is null) return View("Error");
                     var stores_2 = db.Stores
                                 .Include(m => m.Categories)
-                                .Where(m => m.ApplicationUserId == vendorId)
+                                .Where(m => m.EcomUserId == user2.Id)
                                 .ToList();
 
                     foreach (var store in stores_2)
@@ -632,6 +642,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     return View(model);
                 }
 
+                var user3 = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+                if (user3 is null) return View("Error");
                 var discount = new Discount {
                         ApplicationUserId = vendorId,
                         Name = model.Name,
@@ -642,8 +654,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         IsConstrained = false,
                         Value = model.Value,
                         ValidityPeriod = model.ValidityPeriod,
-                        StoreId = db.Stores.FirstOrDefault(m => m.ApplicationUserId 
-                                    == vendorId).Id,
+                        StoreId = db.Stores.FirstOrDefault(m => m.EcomUserId 
+                                    == user3.Id).Id,
                     };
                 
                 List<DiscountedItem> discountedItems = new List<DiscountedItem>();
@@ -818,9 +830,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             model.AvailableCategories = new List<Category>();
             model.AvailableProducts = new Dictionary<Category, List<Product>>();
 
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
             var stores = db.Stores
                         .Include(m => m.Categories)
-                        .Where(m => m.ApplicationUserId == vendorId)
+                        .Where(m => m.EcomUserId == user.Id)
                         .ToList();
 
             foreach (var store in stores)
@@ -941,9 +955,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             var vendorId = User.Identity.GetUserId();
 
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
             var stores = db.Stores
                         .Include(m => m.Categories)
-                        .Where(m => m.ApplicationUserId == vendorId)
+                        .Where(m => m.EcomUserId == user.Id)
                         .ToList();
 
             foreach (var store in stores)
@@ -1263,9 +1279,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             };
 
             var vendorId = User.Identity.GetUserId();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
             var stores = db.Stores
                         .Include(m => m.Categories)
-                        .Where(m => m.ApplicationUserId == vendorId)
+                        .Where(m => m.EcomUserId == user.Id)
                         .ToList();
 
             foreach (var store in stores)
@@ -1340,6 +1358,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 return RedirectToAction("Vouchers");
             }
             return View("Error");
+        }
+
+        public ActionResult Refferals()
+        {
+            return View();
         }
     }
 }

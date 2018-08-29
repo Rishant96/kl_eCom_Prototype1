@@ -10,7 +10,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 {
     public class CustomersIndexViewModel
     {
-        public List<ApplicationUser> Customers { get; set; }
+        public List<EcomUser> Customers { get; set; }
         public Dictionary<string, bool> Registrations { get; set; }
         public Dictionary<string, bool> Buyers { get; set; }
     }

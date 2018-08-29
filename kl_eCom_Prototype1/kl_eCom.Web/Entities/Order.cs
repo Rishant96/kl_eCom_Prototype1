@@ -18,8 +18,8 @@ namespace kl_eCom.Web.Entities
         public int OrderNumber { get; set; }
 
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Customer { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Customer { get; set; }
 
         [Required]
         public int AddressId { get; set; }

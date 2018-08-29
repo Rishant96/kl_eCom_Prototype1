@@ -21,18 +21,7 @@ namespace kl_eCom.Web.Models
         [Required]
         public string LastName { get; set; }
 
-        [Required]
-        public string PrimaryRole { get; set; }
-        
-        public int? VendorDetailsId { get; set; }
-        public VendorDetails VendorDetails { get; set; }
-
-        public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
-        public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
-
         public virtual ICollection<Address> Addresses { get; set; }
-
-        public virtual ICollection<Store> Stores { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -41,6 +30,27 @@ namespace kl_eCom.Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+    }
+
+    public class EcomUser
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser User { get; set; }
+
+        [Required]
+        public string PrimaryRole { get; set; }
+
+        public int? VendorDetailsId { get; set; }
+        public VendorDetails VendorDetails { get; set; }
+
+        public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
+        public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
+        
+        public virtual ICollection<Store> Stores { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -54,13 +64,13 @@ namespace kl_eCom.Web.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>()
+            modelBuilder.Entity<EcomUser>()
                 .HasMany(u => u.AssociatedCustomerOf) // <--
                 .WithRequired(r => r.Customer) // <--
                 .HasForeignKey(r => r.CustomerId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<ApplicationUser>()
+            modelBuilder.Entity<EcomUser>()
                 .HasMany(u => u.AssociatedVendorOf) // <--
                 .WithRequired(r => r.Vendor) // <--
                 .HasForeignKey(r => r.VendorId)
@@ -73,6 +83,7 @@ namespace kl_eCom.Web.Models
                     new IndexAnnotation(new IndexAttribute("IX_Name") { IsUnique = true }));
         }
 
+        public DbSet<EcomUser> EcomUsers { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }

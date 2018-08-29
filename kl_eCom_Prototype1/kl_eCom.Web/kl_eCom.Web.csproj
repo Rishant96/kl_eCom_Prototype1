@@ -247,24 +247,20 @@
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
-    <Compile Include="Entities\VendorPlans.cs" />
+    <Compile Include="Entities\VendorPlan.cs" />
     <Compile Include="Entities\Voucher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201808170740040_New_Init.cs" />
-    <Compile Include="Migrations\201808170740040_New_Init.Designer.cs">
-      <DependentUpon>201808170740040_New_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201808290712026_NewInit.cs" />
+    <Compile Include="Migrations\201808290712026_NewInit.Designer.cs">
+      <DependentUpon>201808290712026_NewInit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808171035182_Model_Edited_2.cs" />
-    <Compile Include="Migrations\201808171035182_Model_Edited_2.Designer.cs">
-      <DependentUpon>201808171035182_Model_Edited_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808200554565_Plan_Models_Edit_1.cs" />
-    <Compile Include="Migrations\201808200554565_Plan_Models_Edit_1.Designer.cs">
-      <DependentUpon>201808200554565_Plan_Models_Edit_1.cs</DependentUpon>
+    <Compile Include="Migrations\201808290849209_Models_Changed_1_EcomUser.cs" />
+    <Compile Include="Migrations\201808290849209_Models_Changed_1_EcomUser.Designer.cs">
+      <DependentUpon>201808290849209_Models_Changed_1_EcomUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -283,6 +279,7 @@
     <Compile Include="Utilities\CategoryAttribute.cs" />
     <Compile Include="Utilities\DiscountConstraint.cs" />
     <Compile Include="Utilities\DiscountedItem.cs" />
+    <Compile Include="Utilities\OrderDeliveryDetails.cs" />
     <Compile Include="Utilities\OrderItem.cs" />
     <Compile Include="Utilities\OrderStateInfo.cs" />
     <Compile Include="Utilities\ProductImage.cs" />
@@ -488,6 +485,7 @@
     <Content Include="assets\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Delete.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -607,14 +605,11 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808170740040_New_Init.resx">
-      <DependentUpon>201808170740040_New_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808290712026_NewInit.resx">
+      <DependentUpon>201808290712026_NewInit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808171035182_Model_Edited_2.resx">
-      <DependentUpon>201808171035182_Model_Edited_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808200554565_Plan_Models_Edit_1.resx">
-      <DependentUpon>201808200554565_Plan_Models_Edit_1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808290849209_Models_Changed_1_EcomUser.resx">
+      <DependentUpon>201808290849209_Models_Changed_1_EcomUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

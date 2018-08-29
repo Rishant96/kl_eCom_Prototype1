@@ -10,12 +10,12 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
 {
     public class AdminVendorsIndexViewModel
     {
-        public List<ApplicationUser> Vendors { get; set; }
+        public List<EcomUser> Vendors { get; set; }
     }
 
     public class AdminVendorsDetailsViewModel
     {
-        public ApplicationUser Vendor { get; set; }
+        public EcomUser Vendor { get; set; }
         public VendorDetails VendorDetails { get; set; }
         public ActivePlan ActivePackage { get; set; }
         public VendorPlanDowngradeRecord DowngradeRequest { get; set; }

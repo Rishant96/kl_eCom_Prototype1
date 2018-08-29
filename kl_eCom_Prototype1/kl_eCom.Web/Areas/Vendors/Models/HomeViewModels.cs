@@ -37,7 +37,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Mobile { get; set; }
 
         [Display(Name = "Website URL")]
-        [DataType(DataType.Url, ErrorMessage = "Please enter a valid URL")]
+        [RegularExpression("^[(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)$")]
         public string WebsiteUrl { get; set; }
 
         [Required]

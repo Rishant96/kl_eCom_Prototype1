@@ -300,7 +300,10 @@ namespace kl_eCom.Web.Controllers
 
                         if (itm.StockId != null)
                         {
-                            vendorId = itm.Stock.Store.ApplicationUserId;
+                            vendorId = db.EcomUsers
+                                        .FirstOrDefault(m => m.Id 
+                                            == itm.Stock.Store.EcomUserId)
+                                        .ApplicationUserId;
 
                             orderItem = db.CartItems
                                         .Include(m => m.Stock)
@@ -323,11 +326,12 @@ namespace kl_eCom.Web.Controllers
                         }
                         else
                         {
-                            vendorId = (db.DiscountConstraints
-                                          .Include(m => m.Discount)
-                                          .Include(m => m.Discount.Store)
-                                          .FirstOrDefault(m => m.Id == itm.DiscountConstraintId))
-                                          .Discount.Store.ApplicationUserId;
+                            vendorId = db.EcomUsers.FirstOrDefault(m => m.Id == 
+                                        (db.DiscountConstraints
+                                          .Include(n => n.Discount)
+                                          .Include(n => n.Discount.Store)
+                                          .FirstOrDefault(n => n.Id == itm.DiscountConstraintId))
+                                          .Discount.Store.EcomUserId).ApplicationUserId;
 
                             orderItem = db.CartItems
                                         .Include(m => m.Constraint)
@@ -378,8 +382,12 @@ namespace kl_eCom.Web.Controllers
                                 + dbOrderItm.Qty + ")\n";
 
 
-                        if (db.Refferals.FirstOrDefault(
-                            m => m.CustomerId == usrId && m.VendorId == vendorId)
+                        if (db.Refferals
+                              .Include(m => m.Customer)
+                              .Include(m => m.Vendor)
+                              .FirstOrDefault(
+                                  m => m.Customer.ApplicationUserId == usrId 
+                                  && m.Vendor.ApplicationUserId == vendorId)
                             is Refferal refferal)
                         {
                             if (refferal.IsBuyer == false)
@@ -391,10 +399,12 @@ namespace kl_eCom.Web.Controllers
                         }
                         else
                         {
+                            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == usrId);
+                            var vendor = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
                             db.Refferals.Add(new Refferal
                             {
-                                CustomerId = usrId,
-                                VendorId = vendorId,
+                                CustomerId = user.Id,
+                                VendorId = vendor.Id,
                                 DateBuyerAdded = DateTime.Now,
                                 IsBuyer = true,
                                 IsRegisteredUser = false,

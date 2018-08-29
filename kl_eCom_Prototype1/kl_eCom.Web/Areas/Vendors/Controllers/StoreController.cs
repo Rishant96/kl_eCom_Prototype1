@@ -22,7 +22,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             string id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
-            var stores = db.Stores.Where(m => m.ApplicationUserId == id).ToList();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == id);
+            if (user is null) return View("Error");
+            var stores = db.Stores.Where(m => m.EcomUserId == user.Id).ToList();
             var model = new StoreIndexViewModel
             {
                 Stores = stores,
@@ -47,9 +49,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var id = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index", controllerName: "Home");
             //if (db.Stores.FirstOrDefault(m => m.ApplicationUserId == id) != null) return View("MultipleStores");
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
-                        .FirstOrDefault(m => m.Id == id);
+                        .FirstOrDefault(m => m.ApplicationUserId == id);
             TempData["vendorId"] = id;
             return View(new StoreCreateViewModel() {
                 State = vendor.VendorDetails.State,
@@ -66,6 +68,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {   
             string vendorId = User.Identity.GetUserId();
             if (string.IsNullOrEmpty(vendorId)) return View("Error");
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
             if (ModelState.IsValid)
             {
                 var storeAddr = new StoreAddress
@@ -77,13 +81,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     State = model.State,
                     Country = model.Country
                 };
+
                 var store = new Store
                 {
                     Name = model.Name,
                     Address = storeAddr,
-                    ApplicationUserId = vendorId,
+                    EcomUserId = user.Id,
                     DefaultCurrencyType = model.CurrencyType
                 };
+
                 db.Stores.Add(store);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -95,6 +101,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var store = db.Stores
                 .Include(m => m.Vendor)
+                .Include(m => m.Vendor.User)
                 .Include(m => m.Categories)
                 .Include(m => m.Address)
                 .FirstOrDefault(m => m.Id == id);
@@ -106,7 +113,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Id = store.Id,
                 Name = store.Name,
                 Address = store.Address,
-                Vendor = store.Vendor,
+                Vendor = store.Vendor.User,
                 Categories = store.Categories,
                 CurrencyType = store.DefaultCurrencyType
             });

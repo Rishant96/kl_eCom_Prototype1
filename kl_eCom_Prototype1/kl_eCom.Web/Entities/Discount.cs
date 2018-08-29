@@ -21,8 +21,8 @@ namespace kl_eCom.Web.Entities
         public string Description { get; set; }
 
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
         
         [Required]
         public DateTime StartDate { get; set; }

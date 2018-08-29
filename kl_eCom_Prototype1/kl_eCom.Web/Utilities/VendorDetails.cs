@@ -13,7 +13,7 @@ namespace kl_eCom.Web.Utilities
         public int Id { get; set; }
         [Required]
         public string BusinessName { get; set; }
-        [DataType(DataType.Url)]
+        [Display(Name = "Website URL")]
         public string WebsiteUrl { get; set; }
         [Required]
         [DataType(DataType.PostalCode)]
@@ -26,5 +26,21 @@ namespace kl_eCom.Web.Utilities
         [Required]
         public DateTime RegistrationDate { get; set; }
         public DateTime? DomainRegistrationDate { get; set; }
+
+        public ICollection<VendorPaymentGatewayDetail> PaymentGatewayDetails { get; set; } 
+    }
+
+    public class VendorPaymentGatewayDetail
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string ProviderName { get; set; }
+
+        [Required]
+        public int VendorDetailsId { get; set; }
+        public VendorDetails VendorDetails { get; set; }
+
+        // Gateway Information 
     }
 }

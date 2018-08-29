@@ -555,10 +555,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult AllProducts()
         {
             var userId = User.Identity.GetUserId();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId);
+            if (user is null) return View("Error");
             var prods = db.Products
                 .Include(m => m.Category)
                 .Include(m => m.Category.Store)
-                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .Where(m => m.Category.Store.EcomUserId == user.Id)
                 .ToList();
 
             var model = new ProductAllViewModel
@@ -591,10 +593,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult EditActiveProducts()
         {
             var userId = User.Identity.GetUserId();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId);
+            if (user is null) return View("Error");
             var prods = db.Products
                 .Include(m => m.Category)
                 .Include(m => m.Category.Store)
-                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .Where(m => m.Category.Store.EcomUserId == user.Id)
                 .ToList();
 
             var model = new ProductEditListedViewModel
@@ -641,10 +645,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 var userId = User.Identity.GetUserId();
 
+                var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId);
+                if (user is null) return View("Error");
                 var prods = db.Products
                 .Include(m => m.Category)
                 .Include(m => m.Category.Store)
-                .Where(m => m.Category.Store.ApplicationUserId == userId)
+                .Where(m => m.Category.Store.EcomUserId == user.Id)
                 .ToList();
 
                 foreach (var prod in prods)
@@ -764,15 +770,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         private int GetActiveProductsCount()
         {
             var vendorId = User.Identity.GetUserId();
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
 
             var prods = db.Products
                         .Include(m => m.Category)
                         .Include(m => m.Category.Store)
-                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id && m.IsActive == true)
+                        .Where(m => m.Category.Store.EcomUserId == vendor.Id 
+                                    && m.IsActive == true)
                         .ToList();
 
             return prods.Count;
@@ -781,15 +788,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         private int GetVendorProductsCount()
         {
             var vendorId = User.Identity.GetUserId();
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
 
             var prods = db.Products
                         .Include(m => m.Category)
                         .Include(m => m.Category.Store)
-                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id)
+                        .Where(m => m.Category.Store.EcomUserId 
+                                == vendor.Id)
                         .ToList();
 
             return prods.Count;
@@ -798,10 +806,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         private int GetMaxProductsAllowed()
         {
             var vendorId = User.Identity.GetUserId();
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
 
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==

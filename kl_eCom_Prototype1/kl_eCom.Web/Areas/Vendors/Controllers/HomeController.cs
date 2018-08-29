@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -111,19 +112,48 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     PhoneNumber = model.Mobile,
-                    PrimaryRole = "Vendor",
-                    VendorDetails = new Utilities.VendorDetails
-                    {
-                        BusinessName = model.BusinessName,
-                        Zip = model.Zip,
-                        State = model.State,
-                        WebsiteUrl = model.WebsiteUrl,
-                        RegistrationDate = DateTime.Now
-                    }
+                    //PrimaryRole = "Vendor",
+                    //VendorDetails = new Utilities.VendorDetails
+                    //{
+                    //    BusinessName = model.BusinessName,
+                    //    Zip = model.Zip,
+                    //    State = model.State,
+                    //    WebsiteUrl = model.WebsiteUrl,
+                    //    RegistrationDate = DateTime.Now
+                    //}
                 };
                 var result = UserManager.Create(vendor, model.Password);
                 if (result.Succeeded)
                 {
+                    var ecomUser = db.EcomUsers.Add(new EcomUser {
+                        ApplicationUserId = vendor.Id,
+                        PrimaryRole = "Vendor",
+                        VendorDetails = new Utilities.VendorDetails
+                        {
+                            BusinessName = model.BusinessName,
+                            Zip = model.Zip,
+                            State = model.State,
+                            WebsiteUrl = (string.IsNullOrEmpty(model.WebsiteUrl)) ? 
+                                "" : "http://" + model.WebsiteUrl,
+                            RegistrationDate = DateTime.Now
+                        }
+                    });
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (db.Entry(ecomUser) is DbEntityEntry<EcomUser> entry)
+                        {
+                            entry.State = System.Data.Entity.EntityState.Deleted;
+                        }
+                        if (db.Entry(ecomUser.VendorDetails) is DbEntityEntry<VendorDetails> detailsEntry)
+                        {
+                            detailsEntry.State = System.Data.Entity.EntityState.Deleted;
+                        }
+                        UserManager.Delete(vendor);
+                    }
                     UserManager.AddToRole(vendor.Id, "Vendor");
                     try
                     {
@@ -138,22 +168,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             VendorPlanPaymentDetailId = null,
                             StartDate = DateTime.Now,
                             EndDate = DateTime.Now.AddYears(1),
-                            PaymentStatus = true
+                            PaymentStatus = true,
+                            Balance = 0.0f
                         });
+
                         db.SaveChanges();
 
-                        vendor.VendorDetails.ActivePlanId = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == vendor.Id).Id;
-                        db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Modified;
+                        ecomUser.VendorDetails.ActivePlanId = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == vendor.Id).Id;
+                        db.Entry(ecomUser.VendorDetails).State = System.Data.Entity.EntityState.Modified;
                         db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
                         db.SaveChanges();
                         SignInManager.SignIn(vendor, isPersistent: false, rememberBrowser: false);
 
                         if (model.TimeStamp is DateTime && 
-                            db.Users.FirstOrDefault(m => m.Id == model.Key) 
-                                is ApplicationUser refferer)
+                            db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == model.Key) 
+                                is EcomUser refferer)
                         {
                             db.Refferals.Add(new Refferal {
-                                CustomerId = vendor.Id,
+                                CustomerId = ecomUser.Id,
                                 VendorId = refferer.Id,
                                 DateOfRegistration = DateTime.Now,
                                 UrlDate = model.TimeStamp
@@ -162,14 +194,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         return RedirectToAction("Index", controllerName: "Vendor");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
-                        db.SaveChanges();
+                        ModelState.AddModelError("", ex);
+                        db.Entry(ecomUser.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
+                        db.Entry(ecomUser).State = System.Data.Entity.EntityState.Deleted;
                         UserManager.Delete(vendor);
-                        return View("Error");
+                        return View(model);
                     }
                 }
+                UserManager.Delete(vendor);
                 AddErrors(result);
             }
             return View(model);

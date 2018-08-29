@@ -7,18 +7,44 @@ using System.Data.Entity;
 using kl_eCom.Web.Areas.KL_Admin.Models;
 using kl_eCom.Web.Models;
 using kl_eCom.Web.Utilities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 {
     public class VendorsController : Controller
     {
         public ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
+
+        public VendorsController()
+        {
+
+        }
+
+        public VendorsController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
 
         // GET: KL_Admin/Vendors
         public ActionResult Index()
         {
             return View(new AdminVendorsIndexViewModel {
-                Vendors = db.Users
+                Vendors = db.EcomUsers
                             .Include(m => m.VendorDetails)
                             .Include(m => m.VendorDetails.ActivePlan)
                             .Where(m => m.PrimaryRole == "Vendor")
@@ -28,9 +54,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 
         public ActionResult Details(string id)
         {
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                             .Include(m => m.VendorDetails)
-                            .FirstOrDefault(m => m.Id == id);
+                            .Include(m => m.User)
+                            .FirstOrDefault(m => m.ApplicationUserId == id);
             if (vendor == null || vendor.VendorDetails == null) return View("Error");
 
             return View(new AdminVendorsDetailsViewModel {
@@ -39,19 +66,52 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 ActivePackage = db.ActivePlans
                                   .Include(m => m.Plan)
                                   .Include(m => m.PaymentDetail)
-                                  .FirstOrDefault(m => m.ApplicationUserId == vendor.Id),
-                DowngradeRequest = db.VendorDowngradeRecords.FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
+                                  .FirstOrDefault(m => m.EcomUserId == vendor.Id),
+                DowngradeRequest = db.VendorDowngradeRecords
+                                .FirstOrDefault(m => m.EcomUserId == vendor.Id)
             });
+        }
+
+        public ActionResult Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return View("Error");
+            var model = db.EcomUsers
+                            .Include(m => m.User)
+                            .Include(m => m.ApplicationUserId)
+                            .Include(m => m.VendorDetails)
+                            .FirstOrDefault(m => m.ApplicationUserId == id);
+            if (model is null) return View("Error");
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(EcomUser model)
+        {
+            if (string.IsNullOrEmpty(model.ApplicationUserId)) return View("Error");
+            var vendor = db.EcomUsers
+                            .Include(m => m.User)
+                            .Include(m => m.VendorDetails)
+                            .FirstOrDefault(m => m.ApplicationUserId == model.ApplicationUserId);
+            db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
+            db.Users.Attach(vendor.User);
+            db.Entry(vendor.User).State = System.Data.Entity.EntityState.Deleted;
+            db.EcomUsers.Attach(vendor);
+            db.Entry(vendor).State = System.Data.Entity.EntityState.Deleted;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult EditDomain(string id)
         {
-            var vendor = db.Users
+            var vendor = db.EcomUsers
+                            .Include(m => m.User)
                             .Include(m => m.VendorDetails)
-                            .FirstOrDefault(m => m.Id == id);
+                            .FirstOrDefault(m => m.ApplicationUserId == id);
             if (vendor == null) return View("Error");
             return View(new AdminVendorsDomainEditViewModel {
-                FullName = vendor.FirstName + " " + vendor.LastName,
+                FullName = vendor.User.FirstName + " " + vendor.User.LastName,
                 RegisterDate = vendor.VendorDetails.RegistrationDate,
                 DomainDate = vendor.VendorDetails.DomainRegistrationDate
             });
@@ -63,11 +123,12 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vendor = db.Users
+                var vendor = db.EcomUsers
+                            .Include(m => m.User)
                             .Include(m => m.VendorDetails)
                             .Include(m => m.VendorDetails.ActivePlan)
                             .Include(m => m.VendorDetails.ActivePlan.Plan)
-                            .FirstOrDefault(m => m.Id == model.Id);
+                            .FirstOrDefault(m => m.ApplicationUserId == model.Id);
                 vendor.VendorDetails.DomainRegistrationDate = model.DomainDate;
 
                 var date = (DateTime)model.DomainDate;
@@ -79,7 +140,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                                     / 365) * daysNotToCharge;
 
                 db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
-                    ApplicationUserId = vendor.Id,
+                    EcomUserId = vendor.Id,
                     Balance = vendor.VendorDetails.ActivePlan.Balance ?? 0.0f,
                     VendorPlanPaymentDetailId = null,
                     PlanName = vendor.VendorDetails.ActivePlan.Plan.DisplayName,
@@ -101,22 +162,25 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         
         public ActionResult PlanChange(string id)
         {
-            var vendor = db.Users
+            var vendor = db.EcomUsers
+                        .Include(m => m.User)
                         .Include(m => m.VendorDetails)
-                        .FirstOrDefault(m => m.Id == id);
+                        .FirstOrDefault(m => m.ApplicationUserId == id);
             if (vendor == null || vendor.VendorDetails == null) return View("Error");
             var activePckg = db.ActivePlans
                                   .Include(m => m.Plan)
                                   .Include(m => m.PaymentDetail)
-                                  .FirstOrDefault(m => m.ApplicationUserId == vendor.Id);
+                                  .FirstOrDefault(m => m.EcomUserId 
+                                        == vendor.Id);
             return View(new AdminVendorsPlanChangeViewModel {
-                VendorName = vendor.FirstName + " " + vendor.LastName,
-                VendorId = vendor.Id,
+                VendorName = vendor.User.FirstName + " " + vendor.User.LastName,
+                VendorId = vendor.ApplicationUserId,
                 ActivePlan = activePckg,
                 Amount = activePckg.Balance ?? 0.0f,
                 DowngradeRecord = db.VendorDowngradeRecords
                     .Include(m => m.NewPlan)
-                    .FirstOrDefault(m => m.ApplicationUserId == vendor.Id)
+                    .FirstOrDefault(m => m.EcomUserId 
+                            == vendor.Id)
             });
         }
 
@@ -126,9 +190,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (flag)
             {
+                var ecomUer
                 var activePkg = db.ActivePlans
                         .Include(m => m.Plan)
-                        .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+                        .FirstOrDefault(m => m.EcomUserId == );
 
                 var downgradeRecord = db.VendorDowngradeRecords
                                 .Include(m => m.NewPlan)
@@ -244,20 +309,21 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 return View("Error");
             }
 
-            var vendors = db.Users
+            var vendors = db.EcomUsers
+                            .Include(m => User)
                             .Where(m => m.PrimaryRole == "Vendor")
                             .ToList();
 
             var model = new AdminFixActivesViewModel
             {
-                Vendors = vendors.Select(m => m.UserName).ToList(),
+                Vendors = vendors.Select(m => m.User.UserName).ToList(),
                 ProductsDeactivated = new Dictionary<string, List<string>>()
             };
 
             foreach (var vendor in vendors)
             {
-                var activeProds = GetActiveProductsCount(vendor.Id);
-                var maxProds = GetMaxProductsAllowed(vendor.Id);
+                var activeProds = GetActiveProductsCount(vendor.ApplicationUserId);
+                var maxProds = GetMaxProductsAllowed(vendor.ApplicationUserId);
 
                 if (activeProds > maxProds)
                 {
@@ -273,7 +339,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                         db.Entry(prod).State = EntityState.Modified;
                     }
 
-                    model.ProductsDeactivated.Add(vendor.Id,
+                    model.ProductsDeactivated.Add(vendor.ApplicationUserId,
                         prodsToDeActivate.Select(m => m.Name).ToList());
                     db.SaveChanges();
                 }
@@ -285,15 +351,17 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         private int GetActiveProductsCount(string id)
         {
             var vendorId = id;
-            var vendor = db.Users
+            var vendor = db.EcomUsers
+                        .Include(m => m.User)
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
 
             var prods = db.Products
                         .Include(m => m.Category)
                         .Include(m => m.Category.Store)
-                        .Where(m => m.Category.Store.ApplicationUserId == vendor.Id && m.IsActive == true)
+                        .Where(m => m.Category.Store.EcomUserId
+                            == vendor.Id && m.IsActive == true)
                         .ToList();
 
             return prods.Count;
@@ -302,10 +370,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         private int GetMaxProductsAllowed(string id)
         {
             var vendorId = id;
-            var vendor = db.Users
+            var vendor = db.EcomUsers
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
-                        .FirstOrDefault(m => m.Id == vendorId);
+                        .FirstOrDefault(m => m.ApplicationUserId == vendorId);
 
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==

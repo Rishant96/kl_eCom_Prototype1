@@ -22,8 +22,8 @@ namespace kl_eCom.Web.Utilities
         public int? DiscountConstraintId { get; set; }
         public DiscountConstraint DiscountConstraint { get; set; }
 
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
         
         public int Qty { get; set; }
 

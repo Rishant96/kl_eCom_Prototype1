@@ -15,8 +15,8 @@ namespace kl_eCom.Web.Entities
         public int Id { get; set; }
         
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Owner { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Owner { get; set; }
 
         public ICollection<CartItem> CartItems { get; set; }
     }

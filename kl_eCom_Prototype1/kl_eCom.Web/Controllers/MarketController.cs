@@ -22,12 +22,12 @@ namespace kl_eCom.Web.Controllers
             var model = new MarketIndexViewModel { Vendors = new Dictionary<string, string>() };
             foreach (var vendor in vendors)
             {
-                var v = db.Users
+                var v = db.EcomUsers
                     .Include(m => m.Stores)
                     .Include(m => m.VendorDetails)
-                    .FirstOrDefault(m => m.Id == vendor.UserId);
+                    .FirstOrDefault(m => m.ApplicationUserId == vendor.UserId);
                 if(v.Stores.Count > 0) 
-                    model.Vendors.Add(v.Id, 
+                    model.Vendors.Add(v.ApplicationUserId, 
                         v.VendorDetails.BusinessName);
             }
             return View(model);
@@ -46,7 +46,9 @@ namespace kl_eCom.Web.Controllers
             }
             if (string.IsNullOrEmpty(vendorId))
                 return View("Index");
-            var shops = db.Stores.Where(m => m.ApplicationUserId == vendorId).ToList();
+            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            if (user is null) return View("Error");
+            var shops = db.Stores.Where(m => m.EcomUserId == user.Id).ToList();
             if (shops.Count == 1) return RedirectToAction("Index", "Shop", new { id = shops.First().Id });
             return View(new MarketShopsViewModel {
                 Shops = shops    

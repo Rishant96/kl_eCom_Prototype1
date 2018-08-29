@@ -21,15 +21,15 @@
     @foreach (var vndr in Model.Vendors)
     {
         <tr 
-        @if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
+        @*@if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
             <text>style="color: orangered"</text>        
-        }>
+        }*@>
             <td>@Html.ActionLink(vndr.UserName, "Details", new { id = vndr.Id })</td>
             <td>@Html.DisplayFor(m => vndr.Email)</td>
             <td>@Html.DisplayFor(m => vndr.PhoneNumber)</td>
             <td>@Html.DisplayFor(m => vndr.FirstName)</td>
             <td>@Html.DisplayFor(m => vndr.LastName)</td>
-            <td>@Html.DisplayFor(m => vndr.VendorDetails.RegistrationDate)</td>
+            @*<td>@Html.DisplayFor(m => vndr.VendorDetails.RegistrationDate)</td>*@
         </tr>
     }
 </table>

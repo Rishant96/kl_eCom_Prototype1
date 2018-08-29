@@ -57,7 +57,10 @@ namespace kl_eCom.Web.Controllers
                     model.IsLeafDict.Add(cat, false);
                 }
             }
-            ViewBag.Vendor = store.ApplicationUserId;
+            ViewBag.Vendor = db.EcomUsers
+                               .FirstOrDefault(m => m.Id == store.EcomUserId)
+                               .ApplicationUserId;
+
             return View(model);
         }
         

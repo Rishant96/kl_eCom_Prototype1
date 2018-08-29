@@ -21,8 +21,8 @@ namespace kl_eCom.Web.Utilities
         public VendorPlan Plan { get; set; }
 
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
         
         public bool PaymentStatus { get; set; }
         public float? Balance { get; set; }

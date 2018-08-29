@@ -1,4 +1,4 @@
-﻿@model kl_eCom.Web.Models.ApplicationUser
+﻿@model kl_eCom.Web.Models.EcomUser
 @{
     ViewBag.Title = "Vendor Details";
 }
@@ -7,35 +7,35 @@
 
 <dl class="dl-horizontal" style="margin-left: 70px; margin-top: 20px">
     <dt>
-        @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.User.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
     </dt>
     <dd>
-        @Html.DisplayFor(m => m.UserName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DisplayFor(m => m.User.UserName, new { htmlAttributes = new { @class = "form-control" } })
     </dd>
     <dt>
-        @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.User.Email, htmlAttributes: new { @class = "control-label col-md-2" })
     </dt>
     <dd>
-        @Html.DisplayFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DisplayFor(m => m.User.Email, new { htmlAttributes = new { @class = "form-control" } })
     </dd>
     <dt>
-        @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.User.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
     </dt>
     <dd>
-        @Html.DisplayFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DisplayFor(m => m.User.FirstName, new { htmlAttributes = new { @class = "form-control" } })
     </dd>
     <dt>
-        @Html.LabelFor(m => m.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.User.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
     </dt>
     <dd>
-        @Html.DisplayFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DisplayFor(m => m.User.LastName, new { htmlAttributes = new { @class = "form-control" } })
     </dd>
 
     <dt>
-        @Html.LabelFor(m => m.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(m => m.User.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
     </dt>
     <dd>
-        @Html.DisplayFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DisplayFor(m => m.User.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
     </dd>
     <dt>
         @Html.LabelFor(m => m.VendorDetails.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })

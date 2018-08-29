@@ -44,8 +44,8 @@ namespace kl_eCom.Web.Entities
         public float Value { get; set; }
         
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
 
         public ICollection<VoucherItem> VoucherItems { get; set; }
     }

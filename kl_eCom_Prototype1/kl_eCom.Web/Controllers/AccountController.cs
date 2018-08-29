@@ -175,7 +175,7 @@ namespace kl_eCom.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PrimaryRole = "Customer" };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 user.FirstName = "FirstName";
                 user.LastName = "LastName";
 
@@ -186,6 +186,13 @@ namespace kl_eCom.Web.Controllers
                 
                     if (result.Succeeded)
                     {
+                        var db = new ApplicationDbContext();
+
+                        var ecomUser = db.EcomUsers.Add ( 
+                                new EcomUser { ApplicationUserId = user.Id, PrimaryRole = "Customer" }
+                            );
+                        db.SaveChanges();
+
                         await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                         // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -194,17 +201,15 @@ namespace kl_eCom.Web.Controllers
                         // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                         await UserManager.AddToRolesAsync(user.Id, "Customer");
-
-
+                        
                         if (!string.IsNullOrEmpty(model.Key))
                         {
-                            var db = new ApplicationDbContext();
-                            if (model.TimeStamp is DateTime && db.Users.FirstOrDefault(m => m.Id == model.Key)
-                                    is ApplicationUser vendor)
+                            if (model.TimeStamp is DateTime && db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == model.Key)
+                                    is EcomUser vendor)
                             {
                                 db.Refferals.Add(new Utilities.Refferal
                                 {
-                                    CustomerId = user.Id,
+                                    CustomerId = ecomUser.Id,
                                     VendorId = vendor.Id,
                                     DateOfRegistration = DateTime.Now,
                                     IsRegisteredUser = true,

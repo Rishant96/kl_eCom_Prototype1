@@ -23,8 +23,8 @@ namespace kl_eCom.Web.Utilities
         public int TimesAvailed { get; set; }
 
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Customer { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Customer { get; set; }
 
         [Required]
         public int VoucherId { get; set; }

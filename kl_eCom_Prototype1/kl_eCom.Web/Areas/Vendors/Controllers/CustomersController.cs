@@ -23,16 +23,19 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var vndrId = User.Identity.GetUserId();
 
+            var vendor = db.EcomUsers
+                           .FirstOrDefault(m => m.ApplicationUserId == vndrId);
             var customers = db.Refferals
-                .Where(m => m.VendorId == vndrId)
+                .Where(m => m.VendorId == vendor.Id)
                 .Select(m => m.CustomerId)
                 .ToList();
 
             var model = new CustomersIndexViewModel
             {
-                Customers = db.Users
+                Customers = db.EcomUsers
+                    .Include(m => m.User)
                     .Where(m => customers.Contains(m.Id))
-                    .OrderBy(m => m.FirstName + " " + m.LastName)
+                    .OrderBy(m => m.User.FirstName + " " + m.User.LastName)
                     .ToList(),
                 Buyers = new Dictionary<string, bool>(),
                 Registrations = new Dictionary<string, bool>()
@@ -42,17 +45,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             {
                 var rel = db.Refferals
                     .FirstOrDefault(m => m.CustomerId == customer.Id 
-                    && m.VendorId == vndrId);
+                    && m.VendorId == vendor.Id);
 
                 if (rel.IsBuyer == true)
-                    model.Buyers.Add(customer.Id, true);
+                    model.Buyers.Add(customer.ApplicationUserId, true);
                 else
-                    model.Buyers.Add(customer.Id, false);
+                    model.Buyers.Add(customer.ApplicationUserId, false);
 
                 if (rel.IsRegisteredUser == true)
-                    model.Registrations.Add(customer.Id, true);
+                    model.Registrations.Add(customer.ApplicationUserId, true);
                 else
-                    model.Registrations.Add(customer.Id, false);
+                    model.Registrations.Add(customer.ApplicationUserId, false);
             }
 
             return View(model);
@@ -97,9 +100,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         itm.Status = Utilities.OrderStatus.Delivered;
                         db.Entry(itm).State = EntityState.Modified;
 
-                        int refId = db.Refferals.FirstOrDefault(
-                                        m => m.CustomerId == itm.Order.ApplicationUserId
-                                        && m.VendorId == itm.ApplicationUserId).Id;
+                        int refId = db.Refferals
+                                      .Include(m => m.Customer)
+                                      .Include(m => m.Vendor)
+                                      .FirstOrDefault(
+                                        m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
+                                        && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
 
                         db.OrderInformation.Add(
                             new Utilities.OrderStateInfo
@@ -145,9 +151,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 itm.Status = Utilities.OrderStatus.Delivered;
                                 db.Entry(itm).State = EntityState.Modified;
 
-                                int refId = db.Refferals.FirstOrDefault(
-                                        m => m.CustomerId == itm.Order.ApplicationUserId
-                                        && m.VendorId == itm.ApplicationUserId).Id;
+                                int refId = db.Refferals
+                                        .Include(m => m.Customer)
+                                        .Include(m => m.Vendor)
+                                        .FirstOrDefault(
+                                            m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
+                                            && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
 
                                 db.OrderInformation.Add(
                                     new Utilities.OrderStateInfo
@@ -183,9 +192,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 itm.Status = Utilities.OrderStatus.Undelivered;
                                 db.Entry(itm).State = EntityState.Modified;
 
-                                int refId = db.Refferals.FirstOrDefault(
-                                        m => m.CustomerId == itm.Order.ApplicationUserId
-                                        && m.VendorId == itm.ApplicationUserId).Id;
+                                int refId = db.Refferals
+                                    .Include(m => m.Customer)
+                                    .Include(m => m.Vendor)
+                                    .FirstOrDefault(
+                                        m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
+                                        && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
 
                                 db.OrderInformation.Add(
                                     new Utilities.OrderStateInfo
@@ -447,9 +459,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                     db.Entry(orderItm).State = EntityState.Modified;
                                     db.SaveChanges();
 
-                                    int refId = db.Refferals.FirstOrDefault(
-                                        m => m.CustomerId == orderItm.Order.ApplicationUserId
-                                        && m.VendorId == orderItm.ApplicationUserId).Id;
+                                    int refId = db.Refferals
+                                        .Include(m => m.Customer)
+                                        .Include(m => m.Vendor)
+                                        .FirstOrDefault(
+                                            m => m.Customer.ApplicationUserId == orderItm.Order.ApplicationUserId
+                                            && m.Vendor.ApplicationUserId == orderItm.ApplicationUserId).Id;
 
                                     db.OrderInformation.Add(
                                         new Utilities.OrderStateInfo

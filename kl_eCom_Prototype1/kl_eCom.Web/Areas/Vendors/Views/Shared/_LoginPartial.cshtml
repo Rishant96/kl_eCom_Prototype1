@@ -12,17 +12,18 @@
             @{
                 var db = new kl_eCom.Web.Models.ApplicationDbContext();
                 var id = User.Identity.GetUserId();
-                var vendor = db.Users
+                var vendor = db.EcomUsers
+                               .Include(m => m.User)
                                .Include(m => m.VendorDetails)
-                               .FirstOrDefault(m => m.Id == id);
-                var greeting = vendor.UserName;
+                               .FirstOrDefault(m => m.ApplicationUserId == id);
+                var greeting = vendor.User.UserName;
                 if (vendor.VendorDetails != null && !string.IsNullOrEmpty(vendor.VendorDetails.BusinessName))
                 {
                     greeting = vendor.VendorDetails.BusinessName;
                 }
              }
-            @Html.ActionLink("Hello " + greeting, "Details", "Vendor",
-                routeValues: new { area = "Vendors" }, htmlAttributes: new { title = "Manage" })
+            @Html.ActionLink("Hello " + greeting, "Index", "Vendor",
+                new { area = "Vendors" }, null)
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>

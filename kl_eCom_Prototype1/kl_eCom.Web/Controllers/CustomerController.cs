@@ -71,8 +71,11 @@ namespace kl_eCom.Web.Controllers
                     var orderItm = db.OrderItems.FirstOrDefault(m => m.Id == id);
                     orderItm.Status = Utilities.OrderStatus.CancellationRequested;
 
-                    int refId = db.Refferals.FirstOrDefault(m => m.CustomerId == order.ApplicationUserId
-                                && m.VendorId == orderItm.ApplicationUserId).Id;
+                    int refId = db.Refferals
+                            .Include(m => m.Customer)
+                            .Include(m => m.Vendor)
+                            .FirstOrDefault(m => m.Customer.ApplicationUserId == order.ApplicationUserId
+                                && m.Vendor.ApplicationUserId == orderItm.ApplicationUserId).Id;
                     db.OrderInformation.Add(new Utilities.OrderStateInfo
                     {
                         Type = Utilities.ChangeType.Cancellation,

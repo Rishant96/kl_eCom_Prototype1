@@ -14,8 +14,8 @@ namespace kl_eCom.Web.Utilities
         public int Id { get; set; }
 
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
 
         [Required]
         public int ActivePlanId { get; set; }

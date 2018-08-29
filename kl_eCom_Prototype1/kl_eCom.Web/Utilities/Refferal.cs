@@ -13,12 +13,12 @@ namespace kl_eCom.Web.Utilities
         public int Id { get; set; }
 
         [Required]
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
         [Required]
-        public string VendorId { get; set; }
+        public int VendorId { get; set; }
         
-        public ApplicationUser Customer { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public EcomUser Customer { get; set; }
+        public EcomUser Vendor { get; set; }
 
         public bool? IsRegisteredUser { get; set; }
         public bool? IsBuyer { get; set; }

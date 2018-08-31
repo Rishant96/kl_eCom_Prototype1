@@ -47,6 +47,8 @@ namespace kl_eCom.Web.Models
         public int? VendorDetailsId { get; set; }
         public VendorDetails VendorDetails { get; set; }
 
+        public bool IsActive { get; set; }
+
         public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
         public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
         

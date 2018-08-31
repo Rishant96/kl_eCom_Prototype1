@@ -20,6 +20,8 @@ namespace kl_eCom.Web.Utilities
         public string Zip { get; set; }
         [Required]
         public string State { get; set; }
+        [Required]
+        public string Country { get; set; }
         public int? ActivePlanId { get; set; }
         [Display(Name = "Active Plan")]
         public ActivePlan ActivePlan { get; set; }

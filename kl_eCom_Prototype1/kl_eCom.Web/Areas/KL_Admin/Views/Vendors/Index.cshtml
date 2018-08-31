@@ -24,12 +24,12 @@
         @*@if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
             <text>style="color: orangered"</text>        
         }*@>
-            <td>@Html.ActionLink(vndr.UserName, "Details", new { id = vndr.Id })</td>
-            <td>@Html.DisplayFor(m => vndr.Email)</td>
-            <td>@Html.DisplayFor(m => vndr.PhoneNumber)</td>
-            <td>@Html.DisplayFor(m => vndr.FirstName)</td>
-            <td>@Html.DisplayFor(m => vndr.LastName)</td>
-            @*<td>@Html.DisplayFor(m => vndr.VendorDetails.RegistrationDate)</td>*@
+            <td>@Html.ActionLink(vndr.User.UserName, "Details", new { id = vndr.ApplicationUserId })</td>
+            <td>@Html.DisplayFor(m => vndr.User.Email)</td>
+            <td>@Html.DisplayFor(m => vndr.User.PhoneNumber)</td>
+            <td>@Html.DisplayFor(m => vndr.User.FirstName)</td>
+            <td>@Html.DisplayFor(m => vndr.User.LastName)</td>
+            <td>@Html.DisplayFor(m => vndr.VendorDetails.RegistrationDate)</td>
         </tr>
     }
 </table>

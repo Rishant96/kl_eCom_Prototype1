@@ -41,4 +41,19 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         public float Amount { get; set; }
         public VendorPlanDowngradeRecord DowngradeRecord { get; set; }
     }
+
+    public class AdminVendorsResetPasswordViewModel
+    {
+        [Required]
+        public int VendorId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; }
+    }
 }

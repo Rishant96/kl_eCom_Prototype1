@@ -16,17 +16,8 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
     {
         public ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationUserManager _userManager;
-
-        public VendorsController()
-        {
-
-        }
-
-        public VendorsController(ApplicationUserManager userManager)
-        {
-            UserManager = userManager;
-        }
-
+        private ApplicationSignInManager _signInManager;
+        
         public ApplicationUserManager UserManager
         {
             get
@@ -39,12 +30,24 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             }
         }
 
-
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+        
         // GET: KL_Admin/Vendors
         public ActionResult Index()
         {
             return View(new AdminVendorsIndexViewModel {
                 Vendors = db.EcomUsers
+                            .Include(m => m.User)
                             .Include(m => m.VendorDetails)
                             .Include(m => m.VendorDetails.ActivePlan)
                             .Where(m => m.PrimaryRole == "Vendor")
@@ -70,6 +73,22 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 DowngradeRequest = db.VendorDowngradeRecords
                                 .FirstOrDefault(m => m.EcomUserId == vendor.Id)
             });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(AdminVendorsDetailsViewModel model)
+        {
+            if (model != null && model.Vendor != null && !string.IsNullOrEmpty(model.Vendor.ApplicationUserId))
+            {
+                var vendor = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == model.Vendor.ApplicationUserId);
+                vendor.IsActive = model.Vendor.IsActive;
+                db.Entry(vendor).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Details", new { id =  model.Vendor.ApplicationUserId});
+            }
+            return RedirectToAction("Index");
         }
 
         public ActionResult Delete(string id)
@@ -190,14 +209,16 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (flag)
             {
-                var ecomUer
+                var ecomModel = db.EcomUsers
+                    .FirstOrDefault(m => m.ApplicationUserId
+                        == model.VendorId);
                 var activePkg = db.ActivePlans
                         .Include(m => m.Plan)
-                        .FirstOrDefault(m => m.EcomUserId == );
+                        .FirstOrDefault(m => m.EcomUserId == ecomModel.Id);
 
                 var downgradeRecord = db.VendorDowngradeRecords
                                 .Include(m => m.NewPlan)
-                                .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+                                .FirstOrDefault(m => m.EcomUserId == ecomModel.Id);
 
                 var changeRecord = new VendorPlanChangeRecord
                 {
@@ -243,11 +264,13 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 return RedirectToAction("Details", new { id = model.VendorId });
             }
 
+            var user = db.EcomUsers
+                .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
             var mode = int.Parse(Request.Form["Mode"]);
             if (!string.IsNullOrEmpty(model.VendorId))
             {
                 var activePkg = db.ActivePlans
-                        .FirstOrDefault(m => m.ApplicationUserId == model.VendorId);
+                        .FirstOrDefault(m => m.EcomUserId == user.Id);
                 activePkg.PaymentDetail = new VendorPlanPaymentDetail {
                     AmountPaid = model.Amount,
                     PaymentDate = DateTime.Now,
@@ -346,6 +369,50 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult ResetPassword(int? id)
+        {
+            if (id == null) return View("Error");
+            var ecomUser = db.EcomUsers
+                .Include(m => m.User)
+                .FirstOrDefault(m => m.Id == id);
+            return View(new AdminVendorsResetPasswordViewModel
+            {
+                VendorId = ecomUser.Id,
+                Name = ecomUser.User.FirstName + " " + ecomUser.User.LastName,
+                Email = ecomUser.User.Email
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async System.Threading.Tasks.Task<ActionResult> ResetPasswordAsync(AdminCustomersResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.ConfirmPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                    if (user != null)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    }
+                    return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                }
+                AddErrors(result);
+                return View(model);
+            }
+            return View("Error");
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
         }
 
         private int GetActiveProductsCount(string id)

@@ -267,6 +267,7 @@ namespace kl_eCom.Web.Controllers
             if (addrId != 0)
             {
                 var addr = db.Addresses
+                    .Include(m => m.User)
                     .FirstOrDefault(m => m.Id == addrId
                     && m.ApplicationUserId == usrId);
                 if (addr != null)
@@ -276,9 +277,12 @@ namespace kl_eCom.Web.Controllers
                     var hash = DateTime.Now.GetHashCode();
                     hash = (hash > 0) ? hash : -hash;
 
+                    var ecomUser = db.EcomUsers
+                        .FirstOrDefault(m => m.ApplicationUserId == usrId);
+
                     var order = db.Orders.Add(new Order
                     {
-                        ApplicationUserId = usrId,
+                        EcomUserId = ecomUser.Id,
                         OrderDate = DateTime.Now,
                         TotalCost = 0.0f,
                         OrderNumber = hash,
@@ -286,7 +290,7 @@ namespace kl_eCom.Web.Controllers
                     });
                     db.SaveChanges();
 
-                    var orderPerVendor = new Dictionary<string, List<int>>();
+                    var orderPerVendor = new Dictionary<int, List<int>>();
 
                     string subj = "Order Confirmation for Order #" + order.OrderNumber;
                     string msg = "Auto-genrated mail confirming the order you just placed via Khushlife E-Com,\n\n";
@@ -294,7 +298,7 @@ namespace kl_eCom.Web.Controllers
 
                     foreach (var itm in cart.CartItems)
                     {
-                        var vendorId = "";
+                        var vendorId = 0;
                         CartItem orderItem;
                         OrderItem dbOrderItm;
 
@@ -303,7 +307,7 @@ namespace kl_eCom.Web.Controllers
                             vendorId = db.EcomUsers
                                         .FirstOrDefault(m => m.Id 
                                             == itm.Stock.Store.EcomUserId)
-                                        .ApplicationUserId;
+                                        .Id;
 
                             orderItem = db.CartItems
                                         .Include(m => m.Stock)
@@ -320,7 +324,7 @@ namespace kl_eCom.Web.Controllers
                                 ProductName = itm.Stock.Product.Name,
                                 StockId = (int)itm.StockId,
                                 FinalCost = itm.Qty * itm.Stock.Price,
-                                ApplicationUserId = vendorId,
+                                EcomUserId = vendorId,
                                 Status = OrderStatus.NewOrder
                             });
                         }
@@ -331,7 +335,7 @@ namespace kl_eCom.Web.Controllers
                                           .Include(n => n.Discount)
                                           .Include(n => n.Discount.Store)
                                           .FirstOrDefault(n => n.Id == itm.DiscountConstraintId))
-                                          .Discount.Store.EcomUserId).ApplicationUserId;
+                                          .Discount.Store.EcomUserId).Id;
 
                             orderItem = db.CartItems
                                         .Include(m => m.Constraint)
@@ -364,7 +368,7 @@ namespace kl_eCom.Web.Controllers
                                 ProductName = itm.Constraint.Discount.Name,
                                 DiscountConstraintId = (int)itm.DiscountConstraintId,
                                 FinalCost = itm.Qty * price,
-                                ApplicationUserId = vendorId,
+                                EcomUserId = vendorId,
                                 Status = OrderStatus.NewOrder
                             });
                         }
@@ -387,7 +391,7 @@ namespace kl_eCom.Web.Controllers
                               .Include(m => m.Vendor)
                               .FirstOrDefault(
                                   m => m.Customer.ApplicationUserId == usrId 
-                                  && m.Vendor.ApplicationUserId == vendorId)
+                                  && m.Vendor.Id == vendorId)
                             is Refferal refferal)
                         {
                             if (refferal.IsBuyer == false)
@@ -400,7 +404,7 @@ namespace kl_eCom.Web.Controllers
                         else
                         {
                             var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == usrId);
-                            var vendor = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+                            var vendor = db.EcomUsers.FirstOrDefault(m => m.Id == vendorId);
                             db.Refferals.Add(new Refferal
                             {
                                 CustomerId = user.Id,
@@ -431,11 +435,13 @@ namespace kl_eCom.Web.Controllers
 
                     foreach (var vndrId in orderPerVendor.Keys.ToList())
                     {
-                        var vendor = db.Users.FirstOrDefault(m => m.Id == vndrId);
+                        var vendor = db.EcomUsers
+                                       .Include(m => m.User)
+                                       .FirstOrDefault(m => m.Id == vndrId);
                         var customer = db.Users.FirstOrDefault(m => m.Id == usrId);
                         var klEmail = "khushlifeecommerce@gmail.com";
                         var klPass = "klEcom1234";
-                        using (MailMessage mm = new MailMessage(klEmail, vendor.Email))
+                        using (MailMessage mm = new MailMessage(klEmail, vendor.User.Email))
                         {
                             mm.Subject = "New Order Recieved: #" + order.OrderNumber;
                             mm.Body = "Order Details:\n";
@@ -560,16 +566,18 @@ namespace kl_eCom.Web.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.Identity.GetUserId();
+                var ecomuser = db.EcomUsers
+                    .FirstOrDefault(m => m.ApplicationUserId == userId);
                 // Get Cart and update it
                 cart = db.Carts
                     .Include(m => m.CartItems)
-                    .FirstOrDefault(m => m.ApplicationUserId == userId);
+                    .FirstOrDefault(m => m.EcomUserId == ecomuser.Id);
 
                 if (cart is null)
                 {
                     cart = db.Carts.Add(new Cart
                     {
-                        ApplicationUserId = userId,
+                        EcomUserId = ecomuser.Id,
                         CartItems = new List<CartItem>()
                     });
                     db.SaveChanges();

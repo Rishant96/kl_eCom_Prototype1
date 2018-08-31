@@ -118,7 +118,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Mobile = user.User.PhoneNumber,
                 WebsiteUrl = user.VendorDetails.WebsiteUrl,
                 Zip = user.VendorDetails.Zip,
-                State = user.VendorDetails.State
+                State = user.VendorDetails.State,
+                Country = user.VendorDetails.Country
             });
         }
 
@@ -143,6 +144,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 user.VendorDetails.WebsiteUrl = model.WebsiteUrl;
                 user.VendorDetails.Zip = model.Zip;
                 user.VendorDetails.State = model.State;
+                user.VendorDetails.Country = model.Country;
 
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
@@ -187,7 +189,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
                                 .Include(m => m.PaymentDetail)
-                                .FirstOrDefault(m => m.ApplicationUserId 
+                                .Include(m => m.Vendor)
+                                .FirstOrDefault(m => m.Vendor.ApplicationUserId 
                                     == userId);
 
             return View(new VendorPlanIndexViewModel {
@@ -208,7 +211,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
                                 .Include(m => m.PaymentDetail)
-                                .FirstOrDefault(m => m.ApplicationUserId
+                                .Include(m => m.Vendor)
+                                .FirstOrDefault(m => m.Vendor.ApplicationUserId
                                     == userId);
 
             return View(new VendorPlanChangeViewModel {
@@ -241,7 +245,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
                              .Include(m => m.Plan)
-                             .FirstOrDefault(m => m.ApplicationUserId == userId);
+                             .Include(m => m.Vendor)
+                             .FirstOrDefault(m => m.Vendor.ApplicationUserId == userId);
             var currPlan = activePlan.Plan;
             var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
             var vendor = db.EcomUsers
@@ -287,7 +292,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var userId = User.Identity.GetUserId();
             var activePlan = db.ActivePlans
                              .Include(m => m.Plan)
-                             .FirstOrDefault(m => m.ApplicationUserId == userId);
+                             .Include(m => m.Vendor)
+                             .FirstOrDefault(m => m.Vendor.ApplicationUserId 
+                                == userId);
             var currPlan = activePlan.Plan;
             var nextPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
             var vendor = db.EcomUsers
@@ -295,12 +302,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                            .Include(m => m.VendorDetails)
                            .FirstOrDefault(m => m.ApplicationUserId == userId);
 
+            var ecomUser = db.EcomUsers.FirstOrDefault(
+                m => m.ApplicationUserId == User.Identity.GetUserId());
             switch (paymentType)
             {
                 case 1:
                     {
                         db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
-                            ApplicationUserId = User.Identity.GetUserId(),
+                            EcomUserId = ecomUser.Id,
                             StartDate = activePlan.StartDate,
                             TimeStamp = DateTime.Now,
                             VendorPlanId = nextPlan.Id,
@@ -347,19 +356,23 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (id == null) return View("Error");
 
             var userId = User.Identity.GetUserId();
+            var ecomUser = db.EcomUsers
+                .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             if (db.VendorDowngradeRecords
-                .FirstOrDefault(m => m.ApplicationUserId == userId)
+                .Include(m => m.Vendor)
+                .FirstOrDefault(m => m.Vendor.ApplicationUserId == userId)
                 != null) return View("Error");
 
             var activePlanId = db.ActivePlans
-                             .FirstOrDefault(m => m.ApplicationUserId == userId)
+                             .Include(m => m.Vendor)
+                             .FirstOrDefault(m => m.Vendor.ApplicationUserId == userId)
                              .Id;
             var newPlan = db.VendorPlans.FirstOrDefault(m => m.Id == id);
             if (newPlan == null) return View("Error");
 
             db.VendorDowngradeRecords.Add(new VendorPlanDowngradeRecord {
-                ApplicationUserId = userId,
+                EcomUserId = ecomUser.Id,
                 ActivePlanId = activePlanId,
                 VendorPlanId = newPlan.Id
             });
@@ -382,8 +395,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             var discounts = db.Discounts
                 .Include(m => m.Store)
+                .Include(m => m.Vendor)
                 .Include(m => m.DiscountedItems)
-                .Where(m => m.ApplicationUserId == vendorId)
+                .Where(m => m.Vendor.ApplicationUserId == vendorId)
                 .ToList();
 
             var activeDiscounts = discounts
@@ -645,7 +659,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var user3 = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
                 if (user3 is null) return View("Error");
                 var discount = new Discount {
-                        ApplicationUserId = vendorId,
+                        EcomUserId = user3.Id,
                         Name = model.Name,
                         Description = model.Description,
                         IsActive = model.IsActive,
@@ -1127,7 +1141,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var vouchers = db.Vouchers
                              .Include(m => m.Vendor)
                              .Include(m => m.VoucherItems)
-                             .Where(m => m.ApplicationUserId == vendorId)
+                             .Where(m => m.Vendor.ApplicationUserId == vendorId)
                              .ToList();
 
             var currencyType = "";
@@ -1198,10 +1212,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (ModelState.IsValid)
             {
                 string vendorId = User.Identity.GetUserId();
+                var ecomUser = db.EcomUsers.FirstOrDefault(
+                    m => m.ApplicationUserId == vendorId);
                 var voucher = new Voucher
                 {
                     Name = model.Name,
-                    ApplicationUserId = vendorId,
+                    EcomUserId = ecomUser.Id,
                     StartDate = model.StartDate,
                     IsActive = model.IsActive,
                     Value = model.Value,

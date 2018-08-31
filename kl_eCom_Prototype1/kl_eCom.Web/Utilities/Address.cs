@@ -41,7 +41,7 @@ namespace kl_eCom.Web.Utilities
         public string Country { get; set; }
 
         [Required]
-        public int EcomUserId { get; set; }
-        public EcomUser User { get; set; }
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

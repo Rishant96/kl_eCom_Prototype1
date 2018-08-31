@@ -33,6 +33,7 @@ namespace kl_eCom.Web.Models
     public class ShopProductDetailsViewModel
     {
         public string ReturnUrl { get; set; }
+        public string Description { get; set; }
         public Stock Stock { get; set; }
         public int StockId { get; set; }
         public int AlreadyInCart { get; set; }

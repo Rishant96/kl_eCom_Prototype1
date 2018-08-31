@@ -3,7 +3,7 @@ namespace kl_eCom.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class NewInit : DbMigration
+    public partial class Init : DbMigration
     {
         public override void Up()
         {
@@ -15,7 +15,7 @@ namespace kl_eCom.Web.Migrations
                         StartDate = c.DateTime(nullable: false),
                         EndDate = c.DateTime(nullable: false),
                         VendorPlanId = c.Int(nullable: false),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         PaymentStatus = c.Boolean(nullable: false),
                         Balance = c.Single(),
                         VendorPlanPaymentDetailId = c.Int(),
@@ -23,9 +23,9 @@ namespace kl_eCom.Web.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.VendorPlanPaymentDetails", t => t.VendorPlanPaymentDetailId)
                 .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
                 .Index(t => t.VendorPlanId)
-                .Index(t => t.ApplicationUserId)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.VendorPlanPaymentDetailId);
             
             CreateTable(
@@ -55,6 +55,154 @@ namespace kl_eCom.Web.Migrations
                         ValidityPeriod = c.Int(),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.EcomUsers",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        PrimaryRole = c.String(nullable: false),
+                        VendorDetailsId = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
+                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId)
+                .Index(t => t.ApplicationUserId)
+                .Index(t => t.VendorDetailsId);
+            
+            CreateTable(
+                "dbo.Refferals",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        CustomerId = c.Int(nullable: false),
+                        VendorId = c.Int(nullable: false),
+                        IsRegisteredUser = c.Boolean(),
+                        IsBuyer = c.Boolean(),
+                        UrlDate = c.DateTime(),
+                        DateBuyerAdded = c.DateTime(),
+                        DateOfRegistration = c.DateTime(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.EcomUsers", t => t.CustomerId)
+                .ForeignKey("dbo.EcomUsers", t => t.VendorId)
+                .Index(t => t.CustomerId)
+                .Index(t => t.VendorId);
+            
+            CreateTable(
+                "dbo.Stores",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                        StoreAddressId = c.Int(nullable: false),
+                        DefaultCurrencyType = c.String(),
+                        EcomUserId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.StoreAddresses", t => t.StoreAddressId, cascadeDelete: true)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
+                .Index(t => t.StoreAddressId)
+                .Index(t => t.EcomUserId);
+            
+            CreateTable(
+                "dbo.StoreAddresses",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Line1 = c.String(nullable: false),
+                        Line2 = c.String(),
+                        Line3 = c.String(),
+                        Place = c.String(),
+                        Zip = c.String(nullable: false),
+                        State = c.String(nullable: false),
+                        Country = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Categories",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                        Description = c.String(),
+                        DefaultGST = c.Single(nullable: false),
+                        IsBase = c.Boolean(nullable: false),
+                        ThumbnailData = c.Binary(),
+                        ThumbnailMimeType = c.String(),
+                        CategoryId = c.Int(),
+                        StoreId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Categories", t => t.CategoryId)
+                .ForeignKey("dbo.Stores", t => t.StoreId, cascadeDelete: true)
+                .Index(t => t.CategoryId)
+                .Index(t => t.StoreId);
+            
+            CreateTable(
+                "dbo.CategoryAttributes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                        Default = c.String(),
+                        InfoType = c.Int(nullable: false),
+                        CategoryId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
+                .Index(t => t.CategoryId);
+            
+            CreateTable(
+                "dbo.Products",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                        Manufacturer = c.String(),
+                        Description = c.String(),
+                        IsCategoryListable = c.Boolean(nullable: false),
+                        IsActive = c.Boolean(nullable: false),
+                        HasStock = c.Boolean(nullable: false),
+                        DefaultGST = c.Single(nullable: false),
+                        Rating = c.Single(nullable: false),
+                        ThumbnailPath = c.String(),
+                        ThumbnailMimeType = c.String(),
+                        DateAdded = c.DateTime(nullable: false),
+                        CategoryId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
+                .Index(t => t.CategoryId);
+            
+            CreateTable(
+                "dbo.ProductImages",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ImagePath = c.String(),
+                        ImageMimeType = c.String(),
+                        ProductId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Products", t => t.ProductId, cascadeDelete: true)
+                .Index(t => t.ProductId);
+            
+            CreateTable(
+                "dbo.Specifications",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Value = c.String(),
+                        ProductId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Products", t => t.ProductId, cascadeDelete: true)
+                .Index(t => t.ProductId);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -137,120 +285,33 @@ namespace kl_eCom.Web.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.CategoryAttributes",
+                "dbo.VendorDetails",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Default = c.String(),
-                        InfoType = c.Int(nullable: false),
-                        CategoryId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
-                .Index(t => t.CategoryId);
-            
-            CreateTable(
-                "dbo.Categories",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Description = c.String(),
-                        DefaultGST = c.Single(nullable: false),
-                        IsBase = c.Boolean(nullable: false),
-                        ThumbnailData = c.Binary(),
-                        ThumbnailMimeType = c.String(),
-                        CategoryId = c.Int(),
-                        StoreId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Categories", t => t.CategoryId)
-                .ForeignKey("dbo.Stores", t => t.StoreId, cascadeDelete: true)
-                .Index(t => t.CategoryId)
-                .Index(t => t.StoreId);
-            
-            CreateTable(
-                "dbo.Products",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Manufacturer = c.String(),
-                        Description = c.String(),
-                        IsCategoryListable = c.Boolean(nullable: false),
-                        IsActive = c.Boolean(nullable: false),
-                        HasStock = c.Boolean(nullable: false),
-                        DefaultGST = c.Single(nullable: false),
-                        Rating = c.Single(nullable: false),
-                        ThumbnailPath = c.String(),
-                        ThumbnailMimeType = c.String(),
-                        DateAdded = c.DateTime(nullable: false),
-                        CategoryId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Categories", t => t.CategoryId, cascadeDelete: true)
-                .Index(t => t.CategoryId);
-            
-            CreateTable(
-                "dbo.ProductImages",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ImagePath = c.String(),
-                        ImageMimeType = c.String(),
-                        ProductId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Products", t => t.ProductId, cascadeDelete: true)
-                .Index(t => t.ProductId);
-            
-            CreateTable(
-                "dbo.Specifications",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        Value = c.String(),
-                        ProductId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Products", t => t.ProductId, cascadeDelete: true)
-                .Index(t => t.ProductId);
-            
-            CreateTable(
-                "dbo.Stores",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        StoreAddressId = c.Int(nullable: false),
-                        DefaultCurrencyType = c.String(),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
-                        EcomUser_Id = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.StoreAddresses", t => t.StoreAddressId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
-                .ForeignKey("dbo.EcomUsers", t => t.EcomUser_Id)
-                .Index(t => t.StoreAddressId)
-                .Index(t => t.ApplicationUserId)
-                .Index(t => t.EcomUser_Id);
-            
-            CreateTable(
-                "dbo.StoreAddresses",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        Line1 = c.String(nullable: false),
-                        Line2 = c.String(),
-                        Line3 = c.String(),
+                        BusinessName = c.String(nullable: false),
+                        WebsiteUrl = c.String(),
                         Zip = c.String(nullable: false),
                         State = c.String(nullable: false),
-                        Country = c.String(nullable: false),
+                        ActivePlanId = c.Int(),
+                        RegistrationDate = c.DateTime(nullable: false),
+                        DomainRegistrationDate = c.DateTime(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.ActivePlans", t => t.ActivePlanId)
+                .Index(t => t.ActivePlanId);
+            
+            CreateTable(
+                "dbo.VendorPaymentGatewayDetails",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ProviderName = c.String(),
+                        VendorDetailsId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId, cascadeDelete: true)
+                .Index(t => t.VendorDetailsId);
             
             CreateTable(
                 "dbo.BundledItems",
@@ -288,7 +349,7 @@ namespace kl_eCom.Web.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(nullable: false, maxLength: 20),
                         Description = c.String(nullable: false),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         StartDate = c.DateTime(nullable: false),
                         EndDate = c.DateTime(),
                         IsExpirable = c.Boolean(nullable: false),
@@ -301,9 +362,9 @@ namespace kl_eCom.Web.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Stores", t => t.StoreId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: false)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: false)
                 .Index(t => t.Name, unique: true)
-                .Index(t => t.ApplicationUserId)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.StoreId);
             
             CreateTable(
@@ -365,74 +426,11 @@ namespace kl_eCom.Web.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
-                .Index(t => t.ApplicationUserId);
-            
-            CreateTable(
-                "dbo.EcomUsers",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
-                        PrimaryRole = c.String(nullable: false),
-                        VendorDetailsId = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
-                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId)
-                .Index(t => t.ApplicationUserId)
-                .Index(t => t.VendorDetailsId);
-            
-            CreateTable(
-                "dbo.Refferals",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        CustomerId = c.Int(nullable: false),
-                        VendorId = c.Int(nullable: false),
-                        IsRegisteredUser = c.Boolean(),
-                        IsBuyer = c.Boolean(),
-                        UrlDate = c.DateTime(),
-                        DateBuyerAdded = c.DateTime(),
-                        DateOfRegistration = c.DateTime(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.EcomUsers", t => t.CustomerId)
-                .ForeignKey("dbo.EcomUsers", t => t.VendorId)
-                .Index(t => t.CustomerId)
-                .Index(t => t.VendorId);
-            
-            CreateTable(
-                "dbo.VendorDetails",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        BusinessName = c.String(nullable: false),
-                        WebsiteUrl = c.String(),
-                        Zip = c.String(nullable: false),
-                        State = c.String(nullable: false),
-                        ActivePlanId = c.Int(),
-                        RegistrationDate = c.DateTime(nullable: false),
-                        DomainRegistrationDate = c.DateTime(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ActivePlans", t => t.ActivePlanId)
-                .Index(t => t.ActivePlanId);
-            
-            CreateTable(
-                "dbo.VendorPaymentGatewayDetails",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ProviderName = c.String(),
-                        VendorDetailsId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.VendorDetails", t => t.VendorDetailsId, cascadeDelete: true)
-                .Index(t => t.VendorDetailsId);
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
+                .Index(t => t.EcomUserId);
             
             CreateTable(
                 "dbo.OrderStateInfoes",
@@ -460,7 +458,7 @@ namespace kl_eCom.Web.Migrations
                         OrderId = c.Int(nullable: false),
                         StockId = c.Int(),
                         DiscountConstraintId = c.Int(),
-                        ApplicationUserId = c.String(maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         Qty = c.Int(nullable: false),
                         Price = c.Single(nullable: false),
                         CurrencyType = c.String(),
@@ -472,11 +470,11 @@ namespace kl_eCom.Web.Migrations
                 .ForeignKey("dbo.DiscountConstraints", t => t.DiscountConstraintId)
                 .ForeignKey("dbo.Orders", t => t.OrderId, cascadeDelete: true)
                 .ForeignKey("dbo.Stocks", t => t.StockId)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
                 .Index(t => t.OrderId)
                 .Index(t => t.StockId)
                 .Index(t => t.DiscountConstraintId)
-                .Index(t => t.ApplicationUserId);
+                .Index(t => t.EcomUserId);
             
             CreateTable(
                 "dbo.Orders",
@@ -484,15 +482,15 @@ namespace kl_eCom.Web.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         OrderNumber = c.Int(nullable: false),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         AddressId = c.Int(nullable: false),
                         OrderDate = c.DateTime(nullable: false),
                         TotalCost = c.Single(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: false)
-                .Index(t => t.ApplicationUserId)
+                .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: false)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: false)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.AddressId);
             
             CreateTable(
@@ -503,13 +501,13 @@ namespace kl_eCom.Web.Migrations
                         DateRedeemed = c.DateTime(nullable: false),
                         ValueSaved = c.Int(nullable: false),
                         TimesAvailed = c.Int(nullable: false),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         VoucherId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: true)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
                 .ForeignKey("dbo.Vouchers", t => t.VoucherId, cascadeDelete: true)
-                .Index(t => t.ApplicationUserId)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.VoucherId);
             
             CreateTable(
@@ -528,11 +526,11 @@ namespace kl_eCom.Web.Migrations
                         EndDate = c.DateTime(),
                         MaxAvailPerCustomer = c.Int(),
                         Value = c.Single(nullable: false),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: false)
-                .Index(t => t.ApplicationUserId);
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: false)
+                .Index(t => t.EcomUserId);
             
             CreateTable(
                 "dbo.VoucherItems",
@@ -567,15 +565,15 @@ namespace kl_eCom.Web.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        ApplicationUserId = c.String(nullable: false, maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         ActivePlanId = c.Int(nullable: false),
                         VendorPlanId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.ActivePlans", t => t.ActivePlanId, cascadeDelete: true)
                 .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: false)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId, cascadeDelete: false)
-                .Index(t => t.ApplicationUserId)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: false)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.ActivePlanId)
                 .Index(t => t.VendorPlanId);
             
@@ -588,15 +586,15 @@ namespace kl_eCom.Web.Migrations
                         TimeStamp = c.DateTime(nullable: false),
                         PlanName = c.String(),
                         Balance = c.Single(nullable: false),
-                        ApplicationUserId = c.String(maxLength: 128),
+                        EcomUserId = c.Int(nullable: false),
                         VendorPlanId = c.Int(nullable: false),
                         VendorPlanPaymentDetailId = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.VendorPlanPaymentDetails", t => t.VendorPlanPaymentDetailId)
                 .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUserId)
-                .Index(t => t.ApplicationUserId)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
+                .Index(t => t.EcomUserId)
                 .Index(t => t.VendorPlanId)
                 .Index(t => t.VendorPlanPaymentDetailId);
             
@@ -604,10 +602,10 @@ namespace kl_eCom.Web.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.VendorPlanChangeRecords", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.VendorPlanChangeRecords", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlanId", "dbo.VendorPlans");
             DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlanPaymentDetailId", "dbo.VendorPlanPaymentDetails");
-            DropForeignKey("dbo.VendorPlanDowngradeRecords", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.VendorPlanDowngradeRecords", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.VendorPlanDowngradeRecords", "VendorPlanId", "dbo.VendorPlans");
             DropForeignKey("dbo.VendorPlanDowngradeRecords", "ActivePlanId", "dbo.ActivePlans");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
@@ -615,79 +613,72 @@ namespace kl_eCom.Web.Migrations
             DropForeignKey("dbo.VoucherItems", "VoucherId", "dbo.Vouchers");
             DropForeignKey("dbo.VoucherItems", "StockId", "dbo.Stocks");
             DropForeignKey("dbo.VoucherItems", "CategoryId", "dbo.Categories");
-            DropForeignKey("dbo.Vouchers", "ApplicationUserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.RedeemedVouchers", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Vouchers", "EcomUserId", "dbo.EcomUsers");
+            DropForeignKey("dbo.RedeemedVouchers", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.OrderStateInfoes", "OrderItemId", "dbo.OrderItems");
-            DropForeignKey("dbo.OrderItems", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.OrderItems", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.OrderItems", "StockId", "dbo.Stocks");
             DropForeignKey("dbo.OrderItems", "OrderId", "dbo.Orders");
-            DropForeignKey("dbo.Orders", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Orders", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.Orders", "AddressId", "dbo.Addresses");
             DropForeignKey("dbo.OrderItems", "DiscountConstraintId", "dbo.DiscountConstraints");
             DropForeignKey("dbo.OrderStateInfoes", "RefferalId", "dbo.Refferals");
-            DropForeignKey("dbo.EcomUsers", "VendorDetailsId", "dbo.VendorDetails");
-            DropForeignKey("dbo.VendorPaymentGatewayDetails", "VendorDetailsId", "dbo.VendorDetails");
-            DropForeignKey("dbo.VendorDetails", "ActivePlanId", "dbo.ActivePlans");
-            DropForeignKey("dbo.EcomUsers", "ApplicationUserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Stores", "EcomUser_Id", "dbo.EcomUsers");
-            DropForeignKey("dbo.Refferals", "VendorId", "dbo.EcomUsers");
-            DropForeignKey("dbo.Refferals", "CustomerId", "dbo.EcomUsers");
             DropForeignKey("dbo.CartItems", "StockId", "dbo.Stocks");
             DropForeignKey("dbo.CartItems", "DiscountConstraintId", "dbo.DiscountConstraints");
-            DropForeignKey("dbo.Carts", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Carts", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.CartItems", "CartId", "dbo.Carts");
             DropForeignKey("dbo.BundledItems", "StockId", "dbo.Stocks");
             DropForeignKey("dbo.DiscountConstraints", "DiscountId", "dbo.Discounts");
-            DropForeignKey("dbo.Discounts", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Discounts", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.Discounts", "StoreId", "dbo.Stores");
             DropForeignKey("dbo.DiscountedItems", "StockId", "dbo.Stocks");
             DropForeignKey("dbo.Stocks", "StoreId", "dbo.Stores");
             DropForeignKey("dbo.Stocks", "ProductId", "dbo.Products");
             DropForeignKey("dbo.DiscountedItems", "DiscountId", "dbo.Discounts");
             DropForeignKey("dbo.BundledItems", "DiscountConstraintId", "dbo.DiscountConstraints");
-            DropForeignKey("dbo.Stores", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.ActivePlans", "EcomUserId", "dbo.EcomUsers");
+            DropForeignKey("dbo.EcomUsers", "VendorDetailsId", "dbo.VendorDetails");
+            DropForeignKey("dbo.VendorPaymentGatewayDetails", "VendorDetailsId", "dbo.VendorDetails");
+            DropForeignKey("dbo.VendorDetails", "ActivePlanId", "dbo.ActivePlans");
+            DropForeignKey("dbo.EcomUsers", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Addresses", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Stores", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.Categories", "StoreId", "dbo.Stores");
-            DropForeignKey("dbo.Stores", "StoreAddressId", "dbo.StoreAddresses");
             DropForeignKey("dbo.Specifications", "ProductId", "dbo.Products");
             DropForeignKey("dbo.ProductImages", "ProductId", "dbo.Products");
             DropForeignKey("dbo.Products", "CategoryId", "dbo.Categories");
             DropForeignKey("dbo.Categories", "CategoryId", "dbo.Categories");
             DropForeignKey("dbo.CategoryAttributes", "CategoryId", "dbo.Categories");
-            DropForeignKey("dbo.ActivePlans", "ApplicationUserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Addresses", "ApplicationUserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Stores", "StoreAddressId", "dbo.StoreAddresses");
+            DropForeignKey("dbo.Refferals", "VendorId", "dbo.EcomUsers");
+            DropForeignKey("dbo.Refferals", "CustomerId", "dbo.EcomUsers");
             DropForeignKey("dbo.ActivePlans", "VendorPlanId", "dbo.VendorPlans");
             DropForeignKey("dbo.ActivePlans", "VendorPlanPaymentDetailId", "dbo.VendorPlanPaymentDetails");
             DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlanPaymentDetailId" });
             DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlanId" });
-            DropIndex("dbo.VendorPlanChangeRecords", new[] { "ApplicationUserId" });
+            DropIndex("dbo.VendorPlanChangeRecords", new[] { "EcomUserId" });
             DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "VendorPlanId" });
             DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "ActivePlanId" });
-            DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "ApplicationUserId" });
+            DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "EcomUserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.VoucherItems", new[] { "StockId" });
             DropIndex("dbo.VoucherItems", new[] { "CategoryId" });
             DropIndex("dbo.VoucherItems", new[] { "VoucherId" });
-            DropIndex("dbo.Vouchers", new[] { "ApplicationUserId" });
+            DropIndex("dbo.Vouchers", new[] { "EcomUserId" });
             DropIndex("dbo.RedeemedVouchers", new[] { "VoucherId" });
-            DropIndex("dbo.RedeemedVouchers", new[] { "ApplicationUserId" });
+            DropIndex("dbo.RedeemedVouchers", new[] { "EcomUserId" });
             DropIndex("dbo.Orders", new[] { "AddressId" });
-            DropIndex("dbo.Orders", new[] { "ApplicationUserId" });
-            DropIndex("dbo.OrderItems", new[] { "ApplicationUserId" });
+            DropIndex("dbo.Orders", new[] { "EcomUserId" });
+            DropIndex("dbo.OrderItems", new[] { "EcomUserId" });
             DropIndex("dbo.OrderItems", new[] { "DiscountConstraintId" });
             DropIndex("dbo.OrderItems", new[] { "StockId" });
             DropIndex("dbo.OrderItems", new[] { "OrderId" });
             DropIndex("dbo.OrderStateInfoes", new[] { "RefferalId" });
             DropIndex("dbo.OrderStateInfoes", new[] { "OrderItemId" });
-            DropIndex("dbo.VendorPaymentGatewayDetails", new[] { "VendorDetailsId" });
-            DropIndex("dbo.VendorDetails", new[] { "ActivePlanId" });
-            DropIndex("dbo.Refferals", new[] { "VendorId" });
-            DropIndex("dbo.Refferals", new[] { "CustomerId" });
-            DropIndex("dbo.EcomUsers", new[] { "VendorDetailsId" });
-            DropIndex("dbo.EcomUsers", new[] { "ApplicationUserId" });
-            DropIndex("dbo.Carts", new[] { "ApplicationUserId" });
+            DropIndex("dbo.Carts", new[] { "EcomUserId" });
             DropIndex("dbo.CartItems", new[] { "CartId" });
             DropIndex("dbo.CartItems", new[] { "DiscountConstraintId" });
             DropIndex("dbo.CartItems", new[] { "StockId" });
@@ -696,28 +687,33 @@ namespace kl_eCom.Web.Migrations
             DropIndex("dbo.DiscountedItems", new[] { "StockId" });
             DropIndex("dbo.DiscountedItems", new[] { "DiscountId" });
             DropIndex("dbo.Discounts", new[] { "StoreId" });
-            DropIndex("dbo.Discounts", new[] { "ApplicationUserId" });
+            DropIndex("dbo.Discounts", new[] { "EcomUserId" });
             DropIndex("dbo.Discounts", new[] { "Name" });
             DropIndex("dbo.DiscountConstraints", new[] { "DiscountId" });
             DropIndex("dbo.BundledItems", new[] { "StockId" });
             DropIndex("dbo.BundledItems", new[] { "DiscountConstraintId" });
-            DropIndex("dbo.Stores", new[] { "EcomUser_Id" });
-            DropIndex("dbo.Stores", new[] { "ApplicationUserId" });
-            DropIndex("dbo.Stores", new[] { "StoreAddressId" });
-            DropIndex("dbo.Specifications", new[] { "ProductId" });
-            DropIndex("dbo.ProductImages", new[] { "ProductId" });
-            DropIndex("dbo.Products", new[] { "CategoryId" });
-            DropIndex("dbo.Categories", new[] { "StoreId" });
-            DropIndex("dbo.Categories", new[] { "CategoryId" });
-            DropIndex("dbo.CategoryAttributes", new[] { "CategoryId" });
+            DropIndex("dbo.VendorPaymentGatewayDetails", new[] { "VendorDetailsId" });
+            DropIndex("dbo.VendorDetails", new[] { "ActivePlanId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.Addresses", new[] { "ApplicationUserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.Specifications", new[] { "ProductId" });
+            DropIndex("dbo.ProductImages", new[] { "ProductId" });
+            DropIndex("dbo.Products", new[] { "CategoryId" });
+            DropIndex("dbo.CategoryAttributes", new[] { "CategoryId" });
+            DropIndex("dbo.Categories", new[] { "StoreId" });
+            DropIndex("dbo.Categories", new[] { "CategoryId" });
+            DropIndex("dbo.Stores", new[] { "EcomUserId" });
+            DropIndex("dbo.Stores", new[] { "StoreAddressId" });
+            DropIndex("dbo.Refferals", new[] { "VendorId" });
+            DropIndex("dbo.Refferals", new[] { "CustomerId" });
+            DropIndex("dbo.EcomUsers", new[] { "VendorDetailsId" });
+            DropIndex("dbo.EcomUsers", new[] { "ApplicationUserId" });
             DropIndex("dbo.ActivePlans", new[] { "VendorPlanPaymentDetailId" });
-            DropIndex("dbo.ActivePlans", new[] { "ApplicationUserId" });
+            DropIndex("dbo.ActivePlans", new[] { "EcomUserId" });
             DropIndex("dbo.ActivePlans", new[] { "VendorPlanId" });
             DropTable("dbo.VendorPlanChangeRecords");
             DropTable("dbo.VendorPlanDowngradeRecords");
@@ -728,10 +724,6 @@ namespace kl_eCom.Web.Migrations
             DropTable("dbo.Orders");
             DropTable("dbo.OrderItems");
             DropTable("dbo.OrderStateInfoes");
-            DropTable("dbo.VendorPaymentGatewayDetails");
-            DropTable("dbo.VendorDetails");
-            DropTable("dbo.Refferals");
-            DropTable("dbo.EcomUsers");
             DropTable("dbo.Carts");
             DropTable("dbo.CartItems");
             DropTable("dbo.Stocks");
@@ -739,18 +731,22 @@ namespace kl_eCom.Web.Migrations
             DropTable("dbo.Discounts");
             DropTable("dbo.DiscountConstraints");
             DropTable("dbo.BundledItems");
-            DropTable("dbo.StoreAddresses");
-            DropTable("dbo.Stores");
-            DropTable("dbo.Specifications");
-            DropTable("dbo.ProductImages");
-            DropTable("dbo.Products");
-            DropTable("dbo.Categories");
-            DropTable("dbo.CategoryAttributes");
+            DropTable("dbo.VendorPaymentGatewayDetails");
+            DropTable("dbo.VendorDetails");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.Addresses");
             DropTable("dbo.AspNetUsers");
+            DropTable("dbo.Specifications");
+            DropTable("dbo.ProductImages");
+            DropTable("dbo.Products");
+            DropTable("dbo.CategoryAttributes");
+            DropTable("dbo.Categories");
+            DropTable("dbo.StoreAddresses");
+            DropTable("dbo.Stores");
+            DropTable("dbo.Refferals");
+            DropTable("dbo.EcomUsers");
             DropTable("dbo.VendorPlans");
             DropTable("dbo.VendorPlanPaymentDetails");
             DropTable("dbo.ActivePlans");

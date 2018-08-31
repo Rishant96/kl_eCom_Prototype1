@@ -25,13 +25,15 @@ namespace kl_eCom.Web.Utilities
         [Display(Name = "Line 3")]
         public string Line3 { get; set; }
 
+        public string Place { get; set; }
+
         [Required]
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
         [Required]
         public string State { get; set; }
-
+        
         [Required]
         public string Country { get; set; }
     }

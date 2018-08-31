@@ -69,15 +69,31 @@
         </div>
     </div>
 
+    @using (Html.BeginForm())
+    {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Vendor.ApplicationUserId)
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Status</label>
+        <div class="col-md-10" style="display: flex; align-items: center">
+            @Html.EditorFor(m => m.Vendor.IsActive, new { htmlAttributes = new { @class = "checkbox" } })
+            <input type="submit" class="btn btn-link" value="save" />
+        </div>
+    </div>
+    }
+
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             @if ((Model.ActivePackage.Balance != null && Model.ActivePackage.Balance > 0)
                 || Model.DowngradeRequest != null)
-            {<text>@Html.ActionLink("Go to plan change", "PlanChange", new { id = Model.Vendor.Id })</text> }
+            {<text>@Html.ActionLink("Go to plan change", "PlanChange", new { id = Model.Vendor.ApplicationUserId })</text> }
         else
         { <text>No pending changes</text>}
             <text> | </text>
-            @Html.ActionLink("Edit Domain Date", "EditDomain", new { id = Model.Vendor.Id })
+            @Html.ActionLink("Edit Domain Date", "EditDomain", new { id = Model.Vendor.ApplicationUserId })
+            <text> | </text>
+            @Html.ActionLink("Reset Password", "ResetPassword", new { id = Model.Vendor.Id })
             <br />
             @Html.ActionLink("Delete Vendor", "Delete", new { id = Model.Vendor.Id })
         </div>

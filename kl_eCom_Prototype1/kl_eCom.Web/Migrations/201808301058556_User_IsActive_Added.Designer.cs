@@ -7,13 +7,13 @@ namespace kl_eCom.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class Models_Changed_1_EcomUser : IMigrationMetadata
+    public sealed partial class User_IsActive_Added : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Models_Changed_1_EcomUser));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(User_IsActive_Added));
         
         string IMigrationMetadata.Id
         {
-            get { return "201808290849209_Models_Changed_1_EcomUser"; }
+            get { return "201808301058556_User_IsActive_Added"; }
         }
         
         string IMigrationMetadata.Source

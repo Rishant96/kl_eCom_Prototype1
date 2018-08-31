@@ -69,11 +69,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (!string.IsNullOrEmpty(bulkDec))
             {
                 var vendorId = User.Identity.GetUserId();
-                var allactives = (string.IsNullOrEmpty(userId)) ?
+                var ecomUser = db.EcomUsers
+                    .FirstOrDefault(m => 
+                    m.ApplicationUserId == vendorId);
+                var paramUser = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId
+                        == userId);
+                var allactives = (paramUser != null) ?
                                 db.OrderItems
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
-                                    .Where(m => m.ApplicationUserId == vendorId
+                                    .Include(m => m.Order.Customer.User)
+                                    .Where(m => m.EcomUserId == ecomUser.Id
                                     && (m.Status == Utilities.OrderStatus.ActiveOrder
                                         || m.Status == Utilities.OrderStatus.NewOrder))
                                     .OrderByDescending(m => m.Order.OrderDate)
@@ -82,8 +88,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 db.OrderItems
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
-                                    .Where(m => m.ApplicationUserId == vendorId
-                                    && m.Order.ApplicationUserId == userId
+                                    .Include(m => m.Order.Customer.User)
+                                    .Where(m => m.EcomUserId == ecomUser.Id
+                                    && m.Order.EcomUserId == paramUser.Id
                                     && (m.Status == Utilities.OrderStatus.ActiveOrder
                                         || m.Status == Utilities.OrderStatus.NewOrder))
                                     .OrderByDescending(m => m.Order.OrderDate)
@@ -104,8 +111,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                       .Include(m => m.Customer)
                                       .Include(m => m.Vendor)
                                       .FirstOrDefault(
-                                        m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
-                                        && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
+                                        m => m.Customer.Id == itm.Order.EcomUserId
+                                        && m.Vendor.Id == itm.EcomUserId).Id;
 
                         db.OrderInformation.Add(
                             new Utilities.OrderStateInfo
@@ -122,7 +129,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         message += "Regards,\nKhuslife E-com Team";
 
-                        FireEmail(itm.Order.Customer.Email, subject, message);
+                        FireEmail(itm.Order.Customer.User.Email, subject, message);
                     }
                 }
             }
@@ -145,6 +152,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 var itm = db.OrderItems
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
+                                    .Include(m => m.Order.Customer.User)
                                     .FirstOrDefault(m => m.Id
                                         == itmId);
                                 if (itm == null) return View("Error");
@@ -155,8 +163,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                         .Include(m => m.Customer)
                                         .Include(m => m.Vendor)
                                         .FirstOrDefault(
-                                            m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
-                                            && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
+                                            m => m.Customer.Id == itm.Order.EcomUserId
+                                            && m.Vendor.Id == itm.EcomUserId).Id;
 
                                 db.OrderInformation.Add(
                                     new Utilities.OrderStateInfo
@@ -176,7 +184,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                                 message += "Regards,\nKhuslife E-com Team";
 
-                                FireEmail(itm.Order.Customer.Email, subject, message);
+                                FireEmail(itm.Order.Customer.User.Email, subject, message);
 
                                 break;
                             }
@@ -194,10 +202,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                                 int refId = db.Refferals
                                     .Include(m => m.Customer)
+                                    .Include(m => m.Customer.User)
                                     .Include(m => m.Vendor)
                                     .FirstOrDefault(
-                                        m => m.Customer.ApplicationUserId == itm.Order.ApplicationUserId
-                                        && m.Vendor.ApplicationUserId == itm.ApplicationUserId).Id;
+                                        m => m.Customer.Id == itm.Order.EcomUserId
+                                        && m.Vendor.Id == itm.EcomUserId).Id;
 
                                 db.OrderInformation.Add(
                                     new Utilities.OrderStateInfo
@@ -217,7 +226,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                                 message += "Regards,\nKhuslife E-com Team";
 
-                                FireEmail(itm.Order.Customer.Email, subject, message);
+                                FireEmail(itm.Order.Customer.User.Email, subject, message);
 
                                 break;
                             }
@@ -241,18 +250,22 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var vendorId = User.Identity.GetUserId();
                 var allrequests = (string.IsNullOrEmpty(userId)) ?
                                 db.OrderItems
+                                    .Include(m => m.Vendor)
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
-                                    .Where(m => m.ApplicationUserId == vendorId
+                                    .Include(m => m.Order.Customer.User)
+                                    .Where(m => m.Vendor.ApplicationUserId == vendorId
                                     && m.Status == Utilities.OrderStatus.CancellationRequested)
                                     .OrderByDescending(m => m.Order.OrderDate)
                                     .ToList()
                                 :
                                 db.OrderItems
+                                    .Include(m => m.Vendor)
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
-                                    .Where(m => m.ApplicationUserId == vendorId
-                                    && m.Order.ApplicationUserId == userId
+                                    .Include(m => m.Order.Customer.User)
+                                    .Where(m => m.Vendor.ApplicationUserId == vendorId
+                                    && m.Order.Customer.ApplicationUserId == userId
                                     && m.Status == Utilities.OrderStatus.CancellationRequested)
                                     .OrderByDescending(m => m.Order.OrderDate)
                                     .ToList();
@@ -278,7 +291,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         message += "Regards,\nKhuslife E-com Team";
 
-                        FireEmail(itm.Order.Customer.Email, subject, message);
+                        FireEmail(itm.Order.Customer.User.Email, subject, message);
                     }
                 }
                 else if (bulkDec == "none")
@@ -302,7 +315,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         message += "Regards,\nKhuslife E-com Team";
 
-                        FireEmail(itm.Order.Customer.Email, subject, message);
+                        FireEmail(itm.Order.Customer.User.Email, subject, message);
                     }
                 }
 
@@ -333,6 +346,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 var itm = db.OrderItems
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
+                                    .Include(m => m.Order.Customer.User)
                                     .FirstOrDefault(m => m.Id
                                         == itmId);
                                 if (itm == null) return View("Error");
@@ -354,7 +368,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                                 message += "Regards,\nKhuslife E-com Team";
 
-                                FireEmail(itm.Order.Customer.Email, subject, message);
+                                FireEmail(itm.Order.Customer.User.Email, subject, message);
 
                                 break;
                             }
@@ -364,6 +378,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                 var itm = db.OrderItems
                                     .Include(m => m.Order)
                                     .Include(m => m.Order.Customer)
+                                    .Include(m => m.Order.Customer.User)
                                     .FirstOrDefault(m => m.Id
                                         == itmId);
                                 if (itm == null) return View("Error");
@@ -385,7 +400,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                                 message += "Regards,\nKhuslife E-com Team";
 
-                                FireEmail(itm.Order.Customer.Email, subject, message);
+                                FireEmail(itm.Order.Customer.User.Email, subject, message);
 
                                 break;
                             }
@@ -406,14 +421,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var allOrders = (string.IsNullOrEmpty(id)) ? 
                             db.OrderItems
                                 .Include(m => m.Order)
-                                .Where(m => m.ApplicationUserId == vendorId)
+                                .Include(m => m.Vendor)
+                                .Where(m => m.Vendor.ApplicationUserId == vendorId)
                                 .OrderByDescending(m => m.Order.OrderDate)
                                 .ToList() 
                             : 
                             db.OrderItems
                                 .Include(m => m.Order)
-                                .Where(m => m.ApplicationUserId == vendorId
-                                && m.Order.ApplicationUserId == id)
+                                .Include(m => m.Order.Customer)
+                                .Include(m => m.Vendor)
+                                .Where(m => m.Vendor.ApplicationUserId == vendorId
+                                && m.Order.Customer.ApplicationUserId == id)
                                 .OrderByDescending(m => m.Order.OrderDate)
                                 .ToList();
 
@@ -463,8 +481,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                         .Include(m => m.Customer)
                                         .Include(m => m.Vendor)
                                         .FirstOrDefault(
-                                            m => m.Customer.ApplicationUserId == orderItm.Order.ApplicationUserId
-                                            && m.Vendor.ApplicationUserId == orderItm.ApplicationUserId).Id;
+                                            m => m.Customer.Id == orderItm.Order.EcomUserId
+                                            && m.Vendor.Id == orderItm.EcomUserId).Id;
 
                                     db.OrderInformation.Add(
                                         new Utilities.OrderStateInfo

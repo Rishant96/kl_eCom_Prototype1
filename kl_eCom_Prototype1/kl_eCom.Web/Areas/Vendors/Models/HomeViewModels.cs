@@ -49,6 +49,9 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string State { get; set; }
 
         [Required]
+        public string Country { get; set; }
+
+        [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string Password { get; set; }
 

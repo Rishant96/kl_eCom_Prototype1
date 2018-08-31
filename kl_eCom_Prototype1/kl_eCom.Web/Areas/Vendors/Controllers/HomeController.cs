@@ -92,7 +92,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             //    VendorPackageSelected = (availablePackages
             //        .FirstOrDefault(m => m.Price == 0.0f)).Id
                 Key = id,
-                TimeStamp = datetime
+                TimeStamp = datetime,
+                Country = "India"
             });
         }
 
@@ -128,11 +129,13 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     var ecomUser = db.EcomUsers.Add(new EcomUser {
                         ApplicationUserId = vendor.Id,
                         PrimaryRole = "Vendor",
+                        IsActive = true,    
                         VendorDetails = new Utilities.VendorDetails
                         {
                             BusinessName = model.BusinessName,
                             Zip = model.Zip,
                             State = model.State,
+                            Country = model.Country,
                             WebsiteUrl = (string.IsNullOrEmpty(model.WebsiteUrl)) ? 
                                 "" : "http://" + model.WebsiteUrl,
                             RegistrationDate = DateTime.Now
@@ -163,7 +166,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                                         && m.IsEnabled == true);
                         db.ActivePlans.Add(new Utilities.ActivePlan
                         {
-                            ApplicationUserId = vendor.Id,
+                            EcomUserId = ecomUser.Id,
                             VendorPlanId = plan.Id,
                             VendorPlanPaymentDetailId = null,
                             StartDate = DateTime.Now,
@@ -174,7 +177,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                         db.SaveChanges();
 
-                        ecomUser.VendorDetails.ActivePlanId = db.ActivePlans.FirstOrDefault(m => m.ApplicationUserId == vendor.Id).Id;
+                        ecomUser.VendorDetails.ActivePlanId = db.ActivePlans
+                            .FirstOrDefault(m => m.EcomUserId == ecomUser.Id).Id;
                         db.Entry(ecomUser.VendorDetails).State = System.Data.Entity.EntityState.Modified;
                         db.Entry(vendor).State = System.Data.Entity.EntityState.Modified;
                         db.SaveChanges();

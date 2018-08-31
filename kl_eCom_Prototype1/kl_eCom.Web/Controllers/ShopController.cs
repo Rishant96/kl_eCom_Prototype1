@@ -588,6 +588,7 @@ namespace kl_eCom.Web.Controllers
 
             var model = new ShopProductDetailsViewModel
             {
+                Description = stock.Product.Category.Description,
                 Stock = stock,
                 StockId = stock.Id,
                 ReturnUrl = ViewBag.ReturnUrl,
@@ -733,16 +734,18 @@ namespace kl_eCom.Web.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.Identity.GetUserId();
+                var user = db.EcomUsers
+                    .FirstOrDefault(m => m.ApplicationUserId == userId);
                 // Get Cart and update it
                 cart = db.Carts
                     .Include(m => m.CartItems)
-                    .FirstOrDefault(m => m.ApplicationUserId == userId);
+                    .FirstOrDefault(m => m.EcomUserId == user.Id);
 
                 if (cart is null)
                 {
                     cart = db.Carts.Add(new Cart
                     {
-                        ApplicationUserId = userId,
+                        EcomUserId = user.Id,
                         CartItems = new List<CartItem>()
                     });
                     db.SaveChanges();

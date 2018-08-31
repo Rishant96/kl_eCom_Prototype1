@@ -38,9 +38,9 @@
                         }
                     </div>
                     <div class="col-md-6">
-                        <img id="mainImg" width="320" height="215"
-                             style="min-height: 215px; min-width: 320px;
-                                max-height: 215px; max-width: 320px;
+                        <img id="mainImg" width="350" height="230"
+                             style="min-height: 230px; min-width: 350px;
+                                max-height: 230px; max-width: 350px;
                                 margin: 10px 25px; position: relative;
                                 right: 30px" />
                     </div>
@@ -121,11 +121,17 @@
                 }
             </div>
         </div>
+        <div class="row col-md-offset-1 col-md-10 col-md-offset-1" style="margin-top: 15px">
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                @Html.Label("Vendor Notes:")<hr style="margin: 5px 0" />
+                @Html.DisplayFor(m => m.Description)
+            }
+        </div>
         <div class="row">
             <div class="col-md-6" style="margin-top: 25px">
                 @Html.Label("Product Specifications:") <br />
-                <table class="table">
-                    <tr>
+                <table class="table" style="width: 85%; text-align: center">
                         @if (Model.Stock.Product.Category
                                 .Attributes == null 
                             ||
@@ -140,18 +146,20 @@
                                     .Product.Category
                                     .Attributes.Count); i++)
                             {
-                                <td>
+                            <tr>
+                                <td style="font-weight: bold;">
                                     @Model.Stock.Product.Category.Attributes.ElementAt(i).Name
                                 </td>
                                 <td>
                                     @Model.Stock.Product.Specifications.ElementAt(i).Value
                                 </td>
+                            </tr>
                             }
                         }
-                    </tr>
                 </table>
             </div>
             <div class="col-md-6" style="margin-top: 25px">
+                @Html.Label("Discounts:")
                 @if (Model.BundleDiscounts.Count > 0)
                 {
                 <div>
@@ -261,9 +269,9 @@
                                     </td>
                                     <td>
                                         @using (Html.BeginForm("BulkOrder", "Shop", new { id = minQty.Id,
-                                        stockId = Model.StockId,
-                                        returnUrl = Request.Url.PathAndQuery },
-                                        FormMethod.Post, null))
+                                            stockId = Model.StockId,
+                                            returnUrl = Request.Url.PathAndQuery },
+                                            FormMethod.Post, null))
                                         {
                                         @Html.AntiForgeryToken()
                                         <input type="submit" class="btn btn-default"
@@ -286,7 +294,7 @@
     $(document).ready(function () {
         $("#mainImg").attr("src", $("#Img0").attr("src"));
 
-        $(".thumb-images").click(function () {
+        $(".thumb-images").mouseenter(function () {
             $("#mainImg").attr("src", $(this).attr("src"));
         });
     });

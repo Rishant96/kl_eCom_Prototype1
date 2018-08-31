@@ -154,6 +154,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Id = prod.Id,
                 Name = prod.Name,
                 Description = prod.Description,
+                DefaultGST = prod.DefaultGST,
                 Manufacturer = prod.Manufacturer,
                 DateAdded = prod.DateAdded,
                 AttributeNames = new List<string>(),

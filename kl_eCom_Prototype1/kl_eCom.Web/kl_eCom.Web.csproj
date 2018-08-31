@@ -19,9 +19,9 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressSSLPort>44334</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -216,6 +216,7 @@
     <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
     <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminCustomersViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
@@ -254,13 +255,17 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201808290712026_NewInit.cs" />
-    <Compile Include="Migrations\201808290712026_NewInit.Designer.cs">
-      <DependentUpon>201808290712026_NewInit.cs</DependentUpon>
+    <Compile Include="Migrations\201808300620067_Init.cs" />
+    <Compile Include="Migrations\201808300620067_Init.Designer.cs">
+      <DependentUpon>201808300620067_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808290849209_Models_Changed_1_EcomUser.cs" />
-    <Compile Include="Migrations\201808290849209_Models_Changed_1_EcomUser.Designer.cs">
-      <DependentUpon>201808290849209_Models_Changed_1_EcomUser.cs</DependentUpon>
+    <Compile Include="Migrations\201808301058556_User_IsActive_Added.cs" />
+    <Compile Include="Migrations\201808301058556_User_IsActive_Added.Designer.cs">
+      <DependentUpon>201808301058556_User_IsActive_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808310527357_VDetails_Country_Added.cs" />
+    <Compile Include="Migrations\201808310527357_VDetails_Country_Added.Designer.cs">
+      <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -486,6 +491,9 @@
     <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\KL_Admin\Views\Vendors\Delete.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\ResetPassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\ResetPassword.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -605,11 +613,14 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808290712026_NewInit.resx">
-      <DependentUpon>201808290712026_NewInit.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808300620067_Init.resx">
+      <DependentUpon>201808300620067_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808290849209_Models_Changed_1_EcomUser.resx">
-      <DependentUpon>201808290849209_Models_Changed_1_EcomUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808301058556_User_IsActive_Added.resx">
+      <DependentUpon>201808301058556_User_IsActive_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808310527357_VDetails_Country_Added.resx">
+      <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

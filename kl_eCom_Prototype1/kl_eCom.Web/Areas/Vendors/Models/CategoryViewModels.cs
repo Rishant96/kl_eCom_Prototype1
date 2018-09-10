@@ -17,6 +17,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Description { get; set; }
         public float DefaultGST { get; set; }
         public List<CategoryAttribute> Attributes { get; set; }
+        public int? SelectedCat { get; set; }
+        public Dictionary<string, int> Categories { get; set; }
     }
 
     public class CategoryEditViewModel
@@ -31,6 +33,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Display(Name = "Reflect Changes in Products")]
         [Required]
         public bool ReflectChange { get; set; }
+        public int? SelectedCat { get; set; }
+        public Dictionary<string, int> Categories { get; set; }
     }
 
     public class CategoryDetailsViewModel

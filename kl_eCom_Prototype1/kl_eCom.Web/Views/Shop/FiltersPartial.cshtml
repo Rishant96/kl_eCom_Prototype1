@@ -33,8 +33,8 @@
                         @Html.TextBoxFor(m => m.FilterViewModel.MaxValue, new { @class = "PriceTxt", style = "max-width: 130px" })
                     </div>
                 </div>
-                <hr style="margin: 0; margin-left: 50px; margin-right: 40px;" />
             </div>
+            <hr style="margin: 10px 0 5px; margin-left: 0px; margin-right: 0px;" />
         </div>
     </div>
     <div class="row" style="margin: 0; padding: 0; margin-top: 15px;">
@@ -50,8 +50,8 @@
                         <input type="radio" id="RatingList" name="RatingList" value="@ratingItm.Id" @if (Model.FilterViewModel.RatingSelection.RatingItemSelected == ratingItm.Id) { <text> checked</text>} />@ratingItm.DisplayName<text><br /></text>
                     }
                 </div>
-                <hr style="margin: 0; margin-left: 50px; margin-right: 40px;" />
             </div>
+            <hr style="margin: 10px 0 5px; margin-left: 0px; margin-right: 0px;" />
         </div>
     </div>
     <div class="row" style="margin: 0; padding: 0; margin-top: 15px;">
@@ -67,8 +67,8 @@
                         <input type="radio" id="NewArrivalsList" name="NewArrivalsList" value="@newArvlItm.Id" @if (Model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected == newArvlItm.Id) { <text> checked</text>} />@newArvlItm.DisplayName<text><br /></text>
                     }
                 </div>
-                <hr style="margin: 0; margin-left: 50px; margin-right: 40px;" />
             </div>
+            <hr style="margin: 10px 0 5px; margin-left: 0px; margin-right: 0px;" />
         </div>
     </div>
     <div class="row" style="margin: 0; padding: 0; margin-top: 15px;">
@@ -84,7 +84,6 @@
                         <input type="radio" id="AvailabilityList" name="AvailabilityList" value="@avbleItm.Id" @if (Model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected == avbleItm.Id) { <text> checked</text>} />@avbleItm.DisplayName<text><br /></text>
                     }
                 </div>
-                <hr style="margin: 0; margin-left: 50px; margin-right: 40px;" />
             </div>
         </div>
     </div>

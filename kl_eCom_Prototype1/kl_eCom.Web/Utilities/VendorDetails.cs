@@ -37,12 +37,17 @@ namespace kl_eCom.Web.Utilities
         [Key]
         public int Id { get; set; }
 
-        public string ProviderName { get; set; }
+        public PaymentGatewayProvider ProviderName { get; set; }
 
         [Required]
         public int VendorDetailsId { get; set; }
         public VendorDetails VendorDetails { get; set; }
 
         // Gateway Information 
+    }
+
+    public enum PaymentGatewayProvider
+    {
+        Paytm 
     }
 }

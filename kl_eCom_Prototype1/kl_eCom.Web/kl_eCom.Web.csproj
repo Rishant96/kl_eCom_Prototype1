@@ -216,6 +216,7 @@
     <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
     <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminCategoriesViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminCustomersViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
@@ -267,12 +268,33 @@
     <Compile Include="Migrations\201808310527357_VDetails_Country_Added.Designer.cs">
       <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808311002330_model_changed_3.cs" />
+    <Compile Include="Migrations\201808311002330_model_changed_3.Designer.cs">
+      <DependentUpon>201808311002330_model_changed_3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809040703125_KL_Category_Added.cs" />
+    <Compile Include="Migrations\201809040703125_KL_Category_Added.Designer.cs">
+      <DependentUpon>201809040703125_KL_Category_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809041007503_KL_Category_Added_2.cs" />
+    <Compile Include="Migrations\201809041007503_KL_Category_Added_2.Designer.cs">
+      <DependentUpon>201809041007503_KL_Category_Added_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809060644261_Common_User_Changes.cs" />
+    <Compile Include="Migrations\201809060644261_Common_User_Changes.Designer.cs">
+      <DependentUpon>201809060644261_Common_User_Changes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809061043591_Models_Changed_4.cs" />
+    <Compile Include="Migrations\201809061043591_Models_Changed_4.Designer.cs">
+      <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
     <Compile Include="Models\CustomerViewModels.cs" />
     <Compile Include="Models\FilterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KL_Category.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MarketViewModels.cs" />
     <Compile Include="Models\ShopViewModels.cs" />
@@ -494,6 +516,13 @@
     <Content Include="Areas\KL_Admin\Views\Customers\Details.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Customers\ResetPassword.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\ResetPassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Categories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CreateCategory.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryEdit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\MissingCategories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AllocateCategories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryDelete.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -592,6 +621,8 @@
     <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.eot" />
     <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.ttf" />
     <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.woff" />
+    <Content Include="Views\Shop\ByProducts.cshtml" />
+    <Content Include="Views\Shop\KL_Categories_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -621,6 +652,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808310527357_VDetails_Country_Added.resx">
       <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808311002330_model_changed_3.resx">
+      <DependentUpon>201808311002330_model_changed_3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809040703125_KL_Category_Added.resx">
+      <DependentUpon>201809040703125_KL_Category_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809041007503_KL_Category_Added_2.resx">
+      <DependentUpon>201809041007503_KL_Category_Added_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809060644261_Common_User_Changes.resx">
+      <DependentUpon>201809060644261_Common_User_Changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809061043591_Models_Changed_4.resx">
+      <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

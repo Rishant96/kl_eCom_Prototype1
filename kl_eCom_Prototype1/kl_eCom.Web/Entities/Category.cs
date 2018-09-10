@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Models;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,6 +28,9 @@ namespace kl_eCom.Web.Entities
         
         public int? CategoryId { get; set; }
         public virtual Category Parent { get; set; }
+
+        public int? KL_CategoryId { get; set; }
+        public KL_Category KL_Category { get; set; }
         
         public ICollection<CategoryAttribute> Attributes { get; set; }
 

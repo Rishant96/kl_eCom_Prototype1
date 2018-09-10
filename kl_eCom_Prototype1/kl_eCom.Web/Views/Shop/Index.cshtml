@@ -5,27 +5,28 @@
     var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
     var count = Model.Breadcrum.Keys.Count;
 }
-
-@for (int i = 0; i < count; i++)
-{
-    var name = Model.Breadcrum.Keys.ElementAt(i);
-    if (i == count - 1)
+<div style="margin-top: 20px">
+    @for (int i = 0; i < count; i++)
     {
-        <text> @name </text>
+        var name = Model.Breadcrum.Keys.ElementAt(i);
+        if (i == count - 1)
+        {
+            <text> @name </text>
+        }
+        else if (i == 0)
+        {
+            @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+            <text> > </text>
+        }
+        else
+        {
+            @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+            <text> > </text>
+        }
     }
-    else if (i == 0)
-    {
-        @Html.ActionLink(store.Name, "Index", new { id = store.Id })
-        <text> > </text>
-    }
-    else
-    {
-        @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
-        <text> > </text>
-    }
-}
+</div>
 <br />
-<hr />
+<hr style="margin: 0" />
 <h3 class="">Catalog</h3><br />
 <div class="row">
     <div class="col-md-offset-1">

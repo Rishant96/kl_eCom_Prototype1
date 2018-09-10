@@ -44,7 +44,7 @@
                         <div style="height: 50px; display: flex; align-items: center">
                             @Html.AntiForgeryToken()
                             @Html.TextBox("SearchQuery", null, new { @class = "form-control", placeholder = "Search...",
-                                style = "height: 33px; width: 475px; padding: 2px 5px; border-radius: 3px;" })
+                                style = "height: 33px; width: 500px; padding: 2px 5px; border-radius: 3px;" })
                             <input id="searchBtn" name="searchBtn" type="submit" class="btn btn-info" value="Search" style="margin-left: 5px;" />
                         </div>
                     }
@@ -76,7 +76,7 @@
             </div>
         </div>
     </div>
-    <div class="container body-content" style="margin-top: 20px;">
+    <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>

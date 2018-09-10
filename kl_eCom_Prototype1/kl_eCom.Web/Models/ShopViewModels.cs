@@ -28,6 +28,8 @@ namespace kl_eCom.Web.Models
         public Dictionary<int, int> Max { get; set; }
         [Required]
         public SortOption SelectedOption { get; set; }
+        public bool IsKlCat { get; set; }
+        public List<KL_Category> KL_Categories { get; set; }
     }
 
     public class ShopProductDetailsViewModel
@@ -79,6 +81,11 @@ namespace kl_eCom.Web.Models
         public int Rating_Min { get; set; }
         public int Allowed_Days { get; set; }
         public bool Availability { get; set; }
+    }
+
+    public class ShopKlCategoryViewModel
+    {
+        public List<KL_Category> KL_Categories { get; set; }
     }
 
     public class ShopFilterViewModel
@@ -142,5 +149,10 @@ namespace kl_eCom.Web.Models
         public int Id { get; set; }
         public string DisplayName { get; set; }
         public bool Value { get; set; }
+    }
+
+    public class ShopByProductsViewModel
+    {
+        public List<KL_Category> Categories { get; set; }
     }
 }

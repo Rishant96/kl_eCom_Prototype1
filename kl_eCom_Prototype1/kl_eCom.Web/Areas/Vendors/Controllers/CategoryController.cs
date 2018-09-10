@@ -39,11 +39,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         public ActionResult Create(int? storeId, int? catId)
         {
+            var dictCat = new Dictionary<string, int>();
+            foreach (var cat in db.KL_Categories.ToList())
+                dictCat.Add(cat.Name, cat.Id);
+
             TempData["storeId"] = storeId;
             TempData["catId"] = catId;
             ViewBag.StoreId = storeId;
+            
             return View(new CategoryCreateViewModel {
-                DefaultGST = 10.0f
+                DefaultGST = 10.0f,
+                Categories = dictCat
             });
         }
 
@@ -100,7 +106,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     Attributes = model.Attributes,
                     DefaultGST = model.DefaultGST,
                     CategoryId = catId,
-                    StoreId = (int)storeId
+                    StoreId = (int)storeId,
+                    KL_CategoryId = model.SelectedCat
                 };
 
                 db.Categories.Add(cat);
@@ -140,6 +147,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (storeId == null || catId == null || storeId == 0 || catId == 0) return RedirectToAction("Index", controllerName: "Store");
             ViewBag.storeId = storeId;  
             var cat = db.Categories.Include(m => m.Attributes)
+                .Include(m => m.KL_Category)
                 .FirstOrDefault(m => m.Id == (int)catId);
             cat.ChildCategories = db.Categories.Where(m => m.CategoryId == cat.Id).ToList();
             if(cat.ChildCategories == null || cat.ChildCategories.Count == 0)
@@ -175,12 +183,19 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 .FirstOrDefault(m => m.Id == id);
             if (cat == null) return View("Error");
             if (cat.Attributes == null) cat.Attributes = new List<CategoryAttribute>();
+
+            var dictCat = new Dictionary<string, int>();
+            foreach (var kl_cat in db.KL_Categories.ToList())
+                dictCat.Add(kl_cat.Name, kl_cat.Id);
+
             return View(new CategoryEditViewModel {
                 Id = cat.Id,
                 StoreId = cat.StoreId,
                 Name = cat.Name,
                 Description = cat.Description,
-                Attributes = cat.Attributes.ToList()
+                Attributes = cat.Attributes.ToList(),
+                SelectedCat = cat.KL_CategoryId,
+                Categories = dictCat
             });
         }
 
@@ -245,7 +260,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 cat.Name = model.Name;
                 cat.Description = model.Description;
-                
+                cat.KL_CategoryId = model.SelectedCat;
+
                 if(Request.Files.Count > 0)
                 {
                     if (Request.Files.Count != 1) return View("Error");

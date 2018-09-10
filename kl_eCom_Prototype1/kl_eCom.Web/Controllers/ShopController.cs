@@ -63,6 +63,13 @@ namespace kl_eCom.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult KL_Categories_Partial(List<KL_Category> categories)
+        {
+            return PartialView(new ShopKlCategoryViewModel {
+                KL_Categories = categories
+            });
+        }
         
         public ActionResult FiltersPartial(ShopProductsViewModel prodModel)
         {
@@ -167,7 +174,7 @@ namespace kl_eCom.Web.Controllers
                         }
                     };
 
-            return View(prodModel);
+            return PartialView(prodModel);
         }
         
         [HttpPost]
@@ -319,7 +326,7 @@ namespace kl_eCom.Web.Controllers
         public ActionResult Products(int? storeId, int? catId, [Form] ShopFilteringOptions filteringOptions,
                                 [Form] SelectedFilters selectedFilters,
                                 [Form] QueryOptions queryOptions,
-                                string searchQuery = null, bool flag = false)
+                                string searchQuery = null, bool flag = false, bool isKLId = false)
         {
             if (queryOptions == null) queryOptions = new QueryOptions();
            
@@ -336,16 +343,67 @@ namespace kl_eCom.Web.Controllers
                 TempData["flag"] = flag;
             }
             ViewBag.Flag = flag;
-            var store = db.Stores.FirstOrDefault(m => m.Id == (storeId ?? 0));
-            var parent = db.Categories.FirstOrDefault(m => m.Id == (catId ?? 0));
-            var parentList = new Dictionary<string, int>();
-            while (parent != null)
+
+            Category parent = null;
+            Dictionary<string, int> parentList = new Dictionary<string, int>();
+            List<int> catProdIds = null;
+            List<KL_Category> klCategories = new List<KL_Category>();
+
+            if (isKLId)
             {
-                parentList.Add(parent.Name, parent.Id);
-                parent = db.Categories.FirstOrDefault(m => m.Id == parent.CategoryId);
+                List<Category> categories = null;
+
+                klCategories = db.KL_Categories
+                                .Where(m => m.KL_CategoryId == catId)
+                                .ToList();
+
+                var parentCat = db.KL_Categories.FirstOrDefault(m => m.Id == catId);
+
+                var klCatQueue = new Queue<KL_Category>();
+                klCatQueue.Enqueue(parentCat);
+
+                catProdIds = new List<int>();
+                while (klCatQueue.Count > 0 && klCatQueue.Dequeue() is KL_Category kl_category)
+                {
+                    categories = db.Categories
+                                   .Where(m => m.KL_CategoryId == kl_category.Id)
+                                   .ToList();
+
+                    foreach (var cat in categories)
+                    {
+                        var stocks = db.Stocks
+                            .Include(m => m.Product)
+                            .Where(m => m.Product.CategoryId == cat.Id)
+                            .Select(m => m.Id)
+                            .ToList();
+
+                        catProdIds = catProdIds.Concat(stocks).ToList();
+                    }
+
+                    foreach (var kl_cat in db.KL_Categories
+                        .Where(m => m.KL_CategoryId == kl_category.Id)
+                        .ToList())
+                    {
+                        klCatQueue.Enqueue(kl_cat);
+                    }
+                }
+                if (catProdIds.Count == 0)
+                    ViewBag.EmptyMessage = "No products available";
             }
-            var catProdIds = db.Products.Where(m => m.CategoryId == (catId ?? m.CategoryId))
-                                        .Select(m => m.Id).ToList();
+            else
+            {
+                parent = db.Categories.FirstOrDefault(m => m.Id == (catId ?? 0));
+                while (parent != null)
+                {
+                    parentList.Add(parent.Name, parent.Id);
+                    parent = db.Categories.FirstOrDefault(m => m.Id == parent.CategoryId);
+                }
+                catProdIds = db.Products.Where(m => m.CategoryId == (catId ?? m.CategoryId))
+                                            .Select(m => m.Id).ToList();
+            }
+
+            var store = db.Stores.FirstOrDefault(m => m.Id == (storeId ?? 0));
+            
             var thresholdDate = DateTime.Now;
             bool dateFlag = false;
             if (filteringOptions.Allowed_Days == -1)
@@ -386,6 +444,8 @@ namespace kl_eCom.Web.Controllers
             var model = new ShopProductsViewModel
             {
                 CategoryId = catId,
+                IsKlCat = isKLId,
+                KL_Categories = klCategories,
                 Stocks = (search == null || (search.Categories == null && search.Stocks == null)) ?
                           db.Stocks
                             .Include(m => m.Product)
@@ -941,6 +1001,31 @@ namespace kl_eCom.Web.Controllers
                 Response.Cookies.Add(cookie);
             }
             return 0;
+        }
+
+        public ActionResult ByProducts(int? id)
+        {
+            if (id == null)
+            {
+                var model = new ShopByProductsViewModel
+                {
+                    Categories = db.KL_Categories
+                                   .Where(m => m.KL_CategoryId == null)
+                                   .ToList()
+                };
+
+                return View(model);
+            }
+            else
+            {
+                if (db.KL_Categories
+                      .FirstOrDefault(m => m.Id == id)
+                        != null)
+                {
+                    return RedirectToAction("Products", new { catId = id, isKLId = true });
+                }
+                return View("Error");
+            }
         }
     }
 }

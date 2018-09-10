@@ -2,7 +2,7 @@
 @model kl_eCom.Web.Models.ShopProductsViewModel
 
 @{
-    Layout = "~/Views/Shared/_LayoutProdList.cshtml";
+    Layout = "~/Views/Shared/_EcomLayout.cshtml";
     ViewBag.Title = (Model.Breadcrum != null) ?
         Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1)
         : "Products";
@@ -16,7 +16,7 @@
     var width = "160px";
     var height = "100px";
 }
-<div style="padding-top: 10px">
+<div style="padding-top: 0px">
     <div style="margin-left: 15px;">
         @for (int i = 0; i < count; i++)
         {
@@ -40,7 +40,11 @@
     <br />
 
     <div class="row" style="margin-top: -10px; margin-right: 0">
-        <div id="filterPanel" class="col-md-3" style="margin-top: 30px;">
+        <div id="filterPanel" class="col-md-3" style="margin-top: 20px;">
+            @if (Model.IsKlCat && Model.KL_Categories.Count > 0 && Model.Stocks != null && Model.Stocks.Count > 0)
+            {
+                @Html.Action("KL_Categories_Partial", new { categories = Model.KL_Categories })
+            }
             @Html.Action("FiltersPartial", new { prodModel = Model })
         </div>
         <div class="col-md-9">
@@ -83,61 +87,65 @@
                         </div>
                     </text>
                 }
-                <div class="row">
-                    @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
-                    {
-                        using (Html.BeginForm(new { stockId = stock.Id }))
+                        <div class="row">
+                        @if (Model.Stocks == null || Model.Stocks.Count == 0)
                         {
-                            @Html.AntiForgeryToken()
-                            <div class="col-md-3">
-                                <div>
-                                    <a href="@Url.Action("ProductDetails", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
-                                        <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                                             src="@Url.Action("GetThumbnail", "Product",
+                            <text>@ViewBag.EmptyMessage</text>
+                        }
+                        @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
+                        {
+                            using (Html.BeginForm(new { stockId = stock.Id }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="col-md-3">
+                                    <div>
+                                        <a href="@Url.Action("ProductDetails", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
+                                            <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                                 src="@Url.Action("GetThumbnail", "Product",
                                                  new { area = "Vendors", id = stock.ProductId })" />
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
 
-                                <div>
-                                    @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(stock.Product.Name,
-                                   "ProductDetails",
-                                   new { id = stock.Id,
-                                       returnUrl = Request.Url.PathAndQuery })
-                                </div>
+                                    <div>
+                                        @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(stock.Product.Name,
+                                            "ProductDetails",
+                                            new { id = stock.Id,
+                                            returnUrl = Request.Url.PathAndQuery })
+                                    </div>
 
-                                <div>
-                                    @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
-                                </div>
-                                @{
-                                    var inStock = true;
-                                    var stockList = new List<int>();
-                                    if (stock.CurrentStock == 0)
-                                    {
-                                        inStock = false;
-                                    }
-                                    else
-                                    {
-                                        for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                    <div>
+                                        @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                                    </div>
+                                    @{
+                                        var inStock = true;
+                                        var stockList = new List<int>();
+                                        if (stock.CurrentStock == 0)
                                         {
-                                            stockList.Add(i);
+                                            inStock = false;
+                                        }
+                                        else
+                                        {
+                                            for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                            {
+                                                stockList.Add(i);
+                                            }
+                                        }
+                                        var qtyList = new SelectList(stockList);
+
+                                        if (!inStock)
+                                        {
+                                            @Html.Label("Out Of Stock")
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(m => m.Qty, qtyList, new { style = "height: 30px; position: relative; top: 1px" })
+                                            <input type="submit" class="btn btn-default" value="Add To Cart" />
                                         }
                                     }
-                                    var qtyList = new SelectList(stockList);
-
-                                    if (!inStock)
-                                    {
-                                        @Html.Label("Out Of Stock")
-                                    }
-                                    else
-                                    {
-                                        @Html.DropDownListFor(m => m.Qty, qtyList)
-                                        <input type="submit" value="Add To Cart" />
-                                    }
-                                }
-                            </div>
+                                </div>
+                            }
                         }
-                    }
-                </div>
+                     </div>
             </div>
         </div>
     </div>

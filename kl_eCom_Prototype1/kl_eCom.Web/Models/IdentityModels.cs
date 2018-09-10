@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -23,6 +24,21 @@ namespace kl_eCom.Web.Models
 
         public virtual ICollection<Address> Addresses { get; set; }
 
+        [Required]
+        public DateTime DOB { get; set; }
+
+        [Required]
+        public Sex Sex { get; set; }
+
+        [Required]
+        public DateTime DateCreated { get; set; }
+
+        [Required]
+        public DateTime LastLogin { get; set; }
+
+        [Required]
+        public bool IsActive { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -30,6 +46,13 @@ namespace kl_eCom.Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+    }
+
+    public enum Sex
+    {
+        Male,
+        Female,
+        Other
     }
 
     public class EcomUser
@@ -112,6 +135,7 @@ namespace kl_eCom.Web.Models
         public DbSet<VoucherItem> VoucherItems { get; set; }
         public DbSet<RedeemedVoucher> RedeemedVouchers { get; set; }
         public DbSet<VendorPlanDowngradeRecord> VendorDowngradeRecords { get; set; }
+        public DbSet<KL_Category> KL_Categories { get; set; } 
 
         public static ApplicationDbContext Create()
         {

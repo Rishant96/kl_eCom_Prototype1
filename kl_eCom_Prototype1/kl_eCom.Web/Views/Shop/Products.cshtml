@@ -78,7 +78,7 @@
                 }
             </div>
             <div id="productsPanel">
-                @if (ViewBag.flag)
+                @if (ViewBag.Flag != null && ViewBag.Flag)
                 {
                     <text>
                         <div class="alert alert-success alert-dismissible" style="width: 800px;">
@@ -94,7 +94,7 @@
                         }
                         @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
                         {
-                            using (Html.BeginForm(new { stockId = stock.Id }))
+                            using (Html.BeginForm(new { stockId = stock.Id, returnUrl = Request.Url.PathAndQuery }))
                             {
                                 @Html.AntiForgeryToken()
                                 <div class="col-md-3">

@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Models;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Models;
 using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
@@ -55,5 +56,40 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class AdminVendorsSpecializationsIndexViewModel
+    {
+        public List<Specialization> BaseSpecializations { get; set; }
+        public Dictionary<Specialization, List<Specialization>> ChildSpecializations { get; set; }
+    }
+
+    public class AdminVendorsSpecializationCreateViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public bool IsVisible { get; set; }
+
+        public Dictionary<string, int> Specializations { get; set; }
+        
+        public int? SelectedSpecialization { get; set; }
+    }
+
+    public class AdminVendorsSpecializationEditViewModel
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public bool IsVisible { get; set; }
+
+        public Dictionary<string, int> Specializations { get; set; }
+
+        public int? SelectedSpecialization { get; set; }
     }
 }

@@ -247,6 +247,7 @@
     <Compile Include="Entities\Discount.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\Specialization.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
     <Compile Include="Entities\VendorPlan.cs" />
@@ -287,6 +288,18 @@
     <Compile Include="Migrations\201809061043591_Models_Changed_4.cs" />
     <Compile Include="Migrations\201809061043591_Models_Changed_4.Designer.cs">
       <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809110503051_Specializations_Added.cs" />
+    <Compile Include="Migrations\201809110503051_Specializations_Added.Designer.cs">
+      <DependentUpon>201809110503051_Specializations_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809110903394_Specialities_Model_Edited.cs" />
+    <Compile Include="Migrations\201809110903394_Specialities_Model_Edited.Designer.cs">
+      <DependentUpon>201809110903394_Specialities_Model_Edited.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809120849186_Models_Changed_41.cs" />
+    <Compile Include="Migrations\201809120849186_Models_Changed_41.Designer.cs">
+      <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -523,6 +536,12 @@
     <Content Include="Areas\KL_Admin\Views\Admin\MissingCategories.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Admin\AllocateCategories.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Admin\CategoryDelete.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Specializations.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\CreateSpecialization.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationEdit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationDelete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\SpecialityPartialView.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -667,6 +686,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809061043591_Models_Changed_4.resx">
       <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809110503051_Specializations_Added.resx">
+      <DependentUpon>201809110503051_Specializations_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809110903394_Specialities_Model_Edited.resx">
+      <DependentUpon>201809110903394_Specialities_Model_Edited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809120849186_Models_Changed_41.resx">
+      <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -326,7 +326,7 @@ namespace kl_eCom.Web.Controllers
         public ActionResult Products(int? storeId, int? catId, [Form] ShopFilteringOptions filteringOptions,
                                 [Form] SelectedFilters selectedFilters,
                                 [Form] QueryOptions queryOptions,
-                                string searchQuery = null, bool flag = false, bool isKLId = false)
+                                string searchQuery = null, bool flag1 = false, bool isKLId = false)
         {
             if (queryOptions == null) queryOptions = new QueryOptions();
            
@@ -338,11 +338,11 @@ namespace kl_eCom.Web.Controllers
                 TempData["flag"] = null;
                 return RedirectToAction("Products", new { storeId, catId, queryOptions });
             }
-            else if(flag)
+            else if(TempData["AddedToCart"] is bool flag && flag)
             {
                 TempData["flag"] = flag;
             }
-            ViewBag.Flag = flag;
+            ViewBag.Flag = TempData["AddedToCart"] as bool?;
 
             Category parent = null;
             Dictionary<string, int> parentList = new Dictionary<string, int>();
@@ -561,7 +561,7 @@ namespace kl_eCom.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Products(ShopProductsViewModel model, int? stockId)
+        public ActionResult Products(ShopProductsViewModel model, int? stockId, string returnUrl = "")
         {
             int? storeID = TempData["storeId"] as int?;
             int? catID = TempData["catId"] as int?;
@@ -570,6 +570,9 @@ namespace kl_eCom.Web.Controllers
             {
                 if (model.Qty == 0) model.Qty = 1;
                 AddToCart(new CartAddViewModel { ItemId = (int)stockId, Qty = model.Qty });
+                TempData["AddedToCart"] = true;
+                if (!string.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
                 return RedirectToAction("Products", new { storeId = storeID, catId = catID, flag = true });
             }
 

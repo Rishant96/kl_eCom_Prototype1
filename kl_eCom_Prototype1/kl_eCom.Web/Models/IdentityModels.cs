@@ -136,6 +136,8 @@ namespace kl_eCom.Web.Models
         public DbSet<RedeemedVoucher> RedeemedVouchers { get; set; }
         public DbSet<VendorPlanDowngradeRecord> VendorDowngradeRecords { get; set; }
         public DbSet<KL_Category> KL_Categories { get; set; } 
+        public DbSet<Specialization> Specializations { get; set; }
+        public DbSet<VendorSpecialization> VendorSpecializations { get; set; }
 
         public static ApplicationDbContext Create()
         {

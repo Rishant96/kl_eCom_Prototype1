@@ -11,6 +11,8 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class VendorEditViewModel
     {
         [Required]
+        public int Id { get; set; }
+        [Required]
         [Display(Name = "Username")]
         public string UserName { get; set; }
         [Required]
@@ -41,26 +43,18 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string State { get; set; }
         [Required]
         public string Country { get; set; }
+    }
 
-        //[Required]
-        //[DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
-        //public string OldPassword { get; set; }
-
-        //[Required]
-        //[DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
-        //public string NewPassword { get; set; }
-
-        //[Required]
-        //[Display(Name = "Confirm Password")]
-        //[DataType(DataType.Password)]
-        //[Compare("Password", ErrorMessage = "Passwords do not match")]
-        //public string Confirm_Password { get; set; }
+    public class VendorSpecialityViewModel
+    {
+        public int[] SelectedSpecialities { get; set; }
+        public Dictionary<string, int> AllSpecialities { get; set; }
+        public Dictionary<string, List<string>> BaseSpecialityDict { get; set; }
     }
 
     public class VendorPasswordChangeViewModel
     {
         public string UserName { get; set; }
-
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string OldPassword { get; set; }

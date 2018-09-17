@@ -1,73 +1,198 @@
-﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorEditViewModel
+﻿@using kl_eCom.Web.Entities;
+@model kl_eCom.Web.Areas.Vendors.Models.VendorEditViewModel
 @{
     ViewBag.Title = "Edit";
+    //char c = 'a';
 }
 
 <h2>Edit - Vendor</h2>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<div class="row">
+    @using (Html.BeginForm("Edit", "Vendor", FormMethod.Post, new { @class = "row" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
 
-<div class="form-horizontal">
+        <div class="form-horizontal col-md-6">
 
-    @Html.HiddenFor(m => m.UserName)
+            @Html.HiddenFor(m => m.UserName)
 
-    @Html.HiddenFor(m => m.FirstName)
-    @Html.HiddenFor(m => m.LastName)
+            @Html.HiddenFor(m => m.FirstName)
+            @Html.HiddenFor(m => m.LastName)
 
-    @Html.HiddenFor(m => m.Email)
+            @Html.HiddenFor(m => m.Email)
 
-    @Html.HiddenFor(m => m.Mobile)
+            @Html.HiddenFor(m => m.Mobile)
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.BusinessName, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.BusinessName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.WebsiteUrl, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.Zip, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Zip, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.State, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.State, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Country, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.Country, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Country, "", new { @class = "text-danger" })
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.WebsiteUrl, "", new { @class = "text-danger" })
-        </div>
-    </div>
+        <div class="col-md-6">
+            <h4>Specializations</h4>
+            <div>
+                @*<h5>Already Selected:</h5>
+            <div class="row">
+                @foreach (var vspec in Model.VendorSpecializations)
+                {
+                    <div class="col-md-4 col-md-offset-2">
+                        <input type="checkbox" value="@vspec.Value" checked name="vSpecs" />
+                        <label>@vspec.Key</label>
+                    </div>
+                }
+            </div>
+            <hr />
+            <h5>Available:</h5>
+            <div class="row">
+                @foreach (var spec in Model.Specializations)
+                {
+                    <div class="col-md-4 col-md-offset-2">
+                        <input type="checkbox" value="@spec.Value" name="specs" />
+                        <label>@spec.Key</label>
+                    </div>
+                }
+            </div>*@
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.Zip, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.Zip, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                @*
+                <div>
+                @foreach (var speciality in Model.BaseSpecializations)
+                {
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.State, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.State, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                    var specStack = new Queue<Specialization>();
+                    specStack.Enqueue(speciality);
+                    var specDict = new Dictionary<Specialization, int>();
+                    specDict.Add(speciality, 0);
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Country, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.Country, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.Country, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                    while (specStack.Count > 0 && specStack.Dequeue() is Specialization spec)
+                    {
+                        <div>
+                            <lable class="@string.Format("col-md-offset-{0}", specDict[spec])">
+                                <a href="#@string.Format("spec{0}", spec.Id)"
+                                    data-toggle="collapse">@spec.Name</a>
+                            </lable>
+                        </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save Changes" class="btn btn-info" />
+                        foreach (var child in Model.ChildSpecializations[spec])
+                        {
+                            specStack.Enqueue(child);
+                            specDict.Add(child, specDict[spec] + 1);
+                        }
+                    }
+                }
+                </div>
+            </div>
+                *@
+            </div>
+            <div>
+                @*@foreach (var baseSpec in Model.BaseSpecializations)
+                {
+                    var specQueue = new Stack<Specialization>();
+                    var specDict = new Dictionary<Specialization, int>();
+                    specQueue.Push(baseSpec);
+                    specDict.Add(baseSpec, 0);
+
+                    while (specQueue.Count > 0 && specQueue.Pop() is Specialization spec
+                        /*&& !Model.VendorSpecialities.Contains(spec.Id)*/)
+                    {
+                        <text>
+                            <div class="@if (!Model.BaseSpecializations.Contains(spec)) {
+                                <text>collapse</text> } @string.Format("col-md-offset-{0}",
+                                    specDict[spec]) @string.Format("specs{0}_{1}",
+                                                   specDict[spec], spec.SpecializationId ?? 0)">
+                                <input type="checkbox" value="@spec.Id" name="specs" />
+                                <a href="@string.Format(".specs{0}_{1}",
+                                            specDict[spec] + 1, spec.Id)"
+                                       data-toggle="collapse">
+                                    @spec.Name
+                                </a>
+                            </div>
+                        </text>
+
+                        foreach (var child in Model.ChildSpecializations[spec])
+                        {
+                            specQueue.Push(child);
+                            specDict.Add(child, specDict[spec] + 1);
+                        }
+                    }
+                    //c++;
+                }
+            *@
+            </div>
+            <div id="specializationsDiv">
+
+            </div>
         </div>
-    </div>
+        <div class="form-group row">
+            <div class="col-md-offset-5 col-md-7">
+                <input type="submit" value="Save Changes" class="btn btn-info" />
+            </div>
+        </div>
+    }
 </div>
-}
 
 <div>
     @Html.ActionLink("Back to Details", "Details")
 </div>
+
+@section scripts
+{
+<script>
+    $(document).ready(function () {
+        var dataString = "id=" + @Model.Id;
+        $.ajax({
+            url: '@HttpUtility.UrlDecode(@Url.Action("SpecialityPartialView", "Vendor"))',
+            data: dataString,
+            type: "GET",
+            dataType: "html",
+            success: function (data, textStatus, XMLHttpRequest) {
+                SetData(data);
+            }
+        });
+
+        function SetData(data) {
+            $("#specializationsDiv").append(data);
+        }
+    });
+    
+    function baseClick(id) {
+        
+    };
+</script>
+}

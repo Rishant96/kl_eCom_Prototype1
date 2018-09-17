@@ -9,6 +9,7 @@ using kl_eCom.Web.Models;
 using kl_eCom.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using kl_eCom.Web.Entities;
 
 namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 {
@@ -405,6 +406,147 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 return View(model);
             }
             return View("Error");
+        }
+
+        public ActionResult Specializations()
+        {
+            var allSpecializations = db.Specializations.ToList();
+
+            var baseSpecializations = allSpecializations.Where(m => m.SpecializationId == null).ToList();
+            var specializationDict = new Dictionary<Specialization, List<Specialization>>();
+
+            foreach (var specialization in allSpecializations)
+            {
+                var specList = db.Specializations
+                    .Where(m => m.SpecializationId == specialization.Id).ToList();
+                specializationDict.Add(specialization, specList);
+            }
+
+            return View(new AdminVendorsSpecializationsIndexViewModel {
+                BaseSpecializations = baseSpecializations,
+                ChildSpecializations = specializationDict
+            });
+        }
+
+        public ActionResult CreateSpecialization()
+        {
+            var specializations = db.Specializations.ToList();
+            var specializationDict = new Dictionary<string, int>();
+            foreach (var specialization in specializations)
+            {
+                specializationDict.Add(specialization.Name, specialization.Id);
+            }
+            return View(new AdminVendorsSpecializationCreateViewModel {
+                Specializations = specializationDict,
+                IsVisible = true
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateSpecialization(AdminVendorsSpecializationCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Specializations.Add(new Specialization
+                {
+                    Name = model.Name,
+                    SpecializationId = model.SelectedSpecialization,
+                    IsVisible = model.IsVisible
+                });
+                db.SaveChanges();
+                return RedirectToAction("Specializations");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult SpecializationDetails(int? id)
+        {
+            if (id == null) return View("Error");
+            var specialization = db.Specializations
+                    .Include(m => m.ParentSpecialization)
+                    .FirstOrDefault(m => m.Id == id);
+            if (specialization is null) return View("Error");
+            return View(specialization);
+        }
+
+        public ActionResult SpecializationEdit(int? id)
+        {
+            if (id == null) return View("Error");
+
+            var specialization = db.Specializations
+                    .FirstOrDefault(m => m.Id == id);
+            if (specialization is null) return View("Error");
+
+            var specializations = db.Specializations.ToList();
+            var specializationDict = new Dictionary<string, int>();
+
+            foreach (var spec in specializations)
+            {
+                specializationDict.Add(spec.Name, spec.Id);
+            }
+            if (specialization is null) return View("Error");
+
+            return View(new AdminVendorsSpecializationEditViewModel {
+                Id = specialization.Id,
+                Name = specialization.Name,
+                IsVisible = specialization.IsVisible,
+                SelectedSpecialization = specialization.SpecializationId,
+                Specializations = specializationDict
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SpecializationEdit(AdminVendorsSpecializationEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var specialization = db.Specializations.FirstOrDefault(m => m.Id == model.Id);
+                specialization.Name = model.Name;
+                specialization.IsVisible = model.IsVisible;
+                specialization.SpecializationId = model.SelectedSpecialization;
+                db.Entry(specialization).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("SpecializationDetails", new { id = model.Id });
+            }
+
+            return View(model);
+        }
+
+        public ActionResult SpecializationDelete(int? id)
+        {
+            if (id is null) return View("Error");
+
+            var speciality = db.Specializations.FirstOrDefault(m => m.Id == id);
+            if (speciality is null) return View("Error");
+
+            return View(speciality);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SpecializationDelete(Specialization specialization)
+        {
+            if (ModelState.IsValid)
+            {
+                var spec = db.Specializations.FirstOrDefault(m => m.Id == specialization.Id);
+                db.Entry(spec).State = EntityState.Deleted;
+                var parent = spec.SpecializationId;
+                foreach (var childSpec in db.Specializations
+                    .Where(m => m.SpecializationId == spec.Id).ToList())
+                {
+                    childSpec.SpecializationId = parent;
+                    db.Entry(childSpec).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+                
+                return RedirectToAction("Specializations");
+            }
+
+            return View(specialization);
         }
 
         private void AddErrors(IdentityResult result)

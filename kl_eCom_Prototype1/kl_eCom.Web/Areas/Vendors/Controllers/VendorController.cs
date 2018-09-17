@@ -10,6 +10,7 @@ using kl_eCom.Web.Areas.Vendors.Models;
 using Microsoft.AspNet.Identity.Owin;
 using kl_eCom.Web.Entities;
 using kl_eCom.Web.Utilities;
+using System.Web.ModelBinding;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 { 
@@ -92,11 +93,57 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var userId = User.Identity.GetUserId();
 
-            return View(db.EcomUsers
+            var model = db.EcomUsers
                 .Include(m => m.User)
                 .Include(m => m.VendorDetails)
-                .FirstOrDefault(m => m.ApplicationUserId == userId)
-            );
+                .Include(m => m.VendorDetails.Specializations)
+                .FirstOrDefault(m => m.ApplicationUserId == userId);
+
+            foreach (var spec in model.VendorDetails.Specializations)
+            {
+                model.VendorDetails
+                    .Specializations
+                    .FirstOrDefault(m => m.Id == spec.Id)
+                    .Specialization = db.Specializations
+                        .FirstOrDefault(m => m.Id == spec.SpecializationId);
+            }
+
+            return View(model);
+        }
+        
+        public ActionResult SpecialityPartialView(int? id)
+        {
+            if (id == null) return View("Error");
+
+            var vendor = db.EcomUsers
+                            .Include(m => m.VendorDetails)
+                            .Include(m => m.VendorDetails.Specializations)
+                            .FirstOrDefault(m => m.Id == id);
+
+            var allSpecializations = db.Specializations.OrderBy(m => m.Name).ToList();
+
+            var model = new VendorSpecialityViewModel
+            {
+                AllSpecialities = new Dictionary<string, int>(),
+                SelectedSpecialities = vendor.VendorDetails.Specializations
+                                       .Select(m => m.SpecializationId).ToArray(),
+                BaseSpecialityDict = new Dictionary<string, List<string>>()
+            };
+
+            foreach (var spec in allSpecializations)
+            {
+                model.AllSpecialities.Add(spec.Name, spec.Id);
+
+                if (spec.SpecializationId is null)
+                {
+                    model.BaseSpecialityDict.Add(spec.Name, allSpecializations
+                        .Where(m => m.SpecializationId == spec.Id)
+                        .OrderBy(m => m.Name)
+                        .Select(m => m.Name).ToList());
+                }
+            }
+
+            return PartialView(model); 
         }
 
         public ActionResult Edit()
@@ -108,8 +155,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 .Include(m => m.VendorDetails)
                 .Include(m => m.User)
                 .FirstOrDefault(m => m.ApplicationUserId == userId);
-
+            
             return View(new VendorEditViewModel {
+                Id = user.Id,
                 BusinessName = user.VendorDetails.BusinessName,
                 FirstName = user.User.FirstName,
                 LastName = user.User.LastName,
@@ -125,7 +173,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(VendorEditViewModel model)
+        public ActionResult Edit(VendorEditViewModel model, [Form] int[] specs)
         {
             if(ModelState.IsValid && User.Identity.IsAuthenticated)
             {
@@ -145,6 +193,27 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 user.VendorDetails.Zip = model.Zip;
                 user.VendorDetails.State = model.State;
                 user.VendorDetails.Country = model.Country;
+
+                foreach (var entry in db.VendorSpecializations
+                    .Where(m => m.VendorDetailsId == user.VendorDetailsId)
+                    .ToList())
+                {
+                    if (!specs.Contains(entry.SpecializationId))
+                    {
+                        db.Entry(entry).State = EntityState.Deleted;
+                    }
+                }
+                
+                foreach (var spec in specs ?? new int[0])
+                {
+                    if (db.VendorSpecializations
+                          .FirstOrDefault(m => m.SpecializationId == spec 
+                            && m.VendorDetailsId == user.VendorDetailsId) is null)
+                        db.VendorSpecializations.Add(new VendorSpecialization {
+                            SpecializationId = spec,
+                            VendorDetailsId = user.VendorDetailsId ?? 0
+                        });
+                }
 
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();

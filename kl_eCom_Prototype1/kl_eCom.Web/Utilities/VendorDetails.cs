@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Models;
+﻿using kl_eCom.Web.Entities;
+using kl_eCom.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,6 +31,7 @@ namespace kl_eCom.Web.Utilities
         public DateTime? DomainRegistrationDate { get; set; }
 
         public ICollection<VendorPaymentGatewayDetail> PaymentGatewayDetails { get; set; } 
+        public ICollection<VendorSpecialization> Specializations { get; set; }
     }
 
     public class VendorPaymentGatewayDetail

@@ -138,6 +138,10 @@ namespace kl_eCom.Web.Models
         public DbSet<KL_Category> KL_Categories { get; set; } 
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<VendorSpecialization> VendorSpecializations { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<State> States { get; set; }
+        public DbSet<Place> Places { get; set; }
+        public DbSet<Market> Markets { get; set; }
 
         public static ApplicationDbContext Create()
         {

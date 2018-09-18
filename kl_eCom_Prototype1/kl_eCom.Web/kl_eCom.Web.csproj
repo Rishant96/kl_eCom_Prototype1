@@ -213,6 +213,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\CustomersController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\Markets_PlacesController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
     <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
     <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Areas\KL_Admin\Models\AdminCustomersViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminMarketsPlacesViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
@@ -301,6 +303,14 @@
     <Compile Include="Migrations\201809120849186_Models_Changed_41.Designer.cs">
       <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809170647010_Address_Models_Added.cs" />
+    <Compile Include="Migrations\201809170647010_Address_Models_Added.Designer.cs">
+      <DependentUpon>201809170647010_Address_Models_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809180717345_Models_Changed.cs" />
+    <Compile Include="Migrations\201809180717345_Models_Changed.Designer.cs">
+      <DependentUpon>201809180717345_Models_Changed.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -315,6 +325,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\ActivePlans.cs" />
     <Compile Include="Utilities\Address.cs" />
+    <Compile Include="Utilities\AddressSearchModels.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
     <Compile Include="Utilities\DiscountConstraint.cs" />
@@ -542,6 +553,23 @@
     <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationEdit.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationDelete.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\SpecialityPartialView.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CountryDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\StateDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CityDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\MarketDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteMarket.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -695,6 +723,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809120849186_Models_Changed_41.resx">
       <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809170647010_Address_Models_Added.resx">
+      <DependentUpon>201809170647010_Address_Models_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809180717345_Models_Changed.resx">
+      <DependentUpon>201809180717345_Models_Changed.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

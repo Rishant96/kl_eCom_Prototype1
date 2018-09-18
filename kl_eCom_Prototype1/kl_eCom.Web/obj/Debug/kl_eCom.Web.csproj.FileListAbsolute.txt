@@ -291,3 +291,5 @@ C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csprojAssemblyReference.cache
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Specialities_Model_Edited.resources
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed_41.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Address_Models_Added.resources
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.Migrations.Models_Changed.resources

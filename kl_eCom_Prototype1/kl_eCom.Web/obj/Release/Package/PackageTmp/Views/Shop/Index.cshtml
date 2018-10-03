@@ -1,0 +1,47 @@
+﻿@model kl_eCom.Web.Models.ShopIndexViewModel
+@{
+    Layout = "~/Views/Shared/_EcomLayout.cshtml";
+    ViewBag.Title = Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1);
+    var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
+    var count = Model.Breadcrum.Keys.Count;
+}
+<div style="margin-top: 20px">
+    @for (int i = 0; i < count; i++)
+    {
+        var name = Model.Breadcrum.Keys.ElementAt(i);
+        if (i == count - 1)
+        {
+            <text> @name </text>
+        }
+        else if (i == 0)
+        {
+            @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+            <text> > </text>
+        }
+        else
+        {
+            @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+            <text> > </text>
+        }
+    }
+</div>
+<br />
+<hr style="margin: 0" />
+<h3 class="">Catalog</h3><br />
+<div class="row">
+    <div class="col-md-offset-1">
+        @foreach (var cat in Model.Categories)
+        {
+            if (Model.IsLeafDict[cat])
+            {
+                @Html.ActionLink(cat.Name, "Products", new { storeId = ViewBag.storeId, catId = cat.Id })<br />
+            }
+            else
+            {
+                @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })<br />
+            }
+        }
+    </div>
+</div>
+<hr />
+@Html.ActionLink("Back to vendors list", "Index", controllerName: "Market") | @Html.ActionLink("Back to stores list", "Index", "Market", new { vendorId = ViewBag.Vendor })

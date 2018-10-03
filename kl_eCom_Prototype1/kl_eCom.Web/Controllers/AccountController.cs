@@ -81,7 +81,8 @@ namespace kl_eCom.Web.Controllers
             SignInStatus result = SignInStatus.Failure;
             try
             {
-                result = await SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, shouldLockout: false);
+                result = await SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, 
+                            model.RememberMe, shouldLockout: false);
             }
             catch (Exception ex)
             {

@@ -59,14 +59,20 @@ namespace kl_eCom.Web
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-            ApplicationDbContext db = new ApplicationDbContext();
+            ApplicationDbContext db = context;
 
             var admin = db.EcomUsers
                           .Include(m => m.User)
                           .FirstOrDefault(m => m.User.UserName == "klAdmin");
+
             if (admin is null)
             {
-                var user = new ApplicationUser { UserName = "klAdmin", Email = "khushlife@gmail.com"/*, PrimaryRole = "Admin"*/ };
+                var user = new ApplicationUser {
+                    UserName = "klAdmin",
+                    Email = "khushlife@gmail.com",
+                    DateCreated = DateTime.Now,
+                    DOB = new DateTime(2000, 01, 01)
+                };
                 user.FirstName = "FirstName";
                 user.LastName = "LastName";
 

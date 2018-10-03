@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Vendor - Home</h2>
+
+@if (ViewBag.Flag)
+{
+    <div class="alert alert-warning">
+        <p>
+            You have @ViewBag.CurrProds listed products in your inventory, but your plan only allows for
+            @ViewBag.MaxProds listed products, please de-list some of your products to fix this issue.
+            <br />
+            <br />
+            If you fail to do so within a week then, some of your products maybe de-listed automatically.
+        </p>
+    </div>
+}
+
+@Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" })
+<br /><br />
+@Html.ActionLink("Go to Stores", "Index", "Store")
+<text> | </text>
+@Html.ActionLink("All Products", "AllProducts", controllerName: "Product")
+
+<br />
+
+@Html.ActionLink("My Customers", "Index", controllerName: "Customers")
+<text> | </text>
+@Html.ActionLink("Orders", "Orders", controllerName: "Customers")
+
+<br />
+@Html.ActionLink("Vouchers", "Vouchers")
+<text> | </text>
+@Html.ActionLink("Discounts", "Discounts")
+
+<br />
+@Html.ActionLink("Promotions & Referrals", "Refferals")

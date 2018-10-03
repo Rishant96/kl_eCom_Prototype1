@@ -1,0 +1,71 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.StoreDetailsViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Store - Details</h2>
+
+<div class="container">
+
+    <div class="row">
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.LabelFor(m => m.Name)
+        </div>
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.DisplayFor(m => m.Name)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.LabelFor(m => m.CurrencyType)
+        </div>
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.DisplayFor(m => m.CurrencyType)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.LabelFor(m => m.Address)
+        </div>
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.DisplayFor(m => m.Address)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.Label("Vendor Name")
+        </div>
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.DisplayFor(m => m.Vendor.FirstName)
+            <text> </text>
+            @Html.DisplayFor(m => m.Vendor.LastName)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="text-center col-md-2 col-sm-3">
+            @Html.Label("Categories :")
+        </div>
+        <div class="text-center col-md-2 col-sm-3">
+            @foreach (var cat in Model.Categories)
+            {
+                <div>
+                    @Html.DisplayFor(m => cat.Name)
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-offset-2" style="margin-top: 20px;">
+        @Html.ActionLink("Edit", "Edit",
+            new { id = Model.Id },
+            new { @class = "btn btn-success"})
+
+        @Html.ActionLink("Delete", "Delete",
+            new { id = Model.Id },
+            new { @class = "btn btn-danger"})
+    </div>
+</div>

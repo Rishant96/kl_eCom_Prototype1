@@ -79,6 +79,32 @@
         </div>
     </div>
 
+    <h4>Address:</h4>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Line1, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Line1, "", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Line1, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Line2, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Line2, "", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Line2, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Line3, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Line3, "", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Line3, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
     <div class="form-group">
         @Html.LabelFor(m => m.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -87,49 +113,139 @@
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.State, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.State, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+    <div>
+        <div class="col-md-offset-2" style="position: relative; left: 5px">
+            @Html.EditorFor(m => m.IsNewAddress, new { htmlAttributes = new { id = "newAddrCheck" } })
+            <label>Country, state, or city not present</label>
         </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Country, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.Country, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.Country, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    @*<div>
-            <h4>Plans</h4>
-            @foreach (var plan in Model.AvailablePackages)
-            {
-            <div class="col-md-offset-2">
-                <input type="radio" id="PlansList" name="PlansList" value="@plan.Id" @if (Model.VendorPackageSelected == plan.Id) { <text> checked</text>} @if (!plan.IsEnabled) { <text>disabled="disabled"</text> } />
-                <div style="display: inline-block">Name: @plan.DisplayName, Max. Products Allowed: @plan.MaxProducts, Validity: @if (plan.ValidityPeriod != null) { <text>@plan.ValidityPeriod (in years)</text> }
-                else { <text>No expiration</text> }, Price: @if (plan.Price == 0.0f) { <text>free</text> } else { <text>@plan.Price</text> }</div>
+        <div id="dropdownAddr">
+            <div class="form-group">
+                @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.SelectedCountry, new SelectList(Model.Countries, "Value", "Text"), "Please select a country", new {
+                        @class = "form-control", id = "Country" })
+                    @Html.ValidationMessageFor(m => m.SelectedCountry, "", new { @class = "text-danger" })
+                </div>
             </div>
-            }
-        </div>*@
+
+            <div class="form-group">
+                @Html.Label("State", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.SelectedState, new SelectList(Model.States, "Value", "Text"), new {
+                        @class = "form-control", id = "State" })
+                    @Html.ValidationMessageFor(m => m.SelectedState, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("City", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.SelectedCity, new SelectList(Model.Cities, "Value", "Text"), new {
+                        @class = "form-control", id = "City" })
+                    @Html.ValidationMessageFor(m => m.SelectedCity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div id="textboxAddr">
+            <div class="form-group">
+                @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.CountryName, new { htmlAttributes = new { @class = "form-control",
+                id = "CountryTxt" } })
+                    @Html.ValidationMessageFor(m => m.CountryName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("State", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.StateName, new { htmlAttributes = new { @class = "form-control",
+                id = "StateTxt" } })
+                    @Html.ValidationMessageFor(m => m.StateName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("City", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.CityName, new { htmlAttributes = new { @class = "form-control",
+                id = "CityTxt" } })
+                    @Html.ValidationMessageFor(m => m.CityName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
 
     <input type="submit" class="col-md-offset-2 btn btn-primary" value="Register" />
 </div>
 }
 
-@section scripts{
-    <script>
-        $(document).ready(function () {
-            $('#showPswrd').click(function () {
-                var checked = $(this).is(":checked");
-                if (checked) {
-                    $("#password").attr("type", "text");
-                } else {
-                    $("#password").attr("type", "password");
-                }
-            });
+@section scripts {
+<script>
+    $(document).ready(function () {
+        $("#textboxAddr").hide();
+
+        $('#showPswrd').click(function () {
+            var checked = $(this).is(":checked");
+            if (checked) {
+                $("#password").attr("type", "text");
+            } else {
+                $("#password").attr("type", "password");
+            }
         });
-    </script>
+
+        $('#Country').change(function () {
+            var selectedCountry = $('#Country').val();
+            var statesSelect = $('#State');
+            statesSelect.empty();
+            if (selectedCountry != null && selectedCountry != "") {
+                $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
+                    if (states != null && !jQuery.isEmptyObject(states)) {
+                        statesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a state ---"
+                        }));
+                        $.each(states, function (index, state) {
+                            statesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+
+        $('#State').change(function () {
+            var selectedState = $('#State').val();
+            var citiesSelect = $('#City');
+            citiesSelect.empty();
+            if (selectedState != null && selectedState != "") {
+                $.getJSON('@Url.Action("GetCities")', { idStr: selectedState }, function (cities) {
+                    if (cities != null && !jQuery.isEmptyObject(cities)) {
+                        citiesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a city ---"
+                        }));
+                        $.each(cities, function (index, state) {
+                            citiesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+
+        $("#newAddrCheck").click(function () {
+            if ($("#newAddrCheck").prop("checked") == true) {
+                $('#dropdownAddr').hide();
+                $('#textboxAddr').show();
+            }
+            else {
+                $('#dropdownAddr').show();
+                $('#textboxAddr').hide();
+            }
+        });
+    });
+</script>
 }

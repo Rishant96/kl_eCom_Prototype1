@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Areas.Vendors.Models
 {
@@ -32,19 +33,34 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Display(Name = "Line 3")]
         public string Line3 { get; set; }
 
+        public string Landmark { get; set; }
+
         [Required]
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
         [Required]
-        public string State { get; set; }
+        public int City { get; set; }
+
+        [Required]
+        public int State { get; set; }
+
+        [Required]
+        public int Country { get; set; }
+        
+        public int? Market { get; set; }
+
+        public IEnumerable<SelectListItem> Markets { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Countries { get; set; }
 
         [Required]
         public string CurrencyType { get; set; }
-
-        [Required]
-        public string Country { get; set; }
-    }
+   }
 
     public class StoreDetailsViewModel
     {
@@ -89,10 +105,25 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [DataType(DataType.PostalCode)]
         public string Zip { get; set; }
 
+        public string Landmark { get; set; }
+        
         [Required]
-        public string State { get; set; }
+        public int City { get; set; }
 
         [Required]
-        public string Country { get; set; }
+        public int State { get; set; }
+
+        [Required]
+        public int Country { get; set; }
+
+        public int Market { get; set; }
+
+        public IEnumerable<SelectListItem> Markets { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Countries { get; set; }
     }
 }

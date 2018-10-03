@@ -24,21 +24,26 @@ namespace kl_eCom.Web.Utilities
 
         [Display(Name = "Line 3")]
         public string Line3 { get; set; }
+        
+        public string Landmark { get; set; }
+
+        public int? MarketId { get; set; }
+        public Market Market { get; set; }
+
+        public int? PlaceId { get; set; }
+        public Place Place { get; set; }
+
+        [Required]
+        public int StateId { get; set; }
+        public State State { get; set; }
 
         [Required]
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
         [Required]
-        public string State { get; set; }
-
-        [Required]
-        public string City { get; set; }
-        
-        public string Place { get; set; }
-
-        [Required]
-        public string Country { get; set; }
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
 
         [Required]
         public string ApplicationUserId { get; set; }

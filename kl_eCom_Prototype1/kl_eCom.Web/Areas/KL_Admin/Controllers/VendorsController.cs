@@ -430,7 +430,9 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 
         public ActionResult CreateSpecialization()
         {
-            var specializations = db.Specializations.ToList();
+            var specializations = db.Specializations
+                .Where(m => m.SpecializationId == null)
+                .ToList();
             var specializationDict = new Dictionary<string, int>();
             foreach (var specialization in specializations)
             {
@@ -479,7 +481,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                     .FirstOrDefault(m => m.Id == id);
             if (specialization is null) return View("Error");
 
-            var specializations = db.Specializations.ToList();
+            var specializations = db.Specializations
+                .Where(m => m.SpecializationId == null
+                    && m.Id != id)
+                .ToList();
             var specializationDict = new Dictionary<string, int>();
 
             foreach (var spec in specializations)

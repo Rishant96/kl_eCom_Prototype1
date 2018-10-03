@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Areas.Vendors.Models
 {
@@ -40,9 +41,25 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [DataType(DataType.PostalCode, ErrorMessage = "Please enter a valid Zip / Postal Code")]
         public string Zip { get; set; }
         [Required]
-        public string State { get; set; }
+        public string Line1 { get; set; }
         [Required]
-        public string Country { get; set; }
+        public string Line2 { get; set; }
+        [Required]
+        public string Line3 { get; set; }
+        
+        public IEnumerable<SelectListItem> Countries { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
+
+        [Required]
+        public int SelectedCountry { get; set; }
+
+        [Required]
+        public int SelectedState { get; set; }
+
+        public int? SelectedCity { get; set; }
     }
 
     public class VendorSpecialityViewModel

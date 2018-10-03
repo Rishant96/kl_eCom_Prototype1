@@ -1,0 +1,75 @@
+﻿@model List<kl_eCom.Web.Entities.Category>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Categories -</h2>
+
+@Html.ActionLink("+ Create Category", "Create", new { storeId = ViewBag.storeId, catId = null as int? })
+
+<table class="table" style="margin: auto; margin-top: 20px">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Attributes")
+        </th>
+        <th>
+            @Html.Label("Parent")
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="width: 100px; text-align: center;">
+                @if (item.ThumbnailData != null && item.ThumbnailMimeType != null)
+                {
+                    <text>
+                        <img class="img-thumbnail" width="45" height="45"
+                             src="@Url.Action("GetThumbnail", "Category",
+                            new { item.Id })" />
+                    </text>
+                }
+                else
+                {
+                    <text>-</text>
+                }
+            </td>
+            <td>
+                @Html.ActionLink(item.Name, "Details", new { storeId = ViewBag.StoreId, catId = item.Id })
+            </td>
+            <td>
+                <ul>
+                    @foreach (var attr in item.Attributes)
+                    {
+                        <li>@Html.DisplayFor(m => attr.Name)</li>
+                    }
+                </ul>
+            </td>
+            <td>
+                @if (item.Parent == null)
+                {
+                    @Html.Label("-")
+                }
+                else
+                {
+                    @Html.DisplayFor(m => item.Parent.Name)
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+@Html.ActionLink("Back to Stores", "Index", controllerName: "Store")

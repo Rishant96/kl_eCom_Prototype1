@@ -1,0 +1,43 @@
+﻿@model kl_eCom.Web.Entities.Specialization
+@{
+    ViewBag.Title = "Specialization - Details";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Specialization - Details</h2>
+
+<dl class="dl-horizontal col-md-offset-0">
+    <dt>
+        @Html.LabelFor(m => m.Name)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Name)
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.IsVisible)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.IsVisible)
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.ParentSpecialization)
+    </dt>
+    <dd>
+        @if (Model.ParentSpecialization is null || string.IsNullOrEmpty(Model.ParentSpecialization.Name))
+        {
+            <text>-</text>
+        }
+        else
+        {
+            @Html.DisplayFor(m => m.ParentSpecialization.Name)
+        }
+    </dd>
+</dl>
+
+<div class="col-md-offset-1">
+    @Html.ActionLink("Delete", "SpecializationDelete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+    <text> | </text>
+    @Html.ActionLink("Edit", "SpecializationEdit", new { id = Model.Id }, new { @class = "btn btn-success" })
+</div>
+<br />
+@Html.ActionLink("Go back to Specializations", "Specializations")

@@ -1,0 +1,95 @@
+﻿@model kl_eCom.Web.Models.CartIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+<div class="container">
+    <h2>My Cart</h2>
+
+    @if (ViewBag.Flag)
+    {
+        <text>
+            <div class="alert alert-danger alert-dismissible" style="width: 800px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Cart Updated!</strong> Product deleted from cart.
+            </div>
+        </text>
+    }
+
+    @if (ViewBag.CheckoutErr)
+    {
+        <text>
+            <div class="alert alert-warning alert-dismissible" style="width: 800px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Checkout Failed!</strong> Your cart is Empty.
+            </div>
+        </text>
+    }
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.Label("Name")
+            </th>
+            <th>
+                @Html.Label("Qty")
+            </th>
+            <th>
+                @Html.Label("Cost")
+            </th>
+            <th>
+
+            </th>
+        </tr>
+        @if (Model.Cart.CartItems == null)
+        {
+            Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
+        }
+        @foreach (var itm in Model.Cart.CartItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => Model.ProductNames[itm])
+                </td>
+                <td>
+                    @*@{
+                            var stockList = new List<int> { };
+                            for (int i = 0; i <= itm.Stock.CurrentStock; i++)
+                            {
+                                stockList.Add(i);
+                            }
+                            var qtyList = new SelectList(stockList);
+                            qtyList.First(m => m.Value == itm.Qty.ToString()).Selected = true;
+                            @Html.DropDownListFor(m => itm.Qty, qtyList, new { id = "QtyList" })
+                        }*@
+                    @Html.DisplayFor(m => itm.Qty)
+                </td>
+                <td>
+                    <text>@Model.Prices[itm]</text>
+                </td>
+                <td>
+                    @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div>
+        @Html.Partial("VoucherPartial", new kl_eCom.Web.Models.CartVoucherViewModel())
+        <text style="text-decoration: underline">Applied Vouchers</text> : @ViewBag.Vouchers<br />
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 text-right">
+            @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
+        </div>
+        <div class="col-md-3 text-center">
+            @Html.Label("Total Cost: ")
+            @Html.DisplayFor(m => m.TotalCost)
+        </div>
+        <div class="col-md-6 text-center">
+            @Html.ActionLink("Checkout", "Checkout", null, new { @class = "btn btn-primary" })
+        </div>
+    </div>
+
+    @Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })
+</div>

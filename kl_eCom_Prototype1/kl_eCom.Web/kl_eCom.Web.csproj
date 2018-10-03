@@ -219,6 +219,7 @@
     <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminCategoriesViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminCustomersViewModels.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminEditViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminMarketsPlacesViewModels.cs" />
@@ -259,57 +260,9 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201808300620067_Init.cs" />
-    <Compile Include="Migrations\201808300620067_Init.Designer.cs">
-      <DependentUpon>201808300620067_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808301058556_User_IsActive_Added.cs" />
-    <Compile Include="Migrations\201808301058556_User_IsActive_Added.Designer.cs">
-      <DependentUpon>201808301058556_User_IsActive_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808310527357_VDetails_Country_Added.cs" />
-    <Compile Include="Migrations\201808310527357_VDetails_Country_Added.Designer.cs">
-      <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201808311002330_model_changed_3.cs" />
-    <Compile Include="Migrations\201808311002330_model_changed_3.Designer.cs">
-      <DependentUpon>201808311002330_model_changed_3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809040703125_KL_Category_Added.cs" />
-    <Compile Include="Migrations\201809040703125_KL_Category_Added.Designer.cs">
-      <DependentUpon>201809040703125_KL_Category_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809041007503_KL_Category_Added_2.cs" />
-    <Compile Include="Migrations\201809041007503_KL_Category_Added_2.Designer.cs">
-      <DependentUpon>201809041007503_KL_Category_Added_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809060644261_Common_User_Changes.cs" />
-    <Compile Include="Migrations\201809060644261_Common_User_Changes.Designer.cs">
-      <DependentUpon>201809060644261_Common_User_Changes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809061043591_Models_Changed_4.cs" />
-    <Compile Include="Migrations\201809061043591_Models_Changed_4.Designer.cs">
-      <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809110503051_Specializations_Added.cs" />
-    <Compile Include="Migrations\201809110503051_Specializations_Added.Designer.cs">
-      <DependentUpon>201809110503051_Specializations_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809110903394_Specialities_Model_Edited.cs" />
-    <Compile Include="Migrations\201809110903394_Specialities_Model_Edited.Designer.cs">
-      <DependentUpon>201809110903394_Specialities_Model_Edited.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809120849186_Models_Changed_41.cs" />
-    <Compile Include="Migrations\201809120849186_Models_Changed_41.Designer.cs">
-      <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809170647010_Address_Models_Added.cs" />
-    <Compile Include="Migrations\201809170647010_Address_Models_Added.Designer.cs">
-      <DependentUpon>201809170647010_Address_Models_Added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201809180717345_Models_Changed.cs" />
-    <Compile Include="Migrations\201809180717345_Models_Changed.Designer.cs">
-      <DependentUpon>201809180717345_Models_Changed.cs</DependentUpon>
+    <Compile Include="Migrations\201810010926522_Init.cs" />
+    <Compile Include="Migrations\201810010926522_Init.Designer.cs">
+      <DependentUpon>201810010926522_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -570,6 +523,15 @@
     <Content Include="Areas\KL_Admin\Views\Markets_Places\MarketDetails.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Markets_Places\EditMarket.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminEditProfile.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminChangePassword.cshtml" />
+    <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushLifeTrial1 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushLifeTrial1 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\dropzone.min.js" />
@@ -691,44 +653,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808300620067_Init.resx">
-      <DependentUpon>201808300620067_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808301058556_User_IsActive_Added.resx">
-      <DependentUpon>201808301058556_User_IsActive_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808310527357_VDetails_Country_Added.resx">
-      <DependentUpon>201808310527357_VDetails_Country_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808311002330_model_changed_3.resx">
-      <DependentUpon>201808311002330_model_changed_3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809040703125_KL_Category_Added.resx">
-      <DependentUpon>201809040703125_KL_Category_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809041007503_KL_Category_Added_2.resx">
-      <DependentUpon>201809041007503_KL_Category_Added_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809060644261_Common_User_Changes.resx">
-      <DependentUpon>201809060644261_Common_User_Changes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809061043591_Models_Changed_4.resx">
-      <DependentUpon>201809061043591_Models_Changed_4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809110503051_Specializations_Added.resx">
-      <DependentUpon>201809110503051_Specializations_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809110903394_Specialities_Model_Edited.resx">
-      <DependentUpon>201809110903394_Specialities_Model_Edited.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809120849186_Models_Changed_41.resx">
-      <DependentUpon>201809120849186_Models_Changed_41.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809170647010_Address_Models_Added.resx">
-      <DependentUpon>201809170647010_Address_Models_Added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201809180717345_Models_Changed.resx">
-      <DependentUpon>201809180717345_Models_Changed.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201810010926522_Init.resx">
+      <DependentUpon>201810010926522_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

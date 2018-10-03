@@ -1,0 +1,106 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.CategoryEditViewModel
+@{ 
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm("Edit", "Category", new { storeId = Model.StoreId },
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="form-group">
+            @Html.Label("KL Category", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10" style="position:relative; left: 10px">
+                @Html.DropDownListFor(m => m.SelectedCat, new SelectList(Model.Categories, "Value", "Key"), 
+                    "None", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.SelectedCat, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "width: 280px; height: 110px;" })
+            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DefaultGST, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" style="display: flex; align-items: center">
+            @Html.EditorFor(m => m.DefaultGST, new { htmlAttributes = new { @class = "form-control",
+            style = "width: 75px; margin-right: 10px"} })%
+                @Html.ValidationMessageFor(m => m.DefaultGST, "", new { @class = "text-danger" })
+            </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Thumbnail", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <input type="file" name="thumbnail" id="thumbnail" />
+            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Attributes", htmlAttributes: new { @class = "control-label col-md-2" })
+        <input type="button" id="btnAddAttributes" class="btn btn-success" value="Add Attributes" style="margin-left: 15px" />
+    </div>
+    <div id="divAddAttributes" class="col-md-offset-2">
+        @foreach (var atr in Model.Attributes)
+        {
+            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name, Default = atr.Default, Type = atr.InfoType })
+        }
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var count = 0;
+        $("#btnAddAttributes").click(function () {
+            var dataString = "id=" + (count + 1);
+            $.ajax({
+                url: '@HttpUtility.UrlDecode(@Url.Action("AddAttributePartial", "Category"))',
+                data: dataString,
+                type: "GET",
+                dataType: "html",
+                success: function (data, textStatus, XMLHttpRequest) {
+                    SetData(data);
+                }
+            });
+            count++;
+        });
+
+        function SetData(data) {
+            $("#divAddAttributes").append(data);
+        }
+    });
+</script>

@@ -55,6 +55,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         }
 
         #endregion
+        
+        ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Vendors/Home
         public ActionResult Index()
@@ -62,6 +64,44 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (User.Identity.IsAuthenticated && User.IsInRole("Vendor"))
                 return RedirectToAction("Index", controllerName: "Vendor");
             return View();
+        }
+        
+        [HttpGet]
+        public ActionResult GetStates(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> states = db.States
+                .Where(m => m.CountryId == id)
+                .OrderBy(m => m.Name)
+                .Select(s => new SelectListItem {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                }).ToList();
+
+            return Json(states, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetCities(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> cities = db.Places
+                .Where(m => m.StateId == id)
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+
+            return Json(cities, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Register(string id = "", string datetimestr = "")
@@ -74,26 +114,47 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 datetime = new DateTime(int.Parse(datetimeparts[2]),
                                         int.Parse(datetimeparts[1]),
                                         int.Parse(datetimeparts[0]));
-
             }
             catch (Exception ex)
             {
                 id = "";
                 datetime = null;
             }
+            
+            List<SelectListItem> countries = db.Countries
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
 
-            var db = new ApplicationDbContext();
-            var availablePackages = db.VendorPlans
-                     .Where(m => m.IsActive == true)
-                     .ToList();
+            List<SelectListItem> states = new List<SelectListItem> {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
+            List<SelectListItem> cities = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
             return View(new HomeRegisterViewModel
             {
-            //    AvailablePackages = availablePackages,
+            //    AvailablePackages = availablePackage
             //    VendorPackageSelected = (availablePackages
             //        .FirstOrDefault(m => m.Price == 0.0f)).Id
                 Key = id,
                 TimeStamp = datetime,
-                Country = "India"
+                Countries = countries,
+                States = states,
+                Cities = cities
             });
         }
 
@@ -101,6 +162,44 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(HomeRegisterViewModel model)
         {
+            if (db.VendorDetails.FirstOrDefault(m => m.BusinessName == model.BusinessName) != null)
+                ModelState.AddModelError("BusinessName", new Exception("Business name should be unique"));
+
+            if (db.Users.FirstOrDefault(m => m.UserName == model.UserName) != null)
+                ModelState.AddModelError("UserName", new Exception("Username should be unique"));
+
+            if (db.Users.FirstOrDefault(m => m.Email == model.Email) != null)
+                ModelState.AddModelError("Email", new Exception("Email address should be unique"));
+
+            if (model.IsNewAddress)
+            {
+                var country = db.Countries.FirstOrDefault(m => string.Compare(m.Name.Trim(),
+                    model.CountryName.Trim(), true) == 0);
+
+                if (country != null)
+                    model.SelectedCountry = country.Id;
+                else
+                    country = db.Countries.Add(new Country { Name = model.CountryName });
+
+                var state = db.States.FirstOrDefault(m => string.Compare(m.Name.Trim(),
+                    model.StateName.Trim(), true) == 0);
+
+                if (state != null)
+                    model.SelectedState = state.Id;
+                else
+                    state = db.States.Add(new State { Name = model.StateName,
+                                CountryId = country.Id });
+
+                var city = db.Places.FirstOrDefault(m => string.Compare(m.Name.Trim(),
+                    model.CityName.Trim(), true) == 0);
+
+                if (city != null)
+                    model.SelectedCity = city.Id;
+                else
+                    city = db.Places.Add(new Place { Name = model.CityName,
+                                StateId = state.Id});
+            }
+            
             if (ModelState.IsValid)
             {
                 // model.VendorPackageSelected = int.Parse(Request.Form["PlansList"]);
@@ -133,12 +232,21 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         VendorDetails = new Utilities.VendorDetails
                         {
                             BusinessName = model.BusinessName,
-                            Zip = model.Zip,
-                            State = model.State,
-                            Country = model.Country,
                             WebsiteUrl = (string.IsNullOrEmpty(model.WebsiteUrl)) ? 
                                 "" : "http://" + model.WebsiteUrl,
-                            RegistrationDate = DateTime.Now
+                            RegistrationDate = DateTime.Now,
+                            BusinessAddress = new Address
+                            {
+                                Name = "Business Address",
+                                ApplicationUserId = vendor.Id,
+                                Line1 = model.Line1,
+                                Line2 = model.Line2,
+                                Line3 = model.Line3,
+                                Zip = model.Zip,
+                                CountryId = model.SelectedCountry,
+                                StateId = model.SelectedState,
+                                PlaceId = model.SelectedCity
+                            }
                         }
                     });
                     try
@@ -207,9 +315,34 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                         return View(model);
                     }
                 }
-                UserManager.Delete(vendor);
                 AddErrors(result);
             }
+
+            model.Countries = db.Countries
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+
+            model.States = new List<SelectListItem> {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
+            model.Cities = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
             return View(model);
         }
 

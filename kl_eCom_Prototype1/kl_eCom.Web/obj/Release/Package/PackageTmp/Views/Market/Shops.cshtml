@@ -1,0 +1,14 @@
+﻿@model kl_eCom.Web.Models.MarketShopsViewModel
+@{
+    Layout = "~/Views/Shared/_EcomLayout.cshtml";
+    ViewBag.Title = "Shops";
+}
+
+<h2>Shops</h2>
+
+@foreach (var shop in Model.Shops)
+{
+    @Html.ActionLink(shop.Name, "Index", "Shop", new { id = shop.Id }, null)<br />
+}
+
+@Html.ActionLink("Back to Vendors List", "Index")

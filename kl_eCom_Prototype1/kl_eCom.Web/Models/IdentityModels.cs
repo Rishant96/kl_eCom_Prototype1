@@ -21,10 +21,7 @@ namespace kl_eCom.Web.Models
 
         [Required]
         public string LastName { get; set; }
-
-        public virtual ICollection<Address> Addresses { get; set; }
-
-        [Required]
+        
         public DateTime DOB { get; set; }
 
         [Required]
@@ -71,6 +68,8 @@ namespace kl_eCom.Web.Models
         public VendorDetails VendorDetails { get; set; }
 
         public bool IsActive { get; set; }
+        
+        public virtual ICollection<Address> Addresses { get; set; }
 
         public virtual ICollection<Refferal> AssociatedCustomerOf { get; set; }
         public virtual ICollection<Refferal> AssociatedVendorOf { get; set; }
@@ -88,6 +87,9 @@ namespace kl_eCom.Web.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Properties<DateTime>()
+                .Configure(c => c.HasColumnType("datetime2"));
 
             modelBuilder.Entity<EcomUser>()
                 .HasMany(u => u.AssociatedCustomerOf) // <--

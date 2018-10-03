@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using kl_eCom.Web.Entities;
+using System.Threading.Tasks;
 
 namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 {
@@ -17,6 +18,32 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
     public class AdminController : Controller
     {
         public ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
+        private ApplicationSignInManager _signManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signManager = value;
+            }
+        }
 
         // GET: KL_Admin/Admin
         [AllowAnonymous]
@@ -32,9 +59,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.UserName == "klAdmin" 
-                        && model.Email == "khushlife@gmail.com"
-                        && model.Password == "KLadmin@123")
+                var resultInit = SignInManager.PasswordSignIn(model.UserName, model.Password,
+                            true, shouldLockout: false);
+
+                if (resultInit == SignInStatus.Success)
                 {
                     var signInManager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
 
@@ -65,7 +93,92 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             
             return RedirectToAction("Index");
         }
+
+        public ActionResult AdminDetails()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users.FirstOrDefault(m => m.Id == vendorId);
+
+            var model = new AdminDetailsViewModel {
+                Email = vendor.Email
+            };
+
+            return View(model); 
+        }
+
+        public ActionResult AdminEditProfile()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users.FirstOrDefault(m => m.Id == vendorId);
+
+            var model = new AdminEditEmailViewModel {
+                Email = vendor.Email
+            };
+
+            return View(model);
+        }
         
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminEditProfile(AdminEditEmailViewModel model)
+        {
+            var vendorId = User.Identity.GetUserId();
+            
+            if (ModelState.IsValid)
+            {
+                var vendor = db.Users.FirstOrDefault(m => m.Id == vendorId);
+
+                vendor.Email = model.Email;
+                db.Entry(vendor).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("AdminDetails");
+            }
+            return View(model);
+        }
+
+        public ActionResult AdminChangePassword()
+        {
+            var vendorId = User.Identity.GetUserId();
+            var vendor = db.Users.FirstOrDefault(m => m.Id == vendorId);
+
+            var model = new AdminChangePasswordViewModel {
+                Email = vendor.Email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AdminChangePassword(AdminChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                }
+                return RedirectToAction("AdminDetails", new { Message = ManageMessageId.ChangePasswordSuccess });
+            }
+            AddErrors(result);
+            return View(model);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
         public ActionResult Home()
         {
             var model = new AdminHomeViewModel

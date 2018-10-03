@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Areas.Vendors.Models
 {
@@ -41,25 +42,50 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string WebsiteUrl { get; set; }
 
         [Required]
+        public string Line1 { get; set; }
+
+        [Required]
+        public string Line2 { get; set; }
+
+        [Required]
+        public string Line3 { get; set; }
+
+        [Required]
         [Display(Name = "Zip / Postal Code")]
         [DataType(DataType.PostalCode, ErrorMessage = "Please enter a valid Zip / Postal Code")]
         public string Zip { get; set; }
-
-        [Required]
-        public string State { get; set; }
-
-        [Required]
-        public string Country { get; set; }
-
+        
         [Required]
         [DataType(DataType.Password, ErrorMessage = "Please enter a valid password")]
         public string Password { get; set; }
 
         public string Key { get; set; }
         public DateTime? TimeStamp { get; set; }
+     
+        public IEnumerable<SelectListItem> Countries { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
+
+        [Required]
+        public int SelectedCountry { get; set; }
+
+        [Required]
+        public int SelectedState { get; set; }
         
-        //public List<VendorPackage> AvailablePackages { get; set; }
+        public int? SelectedCity { get; set; }
         
-        //public int VendorPackageSelected { get; set; }
+        public bool IsNewAddress { get; set; }
+
+        public string CountryName { get; set; }
+
+        public string StateName { get; set; }
+
+        public string CityName { get; set; }
+
+        // public List<VendorPackage> AvailablePackages { get; set; }
+        
+        // public int VendorPackageSelected { get; set; }
     }
 }

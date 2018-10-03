@@ -1,0 +1,38 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminCategoryAllocateViewModel
+@{
+    ViewBag.Title = "Allocate Categories";
+    Layout = "~/Areas/KL_Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Allocate Categories</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <h3>Assign Category</h3>
+        <br />
+        <div>
+            <label class="control-label" style="display: inline">Name :</label>
+            @Html.DropDownListFor(m => m.SelectedCategoryId,
+                        new SelectList(Model.AvailableCategories, "Value", "Key"),
+                        "None", new { @class = "form-control", style = "display: inline" })
+            <input type="submit" value="Allocate" class="btn btn-primary" style="display: inline" />
+        </div>
+        <br />
+        @Html.ActionLink("+ Create new category", "CreateCategory")
+        <hr />
+    </div>
+    <div class="row">
+        @foreach (var cat in Model.VendorCategories)
+        {
+            <text>
+                <div class="col-md-3" style="display: inline">
+                    <input type="checkbox" name="selections" class="checkbox-inline" style="margin: 0 0 2px" value="@cat" />
+                    <label>@cat</label>
+                </div>
+            </text>
+        }
+    </div>
+}
+@Html.ActionLink("Go back", "Categories")

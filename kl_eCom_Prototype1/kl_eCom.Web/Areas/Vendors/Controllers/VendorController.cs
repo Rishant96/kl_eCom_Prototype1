@@ -97,6 +97,11 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 .Include(m => m.User)
                 .Include(m => m.VendorDetails)
                 .Include(m => m.VendorDetails.Specializations)
+                .Include(m => m.VendorDetails.BusinessAddress)
+                .Include(m => m.VendorDetails.BusinessAddress.Country)
+                .Include(m => m.VendorDetails.BusinessAddress.State)
+                .Include(m => m.VendorDetails.BusinessAddress.Place)
+                .Include(m => m.VendorDetails.BusinessAddress.Market)
                 .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             foreach (var spec in model.VendorDetails.Specializations)
@@ -146,6 +151,46 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return PartialView(model); 
         }
 
+        [HttpGet]
+        public ActionResult GetStates(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> states = db.States
+                .Where(m => m.CountryId == id)
+                .OrderBy(m => m.Name)
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                }).ToList();
+
+            return Json(states, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetCities(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> cities = db.Places
+                .Where(m => m.StateId == id)
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+
+            return Json(cities, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Edit()
         {
             // Encrypt UserId when editing
@@ -153,9 +198,57 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             var user = db.EcomUsers
                 .Include(m => m.VendorDetails)
+                .Include(m => m.VendorDetails.BusinessAddress)
+                .Include(m => m.VendorDetails.BusinessAddress.Country)
+                .Include(m => m.VendorDetails.BusinessAddress.State)
+                .Include(m => m.VendorDetails.BusinessAddress.Place)
+                .Include(m => m.VendorDetails.BusinessAddress.Market)
                 .Include(m => m.User)
                 .FirstOrDefault(m => m.ApplicationUserId == userId);
-            
+
+            List<SelectListItem> countries = db.Countries
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+
+            List<SelectListItem> states = (user.VendorDetails.BusinessAddress.CountryId == 0) ?
+                new List<SelectListItem> {
+                    new SelectListItem
+                    {
+                        Value = null,
+                        Text = ""
+                    }
+                } :
+                db.States.OrderBy(m => m.Name)
+                    .Where(m => m.CountryId == user.VendorDetails
+                        .BusinessAddress.CountryId)
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Name
+                    }).ToList();
+
+            List<SelectListItem> cities = (user.VendorDetails.BusinessAddress.StateId == 0) ?
+                new List<SelectListItem>
+                {
+                    new SelectListItem
+                    {
+                        Value = null,
+                        Text = ""
+                    }
+                } :
+                db.Places.OrderBy(m => m.Name)
+                    .Where(m => m.StateId == user.VendorDetails
+                        .BusinessAddress.StateId)
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id.ToString(),
+                        Text = p.Name
+                    }).ToList();
+
             return View(new VendorEditViewModel {
                 Id = user.Id,
                 BusinessName = user.VendorDetails.BusinessName,
@@ -165,9 +258,16 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Email = user.User.Email,
                 Mobile = user.User.PhoneNumber,
                 WebsiteUrl = user.VendorDetails.WebsiteUrl,
-                Zip = user.VendorDetails.Zip,
-                State = user.VendorDetails.State,
-                Country = user.VendorDetails.Country
+                Zip = user.VendorDetails.BusinessAddress.Zip,
+                SelectedCountry = user.VendorDetails.BusinessAddress.CountryId,
+                SelectedState = user.VendorDetails.BusinessAddress.StateId,
+                SelectedCity = user.VendorDetails.BusinessAddress.PlaceId,
+                Countries = countries,
+                States = states,
+                Cities = cities,
+                Line1 = user.VendorDetails.BusinessAddress.Line1,
+                Line2 = user.VendorDetails.BusinessAddress.Line2,
+                Line3 = user.VendorDetails.BusinessAddress.Line3
             });
         }
 
@@ -181,6 +281,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var user = db.EcomUsers
                     .Include(m => m.User)
                     .Include(m => m.VendorDetails)
+                    .Include(m => m.VendorDetails.BusinessAddress)
                     .FirstOrDefault(m => m.ApplicationUserId == userId);
 
                 user.User.Email = model.Email;
@@ -190,9 +291,13 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 user.User.UserName = model.UserName;
                 user.VendorDetails.BusinessName = model.BusinessName;
                 user.VendorDetails.WebsiteUrl = model.WebsiteUrl;
-                user.VendorDetails.Zip = model.Zip;
-                user.VendorDetails.State = model.State;
-                user.VendorDetails.Country = model.Country;
+                user.VendorDetails.BusinessAddress.Zip = model.Zip;
+                user.VendorDetails.BusinessAddress.StateId = model.SelectedState;
+                user.VendorDetails.BusinessAddress.CountryId = model.SelectedCountry;
+                user.VendorDetails.BusinessAddress.PlaceId = model.SelectedCity;
+                user.VendorDetails.BusinessAddress.Line1 = model.Line1;
+                user.VendorDetails.BusinessAddress.Line2 = model.Line2;
+                user.VendorDetails.BusinessAddress.Line3 = model.Line3;
 
                 foreach (var entry in db.VendorSpecializations
                     .Where(m => m.VendorDetailsId == user.VendorDetailsId)
@@ -219,7 +324,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Details");
             }
-            return View(model);
+            return RedirectToAction("Edit", new { id = model.Id });
         }
 
         public ActionResult ChangePassword()

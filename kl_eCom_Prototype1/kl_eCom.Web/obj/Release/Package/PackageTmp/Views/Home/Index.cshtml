@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@*<div style="margin: 0 -15px;">
+    <div class="jumbotron row" style="margin: 0;">
+        <h1 class="col-md-offset-1 col-md-3" style="position: relative; bottom: 5px; color: darkslategray; padding-left: 50px">Khushlife<br />E-Com</h1>
+        <div class="col-md-8 row" style="margin-top: 20px;">
+            <div class="col-md-offset-2 col-md-4">
+                <img src="~/assets/images/shopping.png" style="display: block; min-width: 200px;
+                    min-height: 120px; max-width: 200px; max-height: 120px;
+                    border-radius: 10px" />
+                <div style="width: 200px; text-align:center; margin-top: 10px">
+                    @Html.ActionLink("Shop", "Index", controllerName: "Market")
+                </div>
+            </div>
+            <div class="col-md-offset-1 col-md-4 col-md-offset-1">
+                <img src="~/assets/images/open-business.jpg" style="display: block; min-width: 200px;
+                    min-height: 120px; max-width: 200px; max-height: 120px;
+                    border-radius: 10px" />
+                <div style="width: 200px; text-align:center; margin-top: 10px">
+                    @Html.ActionLink("Vendors Section", "Index", "Home", new { area = "Vendors" }, null)
+                </div>
+            </div>
+        </div>
+    </div>
+    <img src="~/assets/images/1-1355x565.jpg" style="width: 100%">
+</div>*@
+
+<div class="container-fluid">
+    <div class="row">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/1.jpg" alt="First slide">
+                </div>
+                <div class="item">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/2.jpg" alt="Third slide">
+                </div>
+                <div class="item">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/3.jpg" alt="Third slide">
+                </div>
+                <div class="item">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/4.jpg" alt="First slide">
+                </div>
+                <div class="item">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/5.jpg" alt="Third slide">
+                </div>
+                <div class="item">
+                    <img class="d-block w-100 img-fluid" src="assets/images/KL-ECommerce-Slide/6.jpg" alt="Third slide">
+                </div>
+
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+<div id="wrapper" class="animate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="card">
+                    <div class="card-body" style="border: 1px solid black;">
+                        <a href="@Url.Action("Index", "Market", null)"><center><img class="img-fluid" src="assets/images/1.jpg" height="100" width="100"></center></a>
+                        <a href="@Url.Action("Index", "Market", null)" style="text-decoration:none"> <h5 class="card-title text-center " style=" font-size:15px;color:#ae1819;">SHOP FROM VENDOR</h5></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="card">
+                    <div class="card-body" style="border: 1px solid black;">
+                        <a href="@Url.Action("ByProducts", "Shop", null)"><center><img class="img-fluid" src="assets/images/2.jpg" height="100" width="100"></center></a>
+
+                        <a href="@Url.Action("ByProducts", "Shop", null)" style="text-decoration:none"> <h5 class="card-title text-center " style=" font-size:15px;color:#ae1819;">Shop Products</h5></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="card">
+                    <div class="card-body" style="border: 1px solid black;">
+                        <a href="KhushLIFE-E-Commerce-Shop-From-Markets.html"><center><img class="img-fluid" src="assets/images/indiagate.jpg"></center></a>
+                        <a href="KhushLIFE-E-Commerce-Shop-From-Markets.html" style="text-decoration:none"> <h5 class="card-title text-center " style=" font-size:15px;color:#ae1819;">SHOP FROM MARKETS</h5></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <div class="card">
+                    <div class="card-body" style="border: 1px solid black;">
+                        <a href="KhushLIFE-E-Commerce-Shop-From-Place.html"><center><img class="img-fluid" src="assets/images/d/1.jpg"></center></a>
+                        <a href="KhushLIFE-E-Commerce-Shop-From-Place.html" style="text-decoration:none"> <h5 class="card-title text-center " style="font-size:15px; color:#ae1819;">Shop from place</h5></a>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+</div>

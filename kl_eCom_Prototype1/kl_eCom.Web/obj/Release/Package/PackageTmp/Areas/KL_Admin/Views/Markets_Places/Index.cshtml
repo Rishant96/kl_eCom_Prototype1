@@ -1,0 +1,24 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_IndexViewModel
+@{
+    ViewBag.Title = "Markets & Places";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Markets & Places</h2>
+
+<div>
+    <div style="display: flex; align-items: baseline">
+        <h3 style="display: inline-block">Countries</h3>
+        @Html.ActionLink("+ Add Country", "CreateCountry", "Markets_Places", null, new { style = "margin-left: 20px" })
+    </div>
+    <div class="row">
+        @foreach (var country in Model.Countries){
+            <div style="width:120px; height:150px; margin:10px 15px; border: 5px solid black;
+                    display:flex; justify-content: center; align-items: center"
+                 class="col-md-3">
+                @Html.ActionLink(country.Name, "CountryDetails", new { id = country.Id })
+            </div>
+        }
+    </div>
+    <hr style="width: 100%; margin-left: 15px; border-color: lightslategray" />
+</div>

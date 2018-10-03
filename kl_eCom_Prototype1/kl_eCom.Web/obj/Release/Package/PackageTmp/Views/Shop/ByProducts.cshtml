@@ -1,0 +1,16 @@
+﻿@model kl_eCom.Web.Models.ShopByProductsViewModel
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Categories</h2>
+
+<div class="row">
+    @foreach (var cat in Model.Categories)
+    {
+        <div class="col-md-4 category">
+            <h4>@Html.ActionLink(cat.Name, "ByProducts", new { id = cat.Id })</h4>
+        </div>
+    }
+</div>

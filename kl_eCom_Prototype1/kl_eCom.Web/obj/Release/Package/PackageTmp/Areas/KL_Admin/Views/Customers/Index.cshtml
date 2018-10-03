@@ -1,0 +1,28 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminCustomersIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Customers List</h2>
+
+<table class="table">
+    <tr>
+        <th>@Html.Label("Username")</th>
+        <th>@Html.Label("Email")</th>
+        <th>@Html.Label("First Name")</th>
+        <th>@Html.Label("Last Name")</th>
+        <th>@Html.Label("Phone")</th>
+    </tr>
+    @foreach (var cstmr in Model.Customers)
+    {
+    <tr @*@if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
+            <text>style="color: orangered"</text>
+        }*@>
+        <td>@Html.ActionLink(cstmr.User.UserName, "Details", new { id = cstmr.Id })</td>
+        <td>@Html.DisplayFor(m => cstmr.User.Email)</td>
+        <td>@Html.DisplayFor(m => cstmr.User.FirstName)</td>
+        <td>@Html.DisplayFor(m => cstmr.User.LastName)</td>
+        <td>@Html.DisplayFor(m => cstmr.User.PhoneNumber)</td>
+    </tr>
+    }
+</table>

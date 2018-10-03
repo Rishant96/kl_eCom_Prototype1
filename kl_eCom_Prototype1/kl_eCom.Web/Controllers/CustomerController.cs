@@ -21,6 +21,46 @@ namespace kl_eCom.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult GetStates(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> states = db.States
+                .Where(m => m.CountryId == id)
+                .OrderBy(m => m.Name)
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                }).ToList();
+
+            return Json(states, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetCities(string idStr = "")
+        {
+            if (string.IsNullOrEmpty(idStr)) return null;
+            int id = int.Parse(idStr);
+
+            if (id == 0) return null;
+
+            IEnumerable<SelectListItem> cities = db.Places
+                .Where(m => m.StateId == id)
+                .OrderBy(m => m.Name)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+
+            return Json(cities, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult MyOrders()
         {
             var usrId = User.Identity.GetUserId();
@@ -138,6 +178,9 @@ namespace kl_eCom.Web.Controllers
             return View(new CustomerAddressesIndexViewModel {
                 Addresses = db.Addresses
                     .Where(m => m.ApplicationUserId == usrId)
+                    .Include(m => m.State)
+                    .Include(m => m.Place)
+                    .Include(m => m.Country)
                     .ToList()
             });
         }
@@ -148,7 +191,33 @@ namespace kl_eCom.Web.Controllers
             {
                 TempData["ReturnUrl"] = returnUrl;
             }
-            return View(new CustomerCreateAddressViewModel());
+
+            var model = new CustomerCreateAddressViewModel();
+
+            model.Countries = db.Countries
+                .OrderBy(m => m.Name)
+                .Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                }).ToList();
+
+            model.States = new List<SelectListItem> {
+                new SelectListItem {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
+            model.Cities = new List<SelectListItem>
+            {
+                new SelectListItem {
+                    Value = null,
+                    Text = ""
+                }
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -164,11 +233,11 @@ namespace kl_eCom.Web.Controllers
                     Line1 = model.Line1,
                     Line2 = model.Line2,
                     Line3 = model.Line3,
-                    City = model.City,
-                    Place = model.Place,
+                    Landmark = model.Landmark,
+                    PlaceId = model.SelectedCity,
                     Zip = model.Zip,
-                    State = model.State,
-                    Country = model.Country
+                    StateId = model.SelectedState,
+                    CountryId = model.SelectedCountry
                 });
                 db.SaveChanges();
 
@@ -192,17 +261,44 @@ namespace kl_eCom.Web.Controllers
                         .FirstOrDefault(m => m.Id == id 
                         && m.ApplicationUserId == usrId);
             if (addr == null) return View("Error");
+
+            var countries = db.Countries
+                .OrderBy(m => m.Name)
+                .Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                }).ToList();
+
+            var states = db.States
+                .OrderBy(m => m.Name)
+                .Where(m => m.CountryId == addr.CountryId)
+                .Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                }).ToList();
+
+            var cities = db.Places
+                .OrderBy(m => m.Name)
+                .Where(m => m.StateId == addr.StateId)
+                .Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                }).ToList();
+
             return View(new CustomerEditAddressViewModel {
                 Id = (int)id,
                 Name = addr.Name,
                 Line1 = addr.Line1,
                 Line2 = addr.Line2,
                 Line3 = addr.Line3,
-                City = addr.City,
-                State = addr.State,
-                Place = addr.Place,
+                SelectedCity = addr.PlaceId,
+                SelectedState = addr.StateId,
+                Landmark = addr.Landmark,
                 Zip = addr.Zip,
-                Country = addr.Country
+                SelectedCountry = addr.CountryId
             });
         }
 
@@ -219,11 +315,11 @@ namespace kl_eCom.Web.Controllers
                     addr.Line1 = model.Line1;
                     addr.Line2 = model.Line2;
                     addr.Line3 = model.Line3;
-                    addr.City = model.City;
-                    addr.State = model.State;
+                    addr.Landmark = model.Landmark;
+                    addr.StateId = model.SelectedState;
                     addr.Zip = model.Zip;
-                    addr.Place = model.Place;
-                    addr.Country = addr.Country;
+                    addr.PlaceId = model.SelectedCity;
+                    addr.CountryId = model.SelectedCountry;
                     db.Entry(addr).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -249,6 +345,9 @@ namespace kl_eCom.Web.Controllers
             if (id == null) return View("Error");
             var usrId = User.Identity.GetUserId();
             var addr = db.Addresses
+                        .Include(m => m.Place)
+                        .Include(m => m.State)
+                        .Include(m => m.Country)
                         .FirstOrDefault(m => m.Id == id
                           && m.ApplicationUserId == usrId);
             if (addr == null) return View("Error");
@@ -259,11 +358,11 @@ namespace kl_eCom.Web.Controllers
                 Line1 = addr.Line1,
                 Line2 = addr.Line2,
                 Line3 = addr.Line3,
-                City = addr.City,
-                State = addr.State,
-                Place = addr.Place,
+                Landmark = addr.Landmark,
+                State = addr.State.Name,
+                City = addr.Place.Name,
                 Zip = addr.Zip,
-                Country = addr.Country
+                Country = addr.Country.Name
             });
         }
 

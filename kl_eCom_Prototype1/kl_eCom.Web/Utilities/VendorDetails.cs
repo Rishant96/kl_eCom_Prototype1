@@ -16,19 +16,16 @@ namespace kl_eCom.Web.Utilities
         public string BusinessName { get; set; }
         [Display(Name = "Website URL")]
         public string WebsiteUrl { get; set; }
-        [Required]
-        [DataType(DataType.PostalCode)]
-        public string Zip { get; set; }
-        [Required]
-        public string State { get; set; }
-        [Required]
-        public string Country { get; set; }
         public int? ActivePlanId { get; set; }
         [Display(Name = "Active Plan")]
         public ActivePlan ActivePlan { get; set; }
         [Required]
         public DateTime RegistrationDate { get; set; }
         public DateTime? DomainRegistrationDate { get; set; }
+
+        [Required]
+        public int AddressId { get; set; }
+        public Address BusinessAddress { get; set; }
 
         public ICollection<VendorPaymentGatewayDetail> PaymentGatewayDetails { get; set; } 
         public ICollection<VendorSpecialization> Specializations { get; set; }

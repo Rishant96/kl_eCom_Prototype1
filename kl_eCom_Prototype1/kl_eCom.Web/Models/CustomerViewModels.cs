@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace kl_eCom.Web.Models
 {
@@ -32,17 +33,21 @@ namespace kl_eCom.Web.Models
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
-        [Required]
-        public string State { get; set; }
+        public string Landmark { get; set; }
+
+        public IEnumerable<SelectListItem> Countries { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
 
         [Required]
-        public string City { get; set; }
-
-        [Display(Name = "Landmark")]
-        public string Place { get; set; }
+        public int SelectedCountry { get; set; }
 
         [Required]
-        public string Country { get; set; }
+        public int SelectedState { get; set; }
+
+        public int? SelectedCity { get; set; }
     }
 
     public class CustomerEditAddressViewModel
@@ -66,18 +71,21 @@ namespace kl_eCom.Web.Models
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
-        [Required]
-        public string State { get; set; }
+        public string Landmark { get; set; }
+
+        public IEnumerable<SelectListItem> Countries { get; set; }
+
+        public IEnumerable<SelectListItem> States { get; set; }
+
+        public IEnumerable<SelectListItem> Cities { get; set; }
 
         [Required]
-        public string City { get; set; }
-
-
-        [Display(Name = "Landmark")]
-        public string Place { get; set; }
+        public int SelectedCountry { get; set; }
 
         [Required]
-        public string Country { get; set; }
+        public int SelectedState { get; set; }
+
+        public int? SelectedCity { get; set; }
     }
 
     public class CustomerDeleteAddressViewModel
@@ -100,12 +108,11 @@ namespace kl_eCom.Web.Models
         [Display(Name = "Zip Code")]
         public string Zip { get; set; }
 
-        public string State { get; set; }
-
+        public string Landmark { get; set; }
+        
         public string City { get; set; }
 
-        [Display(Name = "Landmark")]
-        public string Place { get; set; }
+        public string State { get; set; }
 
         public string Country { get; set; }
     }

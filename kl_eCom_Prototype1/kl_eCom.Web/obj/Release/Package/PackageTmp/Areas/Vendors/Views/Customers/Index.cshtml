@@ -1,0 +1,60 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.CustomersIndexViewModel
+@{
+    ViewBag.Title = "My Customers";
+    int i = 1;
+    bool flag = true;
+}
+
+<h2>Associated Customers</h2>
+<div style="padding: 0 50px">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.Label("Index")
+            </th>
+            <th>
+                @Html.Label("Name")
+            </th>
+            <th>
+                @Html.Label("Email")
+            </th>
+            <th>
+                @Html.Label("Status")
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var itm in Model.Customers)
+        {
+            <tr>
+                <td>
+                    <text>#@i</text>
+                </td>
+                <td>
+                    @itm.FirstName<text> </text>@itm.LastName
+                </td>
+                <td>
+                    @itm.Email
+                </td>
+                <td>
+                    @if (Model.Buyers[itm.Id])
+                    {
+                        <text>Buyer</text><br />
+                        flag = false;
+                    }
+                    @if (Model.Registrations[itm.Id])
+                    {
+                        <text>Registered</text><br />
+                        flag = false;
+                    }
+                    @if (flag)
+                    {
+                        <label> - </label>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Orders", "Orders", new { id = itm.Id })
+                </td>
+            </tr>
+        }
+    </table>
+</div>

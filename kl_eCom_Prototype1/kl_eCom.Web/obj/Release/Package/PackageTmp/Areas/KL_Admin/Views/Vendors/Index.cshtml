@@ -1,0 +1,35 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminVendorsIndexViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Vendors List</h2>
+
+<div class="row">
+    @Html.ActionLink("Fix Active Products", "FixActiveProducts", null, new { @class = "col-md-offset-10" })
+</div>
+
+<table class="table">
+    <tr>
+        <th>@Html.Label("Username")</th>
+        <th>@Html.Label("Email")</th>
+        <th>@Html.Label("Phone")</th>
+        <th>@Html.Label("First Name")</th>
+        <th>@Html.Label("Last Name")</th>
+        <th>@Html.Label("Registration Date")</th>
+    </tr>
+    @foreach (var vndr in Model.Vendors)
+    {
+        <tr 
+        @*@if (!vndr.VendorDetails.ActivePlan.PaymentStatus) {
+            <text>style="color: orangered"</text>        
+        }*@>
+            <td>@Html.ActionLink(vndr.User.UserName, "Details", new { id = vndr.ApplicationUserId })</td>
+            <td>@Html.DisplayFor(m => vndr.User.Email)</td>
+            <td>@Html.DisplayFor(m => vndr.User.PhoneNumber)</td>
+            <td>@Html.DisplayFor(m => vndr.User.FirstName)</td>
+            <td>@Html.DisplayFor(m => vndr.User.LastName)</td>
+            <td>@Html.DisplayFor(m => vndr.VendorDetails.RegistrationDate)</td>
+        </tr>
+    }
+</table>

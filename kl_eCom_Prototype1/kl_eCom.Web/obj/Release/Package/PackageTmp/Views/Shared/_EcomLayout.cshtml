@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/KhushLIFELogo.jpg">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    @Styles.Render("~/Content/css")
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    <style>
+        .ui-autocomplete {
+            position: absolute;
+            cursor: default;
+            z-index: 2000 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Khushlife E-Com", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <div class="nav navbar-nav" style="height: 50px; margin-left: 175px">
+                    <script src="https://code.jquery.com/jquery-3.3.1.js"
+                            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+                            crossorigin="anonymous"></script>
+
+                    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+                            integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+                            crossorigin="anonymous"></script>
+
+                    @using (Html.BeginForm("Search", "Market", FormMethod.Post))
+                    {
+                        <div style="height: 50px; display: flex; align-items: center">
+                            @Html.AntiForgeryToken()
+                            @Html.TextBox("SearchQuery", null, new { @class = "form-control", placeholder = "Search...",
+                                style = "height: 33px; width: 500px; padding: 2px 5px; border-radius: 3px;" })
+                            <input id="searchBtn" name="searchBtn" type="submit" class="btn btn-info" value="Search" style="margin-left: 5px;" />
+                        </div>
+                    }
+
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('#SearchQuery').autocomplete({
+                                source: function (request, response) {
+                                    $.ajax({
+                                        url: "/Market/Autocomplete",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: { Prefix: request.term },
+                                        success: function (data) {
+                                            response($.map(data, function (val, item) {
+                                                return { label: val.Name, value: val.Name };
+                                            }))
+                                        }
+                                    })
+                                },
+                                messages: {
+                                    noResults: "No results found", results: ""
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                @Html.Partial("_ShopPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year</p>
+        </footer>
+    </div>
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

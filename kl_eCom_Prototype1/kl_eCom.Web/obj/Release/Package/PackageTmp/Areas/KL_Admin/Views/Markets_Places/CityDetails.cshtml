@@ -23,7 +23,11 @@
         @Html.LabelFor(m => m.Markets)
     </dt>
     <dd>
-        @Html.ActionLink("+ Add Market", "CreateMarket", new { id = Model.CityId })
+        <div>
+            @Html.ActionLink("+ Add Market", "CreateMarket", new { id = Model.CityId })
+            <text> | </text>
+            @Html.ActionLink("Add Multiple Markets", "CreateMultipleMarkets", new { id = Model.CityId })
+        </div>
         <hr style="margin: 5px 0" />
         <ol>
         @foreach (var market in Model.Markets)

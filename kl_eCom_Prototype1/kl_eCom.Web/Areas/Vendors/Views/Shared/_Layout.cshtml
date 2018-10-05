@@ -3,41 +3,54 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khush LIFE - @ViewBag.Title</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="~/assets/images/KhushLIFELogo.jpg">
+    <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+<body class="container" style="padding-top: 0;">
+    <nav class="navbar navbar-inverse bg-primary">
+        <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("KhushLIFE E-Com", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a class="navbar-brand" href="#">KL Admin</a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav"></ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Home", "Home", controllerName: "Admin")</li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Users
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="@Url.Action("Index", controllerName: "Customers")">Customers</a></li>
+                        <li><a href="@Url.Action("Index", controllerName: "Vendors")">Vendors</a></li>
+                    </ul>
+                </li>
+                <li><a href="@Url.Action("Plans", controllerName: "Admin")">Plans</a></li>
+                <li><a href="@Url.Action("Categories", controllerName: "Admin")">Categories</a></li>
+                <li><a href="@Url.Action("Specializations", controllerName: "Vendors")">Specializations</a></li>
+                <li><a href="@Url.Action("Index", controllerName: "Markets_Places")">Markets & Places</a></li>
+            </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="nav navbar-nav navbar-right" style="padding-top: 7px; margin-right: 5px; display: flex">
+                    <li>@Html.ActionLink("View Profile", "AdminDetails", controllerName: "Admin")</li>
+                    @using (Html.BeginForm("LogOff", "Admin", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>
+                            <li><input type="submit" class="btn btn-primary" value="Log Off" /></li>
+                        </text>
+                    }
+                </ul>
+            }
         </div>
-    </div>
+    </nav>
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Khush LIFE</p>
-        </footer>
-    </div>
+
+    @RenderBody()
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/dropzone")
     @RenderSection("scripts", required: false)
 </body>
 </html>

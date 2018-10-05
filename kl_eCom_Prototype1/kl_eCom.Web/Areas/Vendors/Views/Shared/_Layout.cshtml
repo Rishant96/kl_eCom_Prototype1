@@ -1,53 +1,224 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity;
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="KhushLIFE - Lets Celebrate LIFE">
+    <meta name="keywords" content="KhushLIFE - Lets Celebrate LIFE">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    @*<script src="~/assets/js/jquery.min.js"></script>*@
+    <!-- jQuery -->
+    <script src="~/assets/js/popper.min.js"></script>
+    <!-- popper -->
+    @*<script src="~/assets/js/bootstrap.min.js"></script>*@
+    <!-- Bootstrap -->
+    @*<script src="~/assets/js/scripts.js"></script>*@
+    <!-- Scripts -->
+
+    <title>Khush LIFE</title>
+    <!-- Main CSS file -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/responsive.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="~/assets/images/KhushLIFELogo.jpg">
+
+    <style>
+        .card-body {
+            margin: 5px auto;
+        }
+
+
+        .navbar-toggle {
+            position: relative;
+            float: left;
+            padding: 12px 14px;
+            margin-top: 8px;
+            margin-right: 15px;
+            margin-bottom: 8px;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        /**********************************
+        Responsive navbar-brand
+        ***********************************/
+
+
+        .navbar-inverse {
+            background-color: #fff;
+        }
+
+
+        .navbar {
+            position: relative;
+            min-height: 50px;
+            margin-bottom: 0px !important;
+        }
+
+
+        .navbar-brand {
+            padding: 0px;
+        }
+
+            .navbar-brand > img {
+                height: 100%;
+                padding: 15px;
+                width: auto;
+            }
+
+        /* EXAMPLE 6 - Background Logo*/
+        .example6 .navbar-brand {
+            width: 300px;
+        }
+
+
+
+        .navbar-alignit .navbar-header {
+            -webkit-transform-style: preserve-3d;
+            -moz-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            height: 50px;
+        }
+
+        .navbar-alignit .navbar-brand {
+            display: block;
+            position: relative;
+            height: auto;
+            transform: translate(0,-50%);
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+
+        .navbar-nav > li > .dropdown-menu {
+            z-index: 9999;
+        }
+
+        body {
+            font-family: "Lato";
+        }
+
+        .carousel-inner {
+            height: 100%;
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="~/assets/images/KhushLIFELogo.jpg">
+
+    <style>
+
+        .carousel-inner {
+            height: 100%;
+        }
+    </style>
 </head>
-<body class="container" style="padding-top: 0;">
-    <nav class="navbar navbar-inverse bg-primary">
+<body>
+    <nav class="navbar navbar-inverse navbar-static-top example6" style="border:none; border-top: none; margin-bottom: 0; padding-right: 50px">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">KL Admin</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar6" style="background-color:#343D88;margin-top: 35px; margin-right:1px; margin-left:5px;">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand text-hide" href="@Url.Action("Index", "Home", new { area = "" })">
+                    <p class="img-fluid"><img class="logo" src="~/assets/images/logo/final-logo/E-Commerce.jpg" height="100" width="100" title="KhushLIFE - Lets Celebrate Life"><img style="padding-left:5px; padding-right:5px;  " src="~/assets/images/logo/KL_E-Commerce_Top_Tri-Color.jpg" title="KhushLIFE E-Commerce - Lets Do Commerce"></p>
+                </a>
             </div>
-            <ul class="nav navbar-nav">
-                <li>@Html.ActionLink("Home", "Home", controllerName: "Admin")</li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Users
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="@Url.Action("Index", controllerName: "Customers")">Customers</a></li>
-                        <li><a href="@Url.Action("Index", controllerName: "Vendors")">Vendors</a></li>
-                    </ul>
-                </li>
-                <li><a href="@Url.Action("Plans", controllerName: "Admin")">Plans</a></li>
-                <li><a href="@Url.Action("Categories", controllerName: "Admin")">Categories</a></li>
-                <li><a href="@Url.Action("Specializations", controllerName: "Vendors")">Specializations</a></li>
-                <li><a href="@Url.Action("Index", controllerName: "Markets_Places")">Markets & Places</a></li>
-            </ul>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <ul class="nav navbar-nav navbar-right" style="padding-top: 7px; margin-right: 5px; display: flex">
-                    <li>@Html.ActionLink("View Profile", "AdminDetails", controllerName: "Admin")</li>
-                    @using (Html.BeginForm("LogOff", "Admin", FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>
-                            <li><input type="submit" class="btn btn-primary" value="Log Off" /></li>
-                        </text>
-                    }
-                </ul>
-            }
+            <div id="navbar6" class="navbar-collapse collapse" style="border: none;background-color: #fff; margin-top: 15px">
+                @Html.Partial("_LoginPartial")
+            </div>
+            <!--/.nav-collapse -->
         </div>
+        <!--/.container-fluid -->
+
     </nav>
+    <br />
+    @*<div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Khushlife", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    @*<ul class="nav navbar-nav">
+                    </ul>
+        @Html.Partial("_LoginPartial")*@
+    <div class="body-content">
+        <div style="margin: 25px 50px 0">
+            @RenderBody()
+        </div>
+    </div>
 
+    <br>
+    <section id="footer" style=" line-height:1px; padding-top: 20px;">
+        <div class="container" style=" background-color: #FAA309; ">
 
-    @RenderBody()
+            <div class="row text-left">
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <ul class="list-unstyled quick-links ">
+                        <li><a style="font-size: 11px; font-weight: 800;" class="text-dark"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Philosophy</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>About KHUSHLIFE</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>Contact KHUSHLIFE</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>Careers at KHUSHLIFE</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Quotes</b></a></li>
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Stories</b></a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <ul class="list-unstyled quick-links ">
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i>KHUSHLIFE HELP</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <ul class="list-unstyled quick-links ">
+                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i>KHUSHLIFE POLICY</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3 ">
+                    <ul class="list-unstyled quick-links ">
+                        <li><a style="font-size: 11px" href="@Url.Action("Index", "Home", new { area = "Vendors" })"><i class="fa fa-angle-double-right"></i>VENDORS SECTION</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-1">
+                    <ul class="list-unstyled list-inline social text-center">
+                        <li class="list-inline-item fa1"><a href="https://www.facebook.com/khushlifeindia"><i class="fa fa-facebook"></i></a></li>
+                        <li class="list-inline-item fa1"><a href="https://twitter.com/khushlife"><i class="fa fa-twitter"></i></a></li>
+
+                        <li class="list-inline-item fa1"><a href="javascript:void();"><i class="fa fa-google"></i></a></li>
+                        <li class="list-inline-item fa1"><a href="javascript:void();" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
+                    <p class="h6">©2018 <span><a style="color:#343D88;font-weight: 700">Khush<a style="color:#ED4004; font-weight: 700"> LIFE</a></a></span>. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

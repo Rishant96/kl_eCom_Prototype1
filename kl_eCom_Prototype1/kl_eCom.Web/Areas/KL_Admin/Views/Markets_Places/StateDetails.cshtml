@@ -24,7 +24,11 @@
             @Html.DisplayNameFor(m => m.Citites)
         </dt>
         <dd>
-            @Html.ActionLink("+ Add City", "CreateCity", new { id = Model.StateId })
+            <div>
+                @Html.ActionLink("+ Add City", "CreateCity", new { id = Model.StateId })
+                <text> | </text>
+                @Html.ActionLink("Add Multiple Cities", "CreateMultipleCities", new { id = Model.StateId })
+            </div>
             <hr style="margin: 5px 0" />
             <ol>
                 @foreach (var city in Model.Citites)

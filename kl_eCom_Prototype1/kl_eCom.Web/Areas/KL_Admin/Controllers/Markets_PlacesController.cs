@@ -56,7 +56,9 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateCountry(AdminMarketsPlaces_CreateCountryViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && db.Countries.FirstOrDefault(
+                  m => string.Compare(model.Name.Trim(), m.Name.Trim(), 
+                    true) == 0) == null)
             {
                 db.Countries.Add(new Country {
                     Name = model.Name
@@ -65,8 +67,68 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ModelState.AddModelError("Name", new Exception());
+            return View(model);
+        }
+
+        public ActionResult CreateMultipleCountries()
+        {
+            var model = new AdminMarketsPlaces_MultipleCreateViewModel {
+                Delimiters = new Dictionary<string, int>()
+            };
+
+            model.Delimiters.Add("Comma ','", 1);
+            model.Delimiters.Add("Colon ';'", 2);
+            model.Delimiters.Add("Space ' '", 3);
+            model.Delimiters.Add("Newline '\n'", 4);
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateMultipleCountries(AdminMarketsPlaces_MultipleCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                char delimiter = '\0';
+
+                switch (model.Delimiter)
+                {
+                    case 1:
+                        {
+                            delimiter = ',';
+                            break;
+                        }
+                    case 2:
+                        {
+                            delimiter = ';';
+                            break;
+                        }
+                    case 3:
+                        {
+                            delimiter = ' ';
+                            break;
+                        }
+                    case 4:
+                        {
+                            delimiter = '\n';
+                            break;
+                        }
+                }
+
+                var countries = model.Countries.Split(delimiter).Select(s => s.Trim()).ToArray();
+
+                foreach(var country in countries)
+                {
+                    if (db.Countries.FirstOrDefault(m => m.Name == country) is null)
+                        db.Countries.Add(new Country { Name = country });
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("CreateMultipleCountries");
         }
 
         public ActionResult CountryDetails(int? id)
@@ -177,6 +239,142 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 return RedirectToAction("CountryDetails", new { id = model.CountryId });
             }
             return View(model);
+        }
+
+        public ActionResult CreateMultipleStates(int? id)
+        {
+            if (id is null) return View("Error");
+
+            var country = db.Countries.FirstOrDefault(m => m.Id == id);
+            if (country is null) return View("Error");
+
+            var model = new AdminMarketsPlaces_CreateMultipleStatesViewModel {
+                CountryName = country.Name,
+                Delimiters = new Dictionary<string, int>(),
+                CountryId = country.Id
+            };
+
+            model.Delimiters.Add("Comma ','", 1);
+            model.Delimiters.Add("Colon ';'", 2);
+            model.Delimiters.Add("Space ' '", 3);
+            model.Delimiters.Add("Newline '\n'", 4);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateMultipleStates(AdminMarketsPlaces_CreateMultipleStatesViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                char delimiter = '\0';
+
+                switch (model.Delimiter)
+                {
+                    case 1:
+                        {
+                            delimiter = ',';
+                            break;
+                        }
+                    case 2:
+                        {
+                            delimiter = ';';
+                            break;
+                        }
+                    case 3:
+                        {
+                            delimiter = ' ';
+                            break;
+                        }
+                    case 4:
+                        {
+                            delimiter = '\n';
+                            break;
+                        }
+                }
+
+                var states = model.States.Split(delimiter).Select(s => s.Trim()).ToArray();
+
+                foreach (var state in states)
+                {
+                    if (db.States.FirstOrDefault(m => m.Name == state
+                            && m.CountryId == model.CountryId) is null) 
+                        db.States.Add(new State { CountryId = model.CountryId, Name = state });
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("CountryDetails", new { id = model.CountryId });
+            }
+            return RedirectToAction("CreateMultipleStates");
+        }
+
+        public ActionResult CreateMultipleCities(int? id)
+        {
+            if (id is null) return View("Error");
+
+            var state = db.States.FirstOrDefault(m => m.Id == id);
+            if (state is null) return View("Error");
+
+            var model = new AdminMarketsPlaces_CreateMultipleCitiesViewModel {
+                Delimiters = new Dictionary<string, int>(),
+                StateId = state.Id,
+                StateName = state.Name
+            };
+
+            model.Delimiters.Add("Comma ','", 1);
+            model.Delimiters.Add("Colon ';'", 2);
+            model.Delimiters.Add("Space ' '", 3);
+            model.Delimiters.Add("Newline '\n'", 4);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateMultipleCities(AdminMarketsPlaces_CreateMultipleCitiesViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                char delimiter = '\0';
+
+                switch (model.Delimiter)
+                {
+                    case 1:
+                        {
+                            delimiter = ',';
+                            break;
+                        }
+                    case 2:
+                        {
+                            delimiter = ';';
+                            break;
+                        }
+                    case 3:
+                        {
+                            delimiter = ' ';
+                            break;
+                        }
+                    case 4:
+                        {
+                            delimiter = '\n';
+                            break;
+                        }
+                }
+
+                var cities = model.Cities.Split(delimiter).Select(s => s.Trim()).ToArray();
+
+                foreach (var city in cities)
+                {
+                    if (db.Places.FirstOrDefault(m => m.Name == city 
+                            && m.StateId == model.StateId) is null)
+                        db.Places.Add(new Place { Name = city, StateId = model.StateId });
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("StateDetails", new { id = model.StateId });
+            }
+            return RedirectToAction("CreateMultipleCities", new { id = model.StateId });
         }
 
         public ActionResult StateDetails(int? id)
@@ -413,6 +611,74 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult CreateMultipleMarkets(int? id)
+        {
+            if (id is null) return View("Errors");
+
+            var city = db.Places.FirstOrDefault(m => m.Id == id);
+            if (city is null) return View("Errors");
+
+            var model = new AdminMarketsPlaces_CreateMultipleMarketsViewModel {
+                Delimiters = new Dictionary<string, int>(),
+                PlaceId = city.Id,
+                PlaceName = city.Name
+            };
+
+            model.Delimiters.Add("Comma ','", 1);
+            model.Delimiters.Add("Colon ';'", 2);
+            model.Delimiters.Add("Space ' '", 3);
+            model.Delimiters.Add("Newline '\n'", 4);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateMultipleMarkets(AdminMarketsPlaces_CreateMultipleMarketsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                char delimiter = '\0';
+
+                switch (model.Delimiter)
+                {
+                    case 1:
+                        {
+                            delimiter = ',';
+                            break;
+                        }
+                    case 2:
+                        {
+                            delimiter = ';';
+                            break;
+                        }
+                    case 3:
+                        {
+                            delimiter = ' ';
+                            break;
+                        }
+                    case 4:
+                        {
+                            delimiter = '\n';
+                            break;
+                        }
+                }
+
+                var markets = model.Markets.Split(delimiter).Select(s => s.Trim()).ToArray();
+
+                foreach (var market in markets)
+                {
+                    if (db.Markets.FirstOrDefault(m => m.Name == market
+                            && m.PlaceId == model.PlaceId) is null)
+                        db.Markets.Add(new Market { Name = market, PlaceId = model.PlaceId });
+                }
+
+                db.SaveChanges();
+                return RedirectToAction("CityDetails", new { id = model.PlaceId });
+            }
+            return RedirectToAction("CreateMultipleMarkets", new { id = model.PlaceId });
         }
 
         public ActionResult MarketDetails(int? id)

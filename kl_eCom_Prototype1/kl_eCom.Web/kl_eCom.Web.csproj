@@ -526,6 +526,10 @@
     <Content Include="Areas\KL_Admin\Views\Admin\AdminDetails.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Admin\AdminEditProfile.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Admin\AdminChangePassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleCountries.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleStates.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleCities.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleMarkets.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />

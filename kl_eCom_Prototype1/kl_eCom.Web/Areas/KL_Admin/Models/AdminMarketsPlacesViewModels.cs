@@ -152,4 +152,63 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         
         public float? Longitude { get; set; }
     }
+
+    public class AdminMarketsPlaces_MultipleCreateViewModel
+    {
+        [Required]
+        public int Delimiter { get; set; }
+
+        [Required]
+        public string Countries { get; set; }
+
+        public Dictionary<string, int> Delimiters { get; set; }
+    }
+
+    public class AdminMarketsPlaces_CreateMultipleStatesViewModel
+    {
+        [Required]
+        public int Delimiter { get; set; }
+
+        [Required]
+        public string States { get; set; }
+
+        public Dictionary<string, int> Delimiters { get; set; }
+
+        public string CountryName { get; set; }
+
+        [Required]
+        public int CountryId { get; set; }
+    }
+
+    public class AdminMarketsPlaces_CreateMultipleCitiesViewModel
+    {
+        [Required]
+        public int Delimiter { get; set; }
+
+        [Required]
+        public string Cities { get; set; }
+
+        public Dictionary<string, int> Delimiters { get; set; }
+
+        public string StateName { get; set; }
+
+        [Required]
+        public int StateId { get; set; }
+    }
+
+    public class AdminMarketsPlaces_CreateMultipleMarketsViewModel
+    {
+        [Required]
+        public int Delimiter { get; set; }
+
+        [Required]
+        public string Markets { get; set; }
+
+        public Dictionary<string, int> Delimiters { get; set; }
+
+        public string PlaceName { get; set; }
+
+        [Required]
+        public int PlaceId { get; set; }
+    }
 }

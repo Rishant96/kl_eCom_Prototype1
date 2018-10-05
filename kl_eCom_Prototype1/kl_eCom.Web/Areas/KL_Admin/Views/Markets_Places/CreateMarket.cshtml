@@ -10,7 +10,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.CityId)
     @Html.HiddenFor(m => m.CityName)
-    
+
     <dl class="dl-horizontal">
         <dt>
             @Html.LabelFor(m => m.CityName)
@@ -43,3 +43,5 @@
         <input type="submit" class="btn btn-primary col-md-offset-2" value="Create Market" />
     </div>
 }
+
+@Html.ActionLink("Go back", "CityDetails", new { id = Model.CityId })

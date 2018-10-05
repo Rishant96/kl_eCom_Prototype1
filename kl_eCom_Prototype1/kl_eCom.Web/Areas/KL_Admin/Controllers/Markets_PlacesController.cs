@@ -203,7 +203,13 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var country = db.Countries.FirstOrDefault(m => m.Id == model.Id);
+                var country = db.Countries.Include(m => m.States).FirstOrDefault(m => m.Id == model.Id);
+
+                var states = new List<State>(country.States);
+                foreach (var state in states)
+                {
+                    DeleteState(new State { CountryId = model.Id, Id = state.Id, Name = state.Name });
+                }
 
                 db.Entry(country).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -455,7 +461,14 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var state = db.States.FirstOrDefault(m => m.Id == model.Id);
+                var state = db.States.Include(m => m.Places).FirstOrDefault(m => m.Id == model.Id);
+                
+                var places = new List<Place>(state.Places);
+                foreach (var city in places)
+                {
+                    DeleteCity(new Place { Id = city.Id, StateId = model.Id, Name = city.Name });
+                }
+
                 db.Entry(state).State = EntityState.Deleted;
 
                 db.SaveChanges();
@@ -569,7 +582,15 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var city = db.Places.FirstOrDefault(m => m.Id == model.Id);
+                var city = db.Places.Include(m => m.Markets).FirstOrDefault(m => m.Id == model.Id);
+
+                var markets = new List<Market>(city.Markets);
+                foreach (var market in markets)
+                {
+                    DeleteMarket(new Market { Id = market.Id, PlaceId = city.Id, Name = market.Name,
+                        Latitude = market.Latitude, Longitude = market.Longitude });
+                }
+
                 db.Entry(city).State = EntityState.Deleted;
 
                 db.SaveChanges();
@@ -759,8 +780,15 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             {
                 var market = db.Markets.FirstOrDefault(m => m.Id == model.Id);
                 if (market is null) return View("Error");
-                
-                db.Entry(market).State = EntityState.Deleted;
+
+                try
+                {
+                    db.Entry(market).State = EntityState.Deleted;
+                }
+                catch (Exception ex)
+                {
+
+                }
                 db.SaveChanges();
 
                 return RedirectToAction("CityDetails", new { id = market.PlaceId });

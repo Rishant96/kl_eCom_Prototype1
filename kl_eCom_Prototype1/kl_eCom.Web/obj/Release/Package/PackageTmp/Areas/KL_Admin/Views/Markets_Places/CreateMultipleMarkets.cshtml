@@ -1,0 +1,45 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_CreateMultipleMarketsViewModel
+@{
+    ViewBag.Title = "Create - Multiple Markets";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create - Multiple Markets</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.PlaceId)
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(m => m.PlaceName, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Model.PlaceName
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Delimiter, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.Delimiter, new SelectList(Model.Delimiters, "Value", "Key"),
+                "-- Please select a delimiter --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Delimiter, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Markets, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(m => m.Markets, new { @class = "form-control", style = "height: 250px" })
+            @Html.ValidationMessageFor(m => m.Markets, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary col-md-offset-2" style="position:relative;left:15px" />
+    </div>
+</div>
+}
+
+@Html.ActionLink("Go back", "CityDetails", new { id = Model.PlaceId })

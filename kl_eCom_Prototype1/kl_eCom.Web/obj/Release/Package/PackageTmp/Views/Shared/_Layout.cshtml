@@ -10,13 +10,13 @@
     <meta name="description" content="KhushLIFE - Lets Celebrate LIFE">
     <meta name="keywords" content="KhushLIFE - Lets Celebrate LIFE">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <script src="~/assets/js/jquery.min.js"></script>
+    @*<script src="~/assets/js/jquery.min.js"></script>*@
     <!-- jQuery -->
     <script src="~/assets/js/popper.min.js"></script>
     <!-- popper -->
-    <script src="~/assets/js/bootstrap.min.js"></script>
+    @*<script src="~/assets/js/bootstrap.min.js"></script>*@
     <!-- Bootstrap -->
-    <script src="~/assets/js/scripts.js"></script>
+    @*<script src="~/assets/js/scripts.js"></script>*@
     <!-- Scripts -->
 
     <title>Khush LIFE</title>
@@ -135,17 +135,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand text-hide" style="margin-left: 5px; margin-top: 5px">
-                    <p class="img-fluid">
-                        <img class="logo" src="~/assets/images/KhushLIFELogo.jpg" height="100" width="100">
-                        <img style="padding-left:5px; padding-right:5px;" src="~/assets/images/KL_E-Commerce_Top_Tri-Color.jpg">
-                    </p>
+                <a class="navbar-brand text-hide" href="@Url.Action("Index", "Home")">
+                    <p class="img-fluid"><img class="logo" src="~/assets/images/logo/final-logo/E-Commerce.jpg" height="100" width="100" title="KhushLIFE - Lets Celebrate Life"><img style="padding-left:5px; padding-right:5px;  " src="~/assets/images/logo/KL_E-Commerce_Top_Tri-Color.jpg" title="KhushLIFE E-Commerce - Lets Do Commerce"></p>
                 </a>
             </div>
-            <div id="navbar6" class="navbar-collapse collapse" style="border: none;background-color: #fff;">
+            <div id="navbar6" class="navbar-collapse collapse" style="border: none;background-color: #fff; margin-top: 15px">
                 @if (!Request.IsAuthenticated)
                 {
-                    <ul class="nav navbar-nav navbar-right"  style="margin-right: 5px; margin-top: 0; position: relative; top: 20px">
+                    <ul class="nav navbar-nav navbar-right">
                         <li><a href="@Url.Action("Index", "Home", null)" style="text-decoration:none"> <h5 class="text-center; text-capitalize" style=" font-size:12px;color:#000;"><p style="color:#333E8B; display: inline;">Home</p></h5></a></li>
 
                         <li><a href="@Url.Action("Register", "Account", null)" style="text-decoration:none"> <h5 class="text-center; text-capitalize" style=" font-size:12px;color:#000;"><p style="color:#333E8B; display: inline;">Register/Sign-up</p></h5></a></li>
@@ -159,7 +156,7 @@
                     {
                         @Html.AntiForgeryToken()
 
-                    <ul class="nav navbar-nav navbar-right" style="margin-right: 5px; margin-top: 0; position: relative; top: 20px">
+                    <ul class="nav navbar-nav navbar-right">
                         <li><a href="@Url.Action("Index", "Home", null)" style="text-decoration:none"> <h5 class="text-center; text-capitalize" style=" font-size:12px;color:#000;"><p style="color:#333E8B; display: inline;">Home</p></h5></a></li>
 
                         <li>
@@ -177,9 +174,7 @@
         <!--/.container-fluid -->
 
     </nav>
-
-    <br>
-    <br>
+    <br />
     @*<div class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">

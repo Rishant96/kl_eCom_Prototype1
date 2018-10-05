@@ -32,13 +32,13 @@
             </ul>
             @if (User.Identity.IsAuthenticated)
             {
-            <ul class="nav navbar-nav navbar-right" style="padding-top: 7px; margin-right: 5px; display: flex">
+            <ul class="nav navbar-nav navbar-right" style="margin-right: 5px; display: flex">
                 <li>@Html.ActionLink("View Profile", "AdminDetails", controllerName: "Admin")</li>
                 @using (Html.BeginForm("LogOff", "Admin", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     <text>
-                    <li><input type="submit" class="btn btn-primary" value="Log Off" /></li>
+                    <li style="margin-top: 7px"><input type="submit" class="btn btn-primary" value="Log Off" /></li>
                     </text>
                 }
             </ul>

@@ -18,7 +18,11 @@
             @Html.DisplayNameFor(m => m.States)
         </dt>
         <dd>
-            @Html.ActionLink("+ Add State", "CreateState", new { id = Model.Id})
+            <div>
+                @Html.ActionLink("+ Add State", "CreateState", new { id = Model.Id })
+                <text> | </text>
+                @Html.ActionLink("Add Multiple States", "CreateMultipleStates", new { id = Model.Id })
+            </div>
             <hr style="margin: 5px 0" />
             <ol>
             @foreach (var state in Model.States)

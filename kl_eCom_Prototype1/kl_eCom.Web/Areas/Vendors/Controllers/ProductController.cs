@@ -324,7 +324,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (prod == null) return null;
             if (prod.ThumbnailPath == null || prod.ThumbnailMimeType == null)
                 return null;
-            return File(System.IO.File.ReadAllBytes(prod.ThumbnailPath), prod.ThumbnailMimeType);
+            try
+            {
+                return File(System.IO.File.ReadAllBytes(prod.ThumbnailPath), prod.ThumbnailMimeType);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         [AllowAnonymous]
@@ -333,7 +340,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (string.IsNullOrEmpty(path)) return null;
             if (path == null || type == null)
                 return null;
-            return File(System.IO.File.ReadAllBytes(path), type);
+            try
+            {
+                return File(System.IO.File.ReadAllBytes(path), type);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public ActionResult Delete(int? id)
@@ -376,22 +390,30 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Stock(int? prodId, int? storeId)
         {
             if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Store");
+
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
+
             var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
             var prod = db.Products.FirstOrDefault(m => m.Id == prodId);
+            var store = db.Stores.FirstOrDefault(m => m.Id == storeId);
+
             var model = new ProductStockViewModel {
                 Product = prod,
                 MaxPerUser = 10,
-                GST = prod.DefaultGST
+                GST = prod.DefaultGST,
+                CurrencyType = store.DefaultCurrencyType
             };
+
             if (oldStock != null)
             {
                 model.Price = oldStock.Price;
                 model.Stock = oldStock.CurrentStock;
                 model.MaxPerUser = oldStock.MaxAmtPerUser;
                 model.GST = oldStock.GST;
+                model.CurrencyType = oldStock.CurrencyType ?? store.DefaultCurrencyType;
             }
+
             if (model.Product == null) return RedirectToAction("Index", controllerName: "Store");
             return View(model);
         }

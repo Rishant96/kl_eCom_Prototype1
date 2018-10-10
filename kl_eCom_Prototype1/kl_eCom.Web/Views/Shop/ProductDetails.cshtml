@@ -151,7 +151,9 @@
                                     @Model.Stock.Product.Category.Attributes.ElementAt(i).Name
                                 </td>
                                 <td>
-                                    @Model.Stock.Product.Specifications.ElementAt(i).Value
+                                    @((Model.Stock.Product.Specifications.FirstOrDefault(m => m.Name
+                                        == Model.Stock.Product.Category.Attributes.ElementAt(i).Name) ?? 
+                                            new kl_eCom.Web.Utilities.Specification { Value = "-" }).Value)
                                 </td>
                             </tr>
                             }

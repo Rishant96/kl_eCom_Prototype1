@@ -10,7 +10,7 @@
         <text>
             <div class="alert alert-danger alert-dismissible" style="width: 800px;">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Cart Updated!</strong> Product deleted from cart.
+                <strong>Cart Updated!</strong> @Html.ActionLink((string)ViewBag.ProdName, "ProductDetails", "Shop", new { id = (int)ViewBag.StockId }, null) was deleted successfully.
             </div>
         </text>
     }
@@ -40,28 +40,21 @@
 
             </th>
         </tr>
+        
         @if (Model.Cart.CartItems == null)
         {
             Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
         }
+
         @foreach (var itm in Model.Cart.CartItems)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(m => Model.ProductNames[itm])
+                    @Html.ActionLink(Model.ProductNames[itm], "ProductDetails", 
+                        "Shop", new { id = itm.StockId }, null)
                 </td>
                 <td>
-                    @*@{
-                            var stockList = new List<int> { };
-                            for (int i = 0; i <= itm.Stock.CurrentStock; i++)
-                            {
-                                stockList.Add(i);
-                            }
-                            var qtyList = new SelectList(stockList);
-                            qtyList.First(m => m.Value == itm.Qty.ToString()).Selected = true;
-                            @Html.DropDownListFor(m => itm.Qty, qtyList, new { id = "QtyList" })
-                        }*@
-                    @Html.DisplayFor(m => itm.Qty)
+                    <text>@itm.Qty</text>
                 </td>
                 <td>
                     <text>@Model.Prices[itm]</text>
@@ -80,7 +73,7 @@
 
     <div class="row">
         <div class="col-md-3 text-right">
-            @*<input type="submit" value="Save Cart" class="btn btn-success" />      *@
+            @*<input type="submit" value="Save Cart" class="btn btn-success" />*@
         </div>
         <div class="col-md-3 text-center">
             @Html.Label("Total Cost: ")

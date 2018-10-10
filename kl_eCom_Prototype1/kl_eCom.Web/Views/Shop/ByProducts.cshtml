@@ -4,13 +4,23 @@
     Layout = "~/Views/Shared/_EcomLayout.cshtml";
 }
 
-<h2>Categories</h2>
+@if (Model.Categories.Count > 0)
+{
+    <h2>Categories</h2>
 
-<div class="row">
-    @foreach (var cat in Model.Categories)
-    {
-        <div class="col-md-4 category">
-            <h4>@Html.ActionLink(cat.Name, "ByProducts", new { id = cat.Id })</h4>
-        </div>
-    }
-</div>
+    <div class="row">
+        @foreach (var cat in Model.Categories)
+        {
+            <div class="col-md-4 category">
+                <h4>@Html.ActionLink(cat.Name, "ByProducts", new { id = cat.Id })</h4>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="col-md-offset-1" style="margin-top: 50px; margin-bottom: 150px">
+        <h2>No Products Avalaible.</h2>
+        <h3>Please come back later.</h3>
+    </div>
+}

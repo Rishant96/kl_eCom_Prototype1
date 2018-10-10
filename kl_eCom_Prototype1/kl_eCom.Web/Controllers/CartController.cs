@@ -19,13 +19,19 @@ namespace kl_eCom.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Cart
-        public ActionResult Index(bool flag = false, string returnUrl = "", bool checkoutErr = false)
+        public ActionResult Index(bool flag = false, string returnUrl = "", 
+            bool checkoutErr = false, string removedProd = "", int prodId = 0)
         {
             var cart = GetCart();
             var total = 0.0f;
             var prices = new Dictionary<CartItem, string>();
             var names = new Dictionary<CartItem, string>();
             ViewBag.Flag = flag;
+            if (flag)
+            {
+                ViewBag.ProdName = removedProd;
+                ViewBag.StockId = prodId;
+            }
             ViewBag.CheckoutErr = checkoutErr;
             foreach (var itm in cart.CartItems)
             {
@@ -150,6 +156,8 @@ namespace kl_eCom.Web.Controllers
 
         public ActionResult Delete(int? id, string return_Url)
         {
+            string prodName = "";
+            int prodId = 0;
             if (id == null) return RedirectToAction("Index");
             else
             {
@@ -157,18 +165,25 @@ namespace kl_eCom.Web.Controllers
                 CartItem cartItm = null;
                 if (User.Identity.IsAuthenticated)
                 {
-                    cartItm = db.CartItems.FirstOrDefault(m => m.Id == id);
-                    
+                    cartItm = db.CartItems
+                        .Include(m => m.Stock)
+                        .Include(m => m.Stock.Product)
+                        .FirstOrDefault(m => m.Id == id);
+
+                    prodName = cartItm.Stock.Product.Name;
+                    prodId = cartItm.Stock.Id;
+
                     var entry2 = db.Entry(cartItm);
                     if (entry2.State == EntityState.Detached)
                         db.CartItems.Attach(cartItm);
+
                     db.CartItems.Remove(cartItm);
+
                     db.SaveChanges();
                 }
                 else
                 {
                     cartItm = cart.CartItems.FirstOrDefault(m => m.Id == id);
-
                     cart.CartItems.Remove(cartItm);
                 }
 
@@ -187,7 +202,8 @@ namespace kl_eCom.Web.Controllers
                         Response.Cookies.Add(cookie);
                     }
                 }
-                return RedirectToAction("Index", new { flag = true, returnUrl = return_Url });
+                return RedirectToAction("Index", new { flag = true,
+                    returnUrl = return_Url, removedProd = prodName, prodId = prodId });
             }
         }
 

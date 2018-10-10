@@ -740,7 +740,7 @@ namespace kl_eCom.Web.Controllers
                 ItemId = model.StockId
             });
 
-            return RedirectToAction("Index", "Cart", new { returnUrl = model.ReturnUrl });
+            return RedirectToAction("ProductDetails", new { id = model.StockId, returnUrl = model.ReturnUrl });
         }
 
         [HttpPost]

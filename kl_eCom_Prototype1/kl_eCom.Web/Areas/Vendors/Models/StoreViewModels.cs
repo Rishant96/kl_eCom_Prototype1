@@ -87,10 +87,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
         [Required]
         public string CurrencyType { get; set; }
-
-        [Display(Name = "Address Name")]
-        public string AddrName { get; set; }
-
+        
         [Required]
         [Display(Name = "Line 1")]
         public string Line1 { get; set; }

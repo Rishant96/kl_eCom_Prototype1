@@ -5,7 +5,7 @@
 
 <h2>Details</h2>
 
-<div>
+<div class="col-md-offset-1">
     <h4>Category</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -18,7 +18,7 @@
         </dd>
 
         <dt>
-            @Html.Label("KL Category")
+            KL Category
         </dt>
 
         <dd>
@@ -54,7 +54,7 @@
         </dd>
 
         <dt>
-            @Html.Label("Thumbnail")
+            Thumbnail
         </dt>
 
         <dd>
@@ -68,16 +68,18 @@
             }
         </dd>
 
-        @Html.Label("Attributes", new { style = "display:block" })
+        <text style="display: block; font-weight: bold; margin-left: 75px">Attributes</text>
         @foreach (var attr in Model.Category.Attributes)
         {
             <dd>
-                @Html.DisplayFor(m => attr.Name)
+                <div>
+                    @Html.DisplayFor(m => attr.Name) - @Html.DisplayFor(m => attr.Default)
+                </div>
             </dd>
         }
 
 
-        @Html.Label("Sub Categories", new { style = "display:block" })
+        <text style="display: block; font-weight: bold; margin-left: 75px">Sub Categories</text>
         @foreach (var sub in Model.Category.ChildCategories)
         {
             <dt>
@@ -91,7 +93,7 @@
 
     </dl>
 </div>
-<div>
+<div style="margin-left: 50px">
     <div style="margin-bottom: 15px">
         @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Category.Id })<br />
     </div>

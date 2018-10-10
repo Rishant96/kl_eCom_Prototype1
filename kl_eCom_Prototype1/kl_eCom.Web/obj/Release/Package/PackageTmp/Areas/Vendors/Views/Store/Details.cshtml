@@ -29,8 +29,64 @@
         <div class="text-center col-md-2 col-sm-3">
             @Html.LabelFor(m => m.Address)
         </div>
-        <div class="text-center col-md-2 col-sm-3">
-            @Html.DisplayFor(m => m.Address)
+        <div class="col-md-10 col-sm-9">
+            <br />
+            <dl class="dl-horizontal" style="position: relative; right: 100px">
+                <dt>
+                    Line 1
+                </dt>
+                <dd>
+                    @Model.Address.Line1
+                </dd>
+                <dt>
+                    Line 2
+                </dt>
+                <dd>
+                    @Model.Address.Line2
+                </dd>
+                <dt>
+                    Line 3
+                </dt>
+                <dd>
+                    @Model.Address.Line3
+                </dd>
+                <dt>
+                    Landmark
+                </dt>
+                <dd>
+                    @Model.Address.Landmark
+                </dd>
+                <dt>
+                    Zip Code
+                </dt>
+                <dd>
+                    @Model.Address.Zip
+                </dd>
+                <dt>
+                    Market
+                </dt>
+                <dd>
+                    @Model.Address.Market.Name
+                </dd>
+                <dt>
+                    City
+                </dt>
+                <dd>
+                    @Model.Address.Place.Name
+                </dd>
+                <dt>
+                    State
+                </dt>
+                <dd>
+                    @Model.Address.State.Name
+                </dd>
+                <dt>
+                    Country
+                </dt>
+                <dd>
+                    @Model.Address.Country.Name
+                </dd>
+            </dl>
         </div>
     </div>
 

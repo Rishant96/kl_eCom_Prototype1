@@ -147,6 +147,7 @@
             var selectedCountry = $('#Country').val();
             var statesSelect = $('#State');
             statesSelect.empty();
+            $("#City").empty();
             if (selectedCountry != null && selectedCountry != "") {
                 $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
                     if (states != null && !jQuery.isEmptyObject(states)) {

@@ -195,13 +195,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Description = cat.Description,
                 Attributes = cat.Attributes.ToList(),
                 SelectedCat = cat.KL_CategoryId,
-                Categories = dictCat
+                Categories = dictCat,
+                DefaultGST = cat.DefaultGST
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(CategoryEditViewModel model)
+        public ActionResult Edit(CategoryEditViewModel model, string[] AtrbName,
+            string[] Type, string[] Default)
         {
             if (model == null) return View("Error");
             if (ModelState.IsValid)
@@ -213,20 +215,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 }   
 
                 List<CategoryAttribute> catAttrs = new List<CategoryAttribute>();
-                var nameStr = Request.Form["AtrbName"];
-                var typesStr = Request.Form["Type"];
-                var defaultStr = Request.Form["Default"];
-
-                if (nameStr is null) nameStr = "";
-                var atrbNames = nameStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                
+                var atrbNames = AtrbName;
                 if (atrbNames is null) atrbNames = new string[] { };
-
-                if (typesStr is null) typesStr = "";
-                var typeNames = typesStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                
+                var typeNames = Type;
                 if (typeNames is null) typeNames = new string[] { };
 
-                if (defaultStr is null) defaultStr = "";
-                var dfltNames = defaultStr.Split(',').Select(sValue => sValue.Trim()).ToArray() as string[];
+                var dfltNames = Default;
                 if (dfltNames is null) dfltNames = new string[] { };
 
                 for (int i=0; i<atrbNames.Count(); i++)

@@ -181,6 +181,9 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 Market = vendor.VendorDetails.BusinessAddress.MarketId,
                 Name = vendor.VendorDetails.BusinessName,
                 CurrencyType = "₹",
+                Line1 = vendor.VendorDetails.BusinessAddress.Line1,
+                Line2 = vendor.VendorDetails.BusinessAddress.Line2,
+                Line3 = vendor.VendorDetails.BusinessAddress.Line3,
                 Countries = countries,
                 States = states,
                 Cities = cities,
@@ -319,7 +322,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View(new StoreEditViewModel {
                 Id = store.Id,
                 Name = store.Name,
-                AddrName = store.Address.Name,
                 CurrencyType = store.DefaultCurrencyType,
                 Line1 = store.Address.Line1,
                 Line2 = store.Address.Line2,
@@ -349,7 +351,6 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
                 if (store == null) return View("Error");
                 store.Name = model.Name;
-                store.Address.Name = model.AddrName;
                 store.Address.Line1 = model.Line1;
                 store.Address.Line2 = model.Line2;
                 store.Address.Line3 = model.Line3;

@@ -10,6 +10,7 @@ using kl_eCom.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using kl_eCom.Web.Entities;
+using System.Threading.Tasks;
 
 namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 {
@@ -388,17 +389,19 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async System.Threading.Tasks.Task<ActionResult> ResetPasswordAsync(AdminCustomersResetPasswordViewModel model)
+        public ActionResult ResetPassword(AdminVendorsResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.ConfirmPassword, model.NewPassword);
+                var vendorId = db.EcomUsers.FirstOrDefault(m => m.Id == model.VendorId).ApplicationUserId;
+                var code = UserManager.GeneratePasswordResetToken(vendorId);
+                var result = UserManager.ResetPassword(vendorId, code, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                    var user = UserManager.FindById(User.Identity.GetUserId());
                     if (user != null)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        SignInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
                     }
                     return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
                 }

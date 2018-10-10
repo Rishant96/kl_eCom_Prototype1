@@ -27,14 +27,6 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.AddrName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.AddrName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.AddrName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(m => m.Line1, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Line1, new { htmlAttributes = new { @class = "form-control" } })
@@ -122,6 +114,8 @@
             var selectedCountry = $('#Country').val();
             var statesSelect = $('#State');
             statesSelect.empty();
+            $("#City").empty();
+            $("#Market").empty();
             if (selectedCountry != null && selectedCountry != "") {
                 $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
                     if (states != null && !jQuery.isEmptyObject(states)) {
@@ -144,6 +138,7 @@
             var selectedState = $('#State').val();
             var citiesSelect = $('#City');
             citiesSelect.empty();
+            $("#Market").empty();
             if (selectedState != null && selectedState != "") {
                 $.getJSON('@Url.Action("GetCities")', { idStr: selectedState }, function (cities) {
                     if (cities != null && !jQuery.isEmptyObject(cities)) {
@@ -171,7 +166,7 @@
                     if (markets != null && !jQuery.isEmptyObject(markets)) {
                         marketsSelect.append($('<option/>', {
                             value: null,
-                            text: "--- Select a city ---"
+                            text: "--- Select a market ---"
                         }));
                         $.each(markets, function (index, market) {
                             marketsSelect.append($('<option/>', {

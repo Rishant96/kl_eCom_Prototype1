@@ -52,6 +52,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public Product Product { get; set; }
         [Required]
         public int Stock { get; set; }
+        public string CurrencyType { get; set; }
         [Required]
         public float Price { get; set; }
         public float GST { get; set; }

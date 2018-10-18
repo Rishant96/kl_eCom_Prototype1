@@ -19,8 +19,7 @@
             @Html.AntiForgeryToken()
             <div style="display: inline">
                 <img class="img-thumbnail" width="100" height="100" style="margin-left: 25px; display: block"
-                     src="@Url.Action("GetImage", "Product",
-                            new { path = img.ImagePath, type = img.ImageMimeType })" />
+                     src="@img.ImagePath" />
                 <input type="submit" value="Delete" class="btn btn-link" />
             </div>
         }

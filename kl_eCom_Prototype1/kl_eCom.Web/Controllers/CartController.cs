@@ -219,6 +219,10 @@ namespace kl_eCom.Web.Controllers
                 return RedirectToAction("Index", new { checkoutErr = true });
             }
             var addrs = db.Addresses
+                        .Include(m => m.Country)
+                        .Include(m => m.State)
+                        .Include(m => m.Place)
+                        .Include(m => m.Market)
                         .Where(m => m.ApplicationUserId == usrId)
                         .ToList();
             var totalPrice = 0.0f;

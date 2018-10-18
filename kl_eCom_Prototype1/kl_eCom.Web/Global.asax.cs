@@ -11,6 +11,9 @@ namespace kl_eCom.Web
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static string pageTitleLogo_Path = "/assets/images/KhushLIFELogo.jpg";
+        public static string navbarBrandLogo_Path = "/assets/images/logo/final-logo/E-Commerce.jpg";
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -28,6 +31,7 @@ namespace kl_eCom.Web
                     is ApplicationUser vendor)
             {
                 // Begin Lockout
+
             }
         }
     }

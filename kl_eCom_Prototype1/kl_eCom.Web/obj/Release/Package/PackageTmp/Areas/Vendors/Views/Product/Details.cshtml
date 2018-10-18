@@ -4,130 +4,136 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Category.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Manufacturer)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Manufacturer)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DefaultGST)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DefaultGST)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-
-        <dt>
-            @Html.Label("Thumbnail")
-        </dt>
-
-        <dd>
-            @if (Model.ThumbnailPath != null && Model.ThumbnailMimeType != null)
-            {
-                <text>
-                    <img class="img-thumbnail" width="75" height="75"
-                         src="@Url.Action("GetThumbnail", "Product",
-                            new { Model.Id })" />
-                </text>
-            }
-        </dd>
-    </dl>
-
+<div style="margin-left: 30px">
+    <h2>Details</h2>
     <div>
-        <div class="row">
-            @Html.Label("Detail Images", new { @class = "col-md-offset-1" })
-            <div style="display: inline; margin-left: 20px">
-                @Html.ActionLink("Edit", "EditDetailsImages", new { id = Model.Id }, new { style = "display: inline" })
-            </div>
-        </div>
+        <h4>Product</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Category Name
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Category.Name)
+                <text style="margin-left: 15px">
+                    ( @Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id },
+                      new { style = "text-decoration: underline" }) )
+                </text>
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Manufacturer)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Manufacturer)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DefaultGST)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DefaultGST)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.IsActive)
+            </dd>
+
+            <dt>
+                Thumbnail
+            </dt>
+
+            <dd>
+                @if (Model.ThumbnailPath != null && Model.ThumbnailMimeType != null)
+                {
+                    <text>
+                        <img class="img-thumbnail" width="75" height="75"
+                             src="@Url.Action("GetThumbnail", "Product",
+                            new { Model.Id })" />
+                    </text>
+                }
+            </dd>
+        </dl>
 
         <div>
-            <div class="row col-md-offset-2" style="margin-top: 20px">
+            <div class="row">
+                @Html.Label("Detail Images", new { @class = "col-md-offset-1", style = "font-weight: bold" })
+                <div style="display: inline; margin-left: 20px">
+                    @Html.ActionLink("Edit", "EditDetailsImages", new { id = Model.Id }, new { style = "display: inline" }) | 
+                    @Html.ActionLink("Reorder", "ReorderDetailsImages", new { id = Model.Id })
+                </div>
+            </div>
 
-                @foreach (var img in Model.ProductImages)
-                {
-                    <div class="col-md-2">
-                        @if (img.ImagePath != null && img.ImageMimeType != null)
-                        {
-                            <text>
-                                <img class="img-thumbnail" width="75" height="75"
-                                     src="@Url.Action("GetImage", "Product",
-                            new { path = img.ImagePath, type = img.ImageMimeType })" />
-                            </text>
-                        }
-                    </div>
-                }
+            <div>
+                <div class="row col-md-offset-2" style="margin-top: 20px">
+                    @foreach (var img in Model.ProductImages)
+                    {
+                        <div class="col-md-2">
+                            @if (img.ImagePath != null && img.ImageMimeType != null)
+                            {
+                                <text>
+                                    <img class="img-thumbnail" width="75" height="75"
+                                         src="@Url.Action("GetImage", "Product",
+                                         new { path = img.ImagePath, type = img.ImageMimeType })" />
+                                </text>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+
+        @Html.Label("Specifications - ", htmlAttributes: new { @class = "col-md-offset-1",
+            style = "font-weight: bold; position: relative; right: 25px" })
+        <dl class="dl-horizontal">
+            @foreach (var spec in Model.Specifications)
+            {
+                <dt style="font-style: italic">
+                    @Html.DisplayFor(m => spec.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(m => spec.Value)
+                </dd>
+            }
+        </dl>
     </div>
+    <div style="margin-left: 20px; margin-top: 25px">
+        <p style="margin-left: 30px">
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" }) |
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) | 
+            @Html.ActionLink("Add Stock", "Stock", new { prodId = Model.Id, storeId = Model.Category.StoreId },
+                new { style = "text-decoration: underline" })
+        </p>
+        
+       @*@Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id })
+       |*@
 
-    @Html.Label("Specifications", htmlAttributes: new { @class = "col-md-offset-1" })
-    <dl class="dl-horizontal">
-        @foreach (var spec in Model.Specifications)
-        {
-            <dt>
-                @Html.DisplayFor(m => spec.Name)
-            </dt>
-            <dd>
-                @Html.DisplayFor(m => spec.Value)
-            </dd>
-        }
-    </dl>
+        <p style="margin-top: 30px">
+            @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) |
+            @Html.ActionLink("All Products", "AllProducts")
+        </p>
+    </div>
 </div>
-
-<p>
-    @Html.ActionLink("Change Category", "ChangeCategory", new { id = Model.Id })
-     | 
-    @Html.ActionLink("Add Stock", "Stock", new { prodId = Model.Id, storeId = Model.Category.StoreId })
-</p>
-
-<p>
-    @Html.ActionLink("Back to List", "Index", new { id = Model.Category.Id }) | 
-    @Html.ActionLink("All Products", "AllProducts")
-</p>
-
-<p>
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" }) | 
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
-</p>

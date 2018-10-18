@@ -202,6 +202,7 @@ namespace kl_eCom.Web.Controllers
                         Response.Cookies.Add(cookie);
                     }
                 }
+
                 return RedirectToAction("Index", new { flag = true,
                     returnUrl = return_Url, removedProd = prodName, prodId = prodId });
             }

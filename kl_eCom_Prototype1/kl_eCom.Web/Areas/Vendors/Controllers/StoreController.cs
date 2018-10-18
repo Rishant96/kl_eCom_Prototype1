@@ -38,6 +38,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     .Include(m => m.Product)
                     .Include(m => m.Product.Category)
                     .Include(m => m.Store)
+                    .OrderBy(m => m.Product.Category.Name)
                     .ToList()
                 );
             }

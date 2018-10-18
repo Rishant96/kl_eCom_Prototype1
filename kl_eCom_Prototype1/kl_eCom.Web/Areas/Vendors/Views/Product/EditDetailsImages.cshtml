@@ -1,11 +1,10 @@
 ﻿@model kl_eCom.Web.Areas.Vendors.Models.ProductEditImagesViewModel
 @{
     /**/
-
     ViewBag.Title = "Edit - Product Images";
 }
 
-<h2>Edit - Product Images</h2>
+<h2>Detailed Images for, @Model.ProductName</h2>
 
 <input type="hidden" id="currImgs" value="@Model.ProductImages.Count" />
 
@@ -20,8 +19,7 @@
             @Html.AntiForgeryToken()
             <div style="display: inline">
                 <img class="img-thumbnail" width="100" height="100" style="margin-left: 25px; display: block"
-                     src="@Url.Action("GetImage", "Product",
-                            new { path = img.ImagePath, type = img.ImageMimeType })" />
+                     src="@img.ImagePath" />
                 <input type="submit" value="Delete" class="btn btn-link" />
             </div>
         }
@@ -30,26 +28,26 @@
 
 @if (Model.ProductImages.Count < 6)
 {
-<div>
-    (Maximum 6 images allowed, <label id="remaining">@(6 - Model.ProductImages.Count)</label> remaining)<br />
-    @using (Html.BeginForm("ProductImageUpload", "Product",
-                new { prodId = Model.ProductId },
-                FormMethod.Post,
-                new
-                {
-                    @class = "dropzone",
-                    id = "dropzone-form"
-                })
-           )
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.ProductId)
+    <div>
+        (Maximum 6 images allowed, <label id="remaining">@(6 - Model.ProductImages.Count)</label> remaining)<br />
+        @using (Html.BeginForm("ProductImageUpload", "Product",
+                    new { prodId = Model.ProductId },
+                    FormMethod.Post,
+                    new
+                    {
+                        @class = "dropzone",
+                        id = "dropzone-form",
+                    })
+               )
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.ProductId)
 
-        <div class="fallback">
-            <input name="file" type="file" multiple />
-        </div>
-    }
-</div>
+            <div class="fallback">
+                <input name="file" type="file" multiple />
+            </div>
+        }
+    </div>
 }
 
 <div id="messageDiv">
@@ -59,7 +57,7 @@
 @Html.ActionLink("Go back", "Details", new { id = Model.ProductId })
 
 @section scripts {
-    @Scripts.Render("~/bundles/dropzone")
+    <script src="~/Scripts/dropzone.js"></script>
 
     <script type="text/javascript">
         var count = 0;

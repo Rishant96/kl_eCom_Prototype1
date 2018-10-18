@@ -3,15 +3,18 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Products</h2>
-@if (ViewBag.Flag)
-{
-    @Html.ActionLink("+ Add Product", "Create", new { catId = ViewBag.catId }) 
-}
-else
-{
-    <text>Cannot create more (Limit Reached)</text>
-}
+<div style="display: flex; justify-content: space-between; align-items: center">
+    <h2>Products</h2>
+    @if (ViewBag.Flag)
+    {
+        @Html.ActionLink("+ Add Product", "Create", new { catId = ViewBag.catId },
+        new { @class = "btn btn-success", style = "border: 0; margin-left: 20px; padding: 10px 20px" })
+    }
+    else
+    {
+        <text>Cannot create more (Limit Reached)</text>
+    }
+</div>
 
 <table class="table">
     <tr>
@@ -38,8 +41,7 @@ else
                 {
                     <text>
                         <img class="img-thumbnail" width="45" height="45"
-                             src="@Url.Action("GetThumbnail", "Product",
-                            new { item.Id })" />
+                             src="@item.ThumbnailPath" />
                     </text>
                 }
                 else
@@ -51,7 +53,9 @@ else
                 @Html.ActionLink(item.Name, "Details", new { id = item.Id })
             </td>
             <td>
-                @Html.DisplayFor(m => item.Category.Name)
+                @Html.ActionLink(item.Category.Name, "Details", "Category",
+                    new { catId = item.CategoryId, storeId = item.Category.StoreId }
+                    , null)
             </td>
             <td>
                 <ul>

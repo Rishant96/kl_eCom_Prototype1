@@ -28,6 +28,9 @@
     <table class="table">
         <tr>
             <th>
+
+            </th>
+            <th>
                 @Html.Label("Name")
             </th>
             <th>
@@ -49,6 +52,11 @@
         @foreach (var itm in Model.Cart.CartItems)
         {
             <tr>
+                <td>
+                    @*<img class="img-thumbnail" width="45" height="45"
+                         src="@Url.Action("GetThumbnail", "Product",
+                            new { id = itm.Stock.ProductId  })" />*@
+                </td>
                 <td>
                     @Html.ActionLink(Model.ProductNames[itm], "ProductDetails", 
                         "Shop", new { id = itm.StockId }, null)

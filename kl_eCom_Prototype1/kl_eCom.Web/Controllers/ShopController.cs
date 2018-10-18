@@ -459,7 +459,7 @@ namespace kl_eCom.Web.Controllers
                             .OrderBy(queryOptions.Sort) 
                             .ToList()
                          :
-                           null,
+                           new List<Stock>(),
                 Max = new Dictionary<int, int>(),
                 Breadcrum = (store != null && parent != null) ? new Dictionary<string, int>()
                                                                 : null,

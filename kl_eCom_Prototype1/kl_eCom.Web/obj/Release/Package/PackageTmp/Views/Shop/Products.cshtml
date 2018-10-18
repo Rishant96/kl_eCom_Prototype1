@@ -97,7 +97,7 @@
                             using (Html.BeginForm(new { stockId = stock.Id, returnUrl = Request.Url.PathAndQuery }))
                             {
                                 @Html.AntiForgeryToken()
-                                <div class="col-md-3">
+                                <div class="col-md-3" style="margin-bottom: 5px; margin-top: 20px">
                                     <div>
                                         <a href="@Url.Action("ProductDetails", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
                                             <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"

@@ -10,6 +10,10 @@ using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Configuration;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -41,6 +45,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var prod = db.Products
                 .Where(m => m.CategoryId == (int)id)
                 .Include(m => m.Specifications)
+                .Include(m => m.Category)
                 .ToList();
             if (prod == null) return RedirectToAction("Index", controllerName: "Store");
 
@@ -85,7 +90,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var model = new ProductCreateViewModel {
                 Specifications = new Dictionary<string, string>(),
                 IsActive = true,
-                DefaultGST = parent.DefaultGST
+                DefaultGST = parent.DefaultGST,
+                CategoryName = parent.Name
             };
             model.Attributes = new Dictionary<string, int>();
             while (parent != null)
@@ -157,6 +163,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 DefaultGST = prod.DefaultGST,
                 Manufacturer = prod.Manufacturer,
                 DateAdded = prod.DateAdded,
+                CategoryName = prod.Category.Name,
                 AttributeNames = new List<string>(),
                 Attributes = new Dictionary<string, int>(),
                 Specifications = new Dictionary<string, string>(),
@@ -198,6 +205,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 }
 
                 var prod = db.Products.Include(m => m.Category).FirstOrDefault(m => m.Id == model.Id);
+
                 prod.Name = model.Name;
                 prod.Manufacturer = model.Manufacturer;
                 prod.Description = model.Description;
@@ -237,31 +245,77 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     HttpPostedFileBase hpf = Request.Files["thumbnail"];
                     if (hpf.ContentLength != 0)
                     {
+                        var storageAccount = CloudStorageAccount.Parse(
+                                ConfigurationManager.ConnectionStrings["StorageConnection"].ConnectionString);
+
+                        var blobStorage = storageAccount.CreateCloudBlobClient();
+
+                        CloudBlobContainer container = blobStorage.GetContainerReference("productimages");
+
+                        if (container.CreateIfNotExists())
+                        {
+                            // configure container for public access
+                            var permissions = container.GetPermissions();
+                            permissions.PublicAccess = BlobContainerPublicAccessType.Container;
+                            container.SetPermissions(permissions);
+                        }
+
+                        //string uniqueBlobName = string.Format("productimages/image_{0}{1}", 
+                        //         Guid.NewGuid().ToString(), Path.GetExtension(image.FileName));
+                        //CloudBlockBlob blob = blobStorage.GetBlockBlobReference(uniqueBlobName);
+                        //blob.Properties.ContentType = image.ContentType;
+                        //blob.UploadFromStream(image.InputStream);
+
+
+
                         if (prod.ThumbnailPath != null
-                            && prod.ThumbnailMimeType == null)
-                            System.IO.File.Delete(prod.ThumbnailPath);
+                            && prod.ThumbnailMimeType != null)
+                        {
+                            string sBlob = prod.ThumbnailPath.Substring(prod.ThumbnailPath
+                                .IndexOf("productimages/") + ("productimages/").Length);
+                            try
+                            {
+                                var blockBlob = container.GetBlobReference(sBlob);
+                                if (blockBlob.Uri.ToString() == prod.ThumbnailPath)
+                                    blockBlob.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+
+                        string uniqueBlobName = string.Format("productimages/image_{0}{1}",
+                                 Guid.NewGuid().ToString(), Path.GetExtension(hpf.FileName));
+
+                        CloudBlockBlob blob = container.GetBlockBlobReference(uniqueBlobName);
+                        blob.Properties.ContentType = hpf.ContentType;
+                        blob.UploadFromStream(hpf.InputStream);
 
                         prod.ThumbnailMimeType = hpf.ContentType;
-                        prod.ThumbnailPath = System.Web.HttpContext.Current.Server
-                                .MapPath("~/App_Data/Images");
-                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
-                        prod.ThumbnailPath += "/Products/";
-                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
-                        prod.ThumbnailPath += User.Identity.GetUserName() + "/";
-                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
-                        prod.ThumbnailPath += prod.Category.Name + "/";
-                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
-                        prod.ThumbnailPath += prod.Name + "/";
-                        System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
-                        prod.ThumbnailPath += DateTime.Now.Ticks + "_" + hpf.FileName; 
-                        var byteBuff = new byte[hpf.ContentLength];
-                        hpf.InputStream.Read(byteBuff, 0, hpf.ContentLength);
-                        System.IO.File.WriteAllBytes(prod.ThumbnailPath, byteBuff);
-                        //prod.ThumbnailData = new byte[hpf.ContentLength];
-                        //hpf.InputStream.Read(prod.ThumbnailData, 0, hpf.ContentLength);
+                        prod.ThumbnailPath = blob.Uri.ToString();
+
+                        //prod.ThumbnailMimeType = hpf.ContentType;
+                        //prod.ThumbnailPath = System.Web.HttpContext.Current.Server
+                        //        .MapPath("~/App_Data/Images");
+                        //System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        //prod.ThumbnailPath += "/Products/";
+                        //System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        //prod.ThumbnailPath += User.Identity.GetUserName() + "/";
+                        //System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        //prod.ThumbnailPath += prod.Category.Name + "/";
+                        //System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        //prod.ThumbnailPath += prod.Name + "/";
+                        //System.IO.Directory.CreateDirectory(prod.ThumbnailPath);
+                        //prod.ThumbnailPath += DateTime.Now.Ticks + "_" + hpf.FileName; 
+                        //var byteBuff = new byte[hpf.ContentLength];
+                        //hpf.InputStream.Read(byteBuff, 0, hpf.ContentLength);
+                        //System.IO.File.WriteAllBytes(prod.ThumbnailPath, byteBuff);
+                        ////prod.ThumbnailData = new byte[hpf.ContentLength];
+                        ////hpf.InputStream.Read(prod.ThumbnailData, 0, hpf.ContentLength);
                     }
 
-                    Upload(prod.Id, files);
+                    //Upload(prod.Id, files);
                 }
 
                 db.Entry(prod).State = EntityState.Modified;
@@ -271,7 +325,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             }
             return View(model);
         }
-        
+
         public JsonResult Upload(int id, IEnumerable<HttpPostedFileBase> files)
         {
             if(id == 0) return Json(new { result = false });
@@ -317,16 +371,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         }
 
         [AllowAnonymous]
-        public FileContentResult GetThumbnail(int? id)
+        public string GetThumbnail(int? id)
         {
             if (id == null) return null;
             Product prod = db.Products.FirstOrDefault(m => m.Id == id);
             if (prod == null) return null;
             if (prod.ThumbnailPath == null || prod.ThumbnailMimeType == null)
                 return null;
+
             try
             {
-                return File(System.IO.File.ReadAllBytes(prod.ThumbnailPath), prod.ThumbnailMimeType);
+                return prod.ThumbnailPath;
             }
             catch (Exception ex)
             {
@@ -693,12 +748,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult EditDetailsImages(int? id)
         {
             if (id == null) return View("Error");
+            var product = db.Products.FirstOrDefault(m => m.Id == id);
+            if (product is null) return View("Error");
             var model = new ProductEditImagesViewModel
             {
                 ProductImages = db.ProductImages
                                     .Where(m => m.ProductId == id)
                                     .ToList(),
-                ProductId = (int) id
+                ProductId = (int) product.Id,
+                ProductName = product.Name
             };
 
             if (model.ProductImages == null)
@@ -715,12 +773,58 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             var prodImg = db.ProductImages.FirstOrDefault(m => m.Id == id);
 
-            System.IO.File.Delete(prodImg.ImagePath);
+            var storageAccount = CloudStorageAccount.Parse(
+                                ConfigurationManager.ConnectionStrings["StorageConnection"].ConnectionString);
 
-            db.Entry(prodImg).State = EntityState.Deleted;
-            db.SaveChanges();
+            var blobStorage = storageAccount.CreateCloudBlobClient();
+
+            CloudBlobContainer container = blobStorage.GetContainerReference("productimages");
+
+            string sBlob = prodImg.ImagePath.Substring(prodImg.ImagePath
+                                .IndexOf("productimages/") + ("productimages/").Length);
+            try
+            {
+                var blockBlob = container.GetBlobReference(sBlob);
+                if (blockBlob.Uri.ToString() == prodImg.ImagePath)
+                    blockBlob.Delete();
+
+                db.Entry(prodImg).State = EntityState.Deleted;
+                db.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             return RedirectToAction("EditDetailsImages", new { id = prodId });
+        }
+
+        public ActionResult ReorderDetailsImages(int? id)
+        {
+            if (id is null) return View("Error");
+
+            var product = db.Products.FirstOrDefault(m => m.Id == id);
+            if (product is null) return View("Error");
+
+            var model = new ProductReorderImagesViewModel {
+                ProdId = product.Id,
+                Product = product
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ReorderDetailsImages(ProductReorderImagesViewModel model, int[] selections)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                return RedirectToAction("Details", new { id = model.ProdId });
+            }
+            return RedirectToAction("ReorderDetailsImages");
         }
 
         [HttpPost]
@@ -744,33 +848,62 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     ViewBag.Msg = "Max limit of 6 reached.";
                     throw new Exception("Max limit of 6 reached.");
                 }
-                
-                var memStream = new MemoryStream();
-                file.InputStream.CopyTo(memStream);
 
-                byte[] fileData = memStream.ToArray();
+                var storageAccount = CloudStorageAccount.Parse(
+                                ConfigurationManager.ConnectionStrings["StorageConnection"].ConnectionString);
 
-                var prodImg = new ProductImage
+                var blobStorage = storageAccount.CreateCloudBlobClient();
+
+                CloudBlobContainer container = blobStorage.GetContainerReference("productimages");
+
+                if (container.CreateIfNotExists())
                 {
+                    // configure container for public access
+                    var permissions = container.GetPermissions();
+                    permissions.PublicAccess = BlobContainerPublicAccessType.Container;
+                    container.SetPermissions(permissions);
+                }
+
+                string uniqueBlobName = string.Format("productimages/image_{0}{1}",
+                                 Guid.NewGuid().ToString(), Path.GetExtension(file.FileName));
+
+                CloudBlockBlob blob = container.GetBlockBlobReference(uniqueBlobName);
+                blob.Properties.ContentType = file.ContentType;
+                blob.UploadFromStream(file.InputStream);
+
+
+                //var memStream = new MemoryStream();
+                //file.InputStream.CopyTo(memStream);
+
+                //byte[] fileData = memStream.ToArray();
+
+                //var prodImg = new ProductImage
+                //{
+                //    ImageMimeType = file.ContentType,
+                //    ImagePath = System.Web.HttpContext.Current.Server
+                //                .MapPath("~/App_Data/Images"),
+                //    ProductId = prodId,
+                //    Product = prod
+                //};
+
+                //System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                //prodImg.ImagePath += "/Products/";
+                //System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                //prodImg.ImagePath += User.Identity.GetUserName() + "/";
+                //System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                //prodImg.ImagePath += prod.Category.Name + "/";
+                //System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                //prodImg.ImagePath += prod.Name + "/";
+                //System.IO.Directory.CreateDirectory(prodImg.ImagePath);
+                //prodImg.ImagePath += DateTime.Now.Ticks + "_" + file.FileName;
+
+                //file.SaveAs(prodImg.ImagePath);
+
+                var prodImg = new ProductImage {
                     ImageMimeType = file.ContentType,
-                    ImagePath = System.Web.HttpContext.Current.Server
-                                .MapPath("~/App_Data/Images"),
                     ProductId = prodId,
-                    Product = prod
+                    ImagePath = blob.Uri.ToString()
                 };
-
-                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
-                prodImg.ImagePath += "/Products/";
-                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
-                prodImg.ImagePath += User.Identity.GetUserName() + "/";
-                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
-                prodImg.ImagePath += prod.Category.Name + "/";
-                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
-                prodImg.ImagePath += prod.Name + "/";
-                System.IO.Directory.CreateDirectory(prodImg.ImagePath);
-                prodImg.ImagePath += DateTime.Now.Ticks + "_" + file.FileName;
-
-                file.SaveAs(prodImg.ImagePath);
 
                 db.ProductImages.Add(prodImg);
                 db.SaveChangesAsync();

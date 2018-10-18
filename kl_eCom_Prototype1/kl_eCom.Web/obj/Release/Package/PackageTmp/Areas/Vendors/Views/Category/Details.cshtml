@@ -5,7 +5,7 @@
 
 <h2>Details</h2>
 
-<div class="col-md-offset-1">
+<div style="margin-left: 30px">
     <h4>Category</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -42,7 +42,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Category.IsBase)
+            Is a Base Category
         </dt>
 
         <dd>
@@ -78,11 +78,17 @@
             </dd>
         }
 
+        <text style="display: flex;">
+            <text style="display: block; font-weight: bold; margin-left: 75px; margin-right: 15px">
+                Sub Categories
+            </text>
+            @Html.ActionLink("+ Add SubCategory", "Create", 
+                new { storeId = ViewBag.storeId, catId = Model.Category.Id })
+        </text>
 
-        <text style="display: block; font-weight: bold; margin-left: 75px">Sub Categories</text>
         @foreach (var sub in Model.Category.ChildCategories)
         {
-            <dt>
+            <dt style="font-style: italic">
                 @Html.DisplayNameFor(m => sub.Name)
             </dt>
 
@@ -94,23 +100,25 @@
     </dl>
 </div>
 <div style="margin-left: 50px">
-    <div style="margin-bottom: 15px">
-        @Html.ActionLink("Add SubCategory", "Create", new { storeId = ViewBag.storeId, catId = Model.Category.Id })<br />
+    <div style="margin-bottom: 30px; margin-left: 30px">
+        <div>
+            @if (ViewBag.isLeaf == true)
+            {
+                @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Category.Id },
+                    new { style = "margin-right: 15px" })
+                <text> | </text>
+                @Html.ActionLink("Go to Products", "Index", "Product", new { id = Model.Category.Id },
+                    new { style = "text-decoration: underline; font-weight: bold; margin-left: 15px" })
+            }
+        </div>
     </div>
-    <div style="margin-bottom: 15px">
-        @if (ViewBag.isLeaf == true)
-        {
-            @Html.ActionLink("Import Product", "ImportProduct", new { id = Model.Category.Id })
-            <text> | </text>
-            @Html.ActionLink("Products", "Index", "Product", new { id = Model.Category.Id }, null)
-        }
-        <br />
-    </div>
-    <div>
-        @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) |
+    <div style="margin-left: 15px">
+        <div>
+            @Html.ActionLink("Back to List", "Index", new { id = ViewBag.storeId }) |
 
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-success" })
-        |
-        @Html.ActionLink("Delete", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-danger" })
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-success" })
+            |
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-danger" })
+        </div>
     </div>
 </div>

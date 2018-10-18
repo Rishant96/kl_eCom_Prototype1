@@ -14,7 +14,11 @@
     if (!string.IsNullOrEmpty(userId))
     {
         var ecomUserId = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId).Id;
-        count = (db.Carts.Include(m => m.CartItems).FirstOrDefault(m => m.EcomUserId == ecomUserId)).CartItems.Count;
+        var cart = db.Carts.Include(m => m.CartItems).FirstOrDefault(m => m.EcomUserId == ecomUserId);
+        if (cart != null)
+        {
+            count = cart.CartItems.Count;
+        }
     }
     else
     {

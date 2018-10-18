@@ -16,6 +16,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
     public class ProductCreateViewModel
     {
+        public string CategoryName { get; set; }
         [Required]
         public string Name { get; set; }
         public string Manufacturer { get; set; }
@@ -29,6 +30,7 @@ namespace kl_eCom.Web.Areas.Vendors.Models
 
     public class ProductEditViewModel
     {
+        public string CategoryName { get; set; }
         [Required]
         public int Id { get; set; }
         [Required]
@@ -95,6 +97,14 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     public class ProductEditImagesViewModel
     {
         public List<ProductImage> ProductImages { get; set; }
+        public string ProductName { get; set; }
         public int ProductId { get; set; }
+    }
+
+    public class ProductReorderImagesViewModel
+    {
+        [Required]
+        public int ProdId { get; set; } 
+        public Product Product { get; set; }
     }
 }

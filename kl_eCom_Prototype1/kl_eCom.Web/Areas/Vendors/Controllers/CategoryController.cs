@@ -167,12 +167,20 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             });
         }
 
+        [AllowAnonymous]
         public FileContentResult GetThumbnail(int? id)
         {
             if (id == null) return null;
             Category cat = db.Categories.FirstOrDefault(m => m.Id == id);
             if (cat == null) return null;
-            return File(cat.ThumbnailData, cat.ThumbnailMimeType);
+            try
+            {
+                return File(cat.ThumbnailData, cat.ThumbnailMimeType);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public ActionResult Edit(int? id)

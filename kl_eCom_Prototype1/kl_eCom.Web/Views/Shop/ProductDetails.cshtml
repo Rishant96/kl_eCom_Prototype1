@@ -25,16 +25,14 @@
                             {
                                 <img id="@string.Format("Img{0}", j++)" class="col-md-6 thumb-images"
                                      style="margin: 5px; min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                                     src="@Url.Action("GetImage", "Product",
-                                                new { area = "Vendors", path = img.ImagePath, type = img.ImageMimeType })" />
+                                     src="@img.ImagePath" />
                             }
                         }
                         else
                         {
                             <img id="@string.Format("Img{0}", j++)" class="img-thumbnail thumb-images"
                                  style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                                 src="@Url.Action("GetThumbnail", "Product",
-                                                new { area = "Vendors", id = Model.Stock.ProductId })" />
+                                 src="@Model.Stock.Product.ThumbnailPath" />
                         }
                     </div>
                     <div class="col-md-6">

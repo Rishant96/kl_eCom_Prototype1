@@ -7,14 +7,18 @@
 
 @Html.ActionLink("+ Create Your Store", "Create")
 
+@{ int i = 1; }
+
 @foreach (var store in Model.Stores)
 {
     <br /><br />
-    <text>Store: </text>@Html.ActionLink(store.Name, "Details", new { id = store.Id })
-    <text>  (</text>@Html.ActionLink("View Catalog", "Index", "Category", new { id = store.Id }, null)
-    <text>)</text>
-    
-    <table class="table">
+    <div>
+        <h4 style="display: inline">Store #@(i++): </h4>
+        @Html.ActionLink(store.Name, "Details", new { id = store.Id },
+        new { style = "position: relative; bottom: 2px; left: 5px;" })
+    </div>
+
+    <table class="table" style="margin-bottom: 0">
         <tr>
             <th>
             </th>
@@ -51,8 +55,7 @@
                     {
                         <text>
                             <img class="img-thumbnail" width="45" height="45"
-                                 src="@Url.Action("GetThumbnail", "Product",
-new { stkProd.Product.Id })" />
+                                 src="@stkProd.Product.ThumbnailPath" />
                         </text>
                     }
                     else
@@ -61,13 +64,13 @@ new { stkProd.Product.Id })" />
                     }
                 </td>
                 <td>
-                    @Html.ActionLink(stkProd.Product.Name, "Stock", "Product", new { prodId = stkProd.ProductId, storeId = stkProd.StoreId }, null)
+                    @Html.ActionLink(stkProd.Product.Name, "Details", "Product", new { id = stkProd.ProductId }, null)
                 </td>
                 <td>
                     @Html.DisplayFor(m => stkProd.Product.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Product.Category.Name)
+                    @Html.ActionLink(stkProd.Product.Category.Name, "Details", "Category", new { storeId = stkProd.StoreId, catId = stkProd.Product.Category.Id }, null)
                 </td>
                 <td>
                     @Html.DisplayFor(m => stkProd.CurrentStock)
@@ -79,11 +82,16 @@ new { stkProd.Product.Id })" />
                     <p>@stkProd.Store.DefaultCurrencyType @stkProd.Price</p>
                 </td>
                 <td>
+                    @Html.ActionLink("Stock", "Stock", "Product", new { prodId = stkProd.ProductId, storeId = stkProd.StoreId }, null)
+                    <text> | </text>
                     @Html.ActionLink("Delete", "DeleteStock", new { id = stkProd.Id })
                 </td>
             </tr>
         }
     </table>
+    @Html.ActionLink("View complete catalog for " + store.Name, "Index", "Category", new { id = store.Id },
+        new { style = "font-size: 16px; text-decoration: underline;" })
+    <hr style="margin-bottom: 0; border-top-color: #ddd" />
 }
 <br />
 @Html.ActionLink("Go Back", "Index", controllerName: "Vendor")

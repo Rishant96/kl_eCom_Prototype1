@@ -253,6 +253,9 @@
     <Compile Include="Areas\KL_Admin\Models\AdminMarketsPlacesViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\VendorStore\Models\ProductsViewModels.cs" />
+    <Compile Include="Areas\VendorStore\VendorStoreAreaRegistration.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Vendors\Controllers\CustomersController.cs" />
     <Compile Include="Areas\Vendors\Controllers\HomeController.cs" />
@@ -570,6 +573,14 @@
     <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleCities.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleMarkets.cshtml" />
     <Content Include="Areas\Vendors\Views\Product\ReorderDetailsImages.cshtml" />
+    <Content Include="Areas\VendorStore\Views\web.config" />
+    <Content Include="Areas\VendorStore\Views\Products\Index.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\Categories.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\List.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\FiltersPartial.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\Details.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Shared\_Layout1.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Shared\_ShopPartial1.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />

@@ -1550,9 +1550,22 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return View("Error");
         }
 
-        public ActionResult Refferals()
+        public ActionResult ExclusiveLink()
         {
-            return View();
+            var vendorId = User.Identity.GetUserId();
+            var ecom = db.EcomUsers
+                .Include(m => m.VendorDetails)
+                .FirstOrDefault(m =>
+                    m.ApplicationUserId == vendorId);
+
+            if (ecom is null) return View("Error");
+
+            var model = new VendorExclusiveLinkViewModel {
+                BusinessName = ecom.VendorDetails.BusinessName,
+                Url = "http://khushlifeecom.azurewebsites.net/VendorStore/" + ecom.Id
+            };
+           
+            return View(model);
         }
     }
 }

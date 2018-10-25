@@ -581,6 +581,7 @@
     <Content Include="Areas\VendorStore\Views\Products\Details.cshtml" />
     <Content Include="Areas\VendorStore\Views\Shared\_Layout1.cshtml" />
     <Content Include="Areas\VendorStore\Views\Shared\_ShopPartial1.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ExclusiveLink.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />

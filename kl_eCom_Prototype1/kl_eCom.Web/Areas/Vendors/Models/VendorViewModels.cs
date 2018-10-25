@@ -240,4 +240,10 @@ namespace kl_eCom.Web.Areas.Vendors.Models
     {
 
     }
+
+    public class VendorExclusiveLinkViewModel
+    {
+        public string BusinessName { get; set; }
+        public string Url { get; set; }
+    }
 }

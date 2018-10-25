@@ -13,6 +13,7 @@ namespace kl_eCom.Web
     {
         public static string pageTitleLogo_Path = "/assets/images/KhushLIFELogo.jpg";
         public static string navbarBrandLogo_Path = "/assets/images/logo/final-logo/E-Commerce.jpg";
+        public static int? vendorId = null;
 
         protected void Application_Start()
         {
@@ -24,15 +25,6 @@ namespace kl_eCom.Web
 
         protected void Application_BeginRequest()
         {
-            var querystring = Request.QueryString;
-            string source = querystring["source"];
-            var db = new ApplicationDbContext();
-            if (db.Users.FirstOrDefault(m => m.Id == source) 
-                    is ApplicationUser vendor)
-            {
-                // Begin Lockout
-
-            }
         }
     }
 }

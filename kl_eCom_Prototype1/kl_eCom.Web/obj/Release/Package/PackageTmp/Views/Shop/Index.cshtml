@@ -5,6 +5,7 @@
     var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
     var count = Model.Breadcrum.Keys.Count;
 }
+
 <div style="margin-top: 20px">
     @for (int i = 0; i < count; i++)
     {

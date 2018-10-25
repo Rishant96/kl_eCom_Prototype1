@@ -1,0 +1,159 @@
+﻿@using kl_eCom.Web.Infrastructure
+@model kl_eCom.Web.Areas.VendorStore.Models.ProductsListViewModel
+
+@{
+    /**/
+
+    Layout = "~/Areas/VendorStore/Views/Shared/_Layout1.cshtml";
+
+    ViewBag.Title = (Model.Breadcrum != null) ?
+        Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1)
+        : "Products";
+    var store = (Model.Breadcrum != null) ?
+            new
+            {
+                Id = Model.Breadcrum.First().Value,
+                Name = Model.Breadcrum.First().Key
+            }
+            : new { Id = 0, Name = "" };
+
+    var count = (Model.Breadcrum != null) ? Model.Breadcrum.Keys.Count : 0;
+
+    var width = "160px";
+    var height = "100px";
+}
+
+<div style="padding-top: 0px">
+    <div style="margin-left: 15px;">
+        @for (int i = 0; i < count; i++)
+        {
+            var name = Model.Breadcrum.Keys.ElementAt(i);
+            if (i == count - 1)
+            {
+                <text> @name </text>
+            }
+            else if (i == 0)
+            {
+                @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+                <text> > </text>
+            }
+            else
+            {
+                @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+                <text> > </text>
+            }
+        }
+    </div>
+    <br />
+
+    <div class="row" style="margin-top: -10px; margin-right: 0">
+        <div id="filterPanel" class="col-md-3" style="margin-top: 20px;">
+            @if (Model.IsKlCat && Model.KL_Categories.Count > 0 && Model.Stocks != null && Model.Stocks.Count > 0)
+            {
+                @Html.Action("KL_Categories_Partial", new { categories = Model.KL_Categories })
+            }
+            @Html.Action("FiltersPartial", new { prodModel = Model })
+        </div>
+        <div class="col-md-9">
+            <div class="row" id="sortPanel" style="margin-bottom: 5px">
+                @Html.Label("Sort By:", new { @class = "col-md-offset-8 col-md-2", style = "padding-left: 60px" })
+                @using (Html.BeginForm("FilterSort", "Products",
+                    new
+                    {
+                        Price_MinValue = Model.FilteringOptions.Price_MinValue,
+                        Price_MaxValue = Model.FilteringOptions.Price_MaxValue,
+                        Rating_Min = Model.FilteringOptions.Rating_Min,
+                        Allowed_Days = Model.FilteringOptions.Allowed_Days,
+                        Availability = Model.FilteringOptions.Availability,
+                        PriceFilterSelected = Model.FilterViewModel.PriceSelection.PriceItemSelected,
+                        RatingFilterSelected = Model.FilterViewModel.RatingSelection.RatingItemSelected,
+                        NewArrivalFilterSelected = Model.FilterViewModel.NewestArrivalSelection.NewestArrivalItemSelected,
+                        AvailabilityFilterSelected = Model.FilterViewModel.AvailabilitySelection.AvailabilityItemSelected
+                    },
+                    FormMethod.Post, new { id = "sortForm" }))
+                {
+                    <select id="SortOption" name="SortOption" onchange="document.getElementById('sortForm').submit()">
+                        <option @if ((int)Model.SelectedOption == 0) { <text> selected="selected" </text> } value="0">Relevance</option>
+
+                        <option @if ((int)Model.SelectedOption == 1) { <text> selected="selected" </text> } value="1">Newest Arrival</option>
+
+                        <option @if ((int)Model.SelectedOption == 2) { <text> selected="selected" </text> } value="2">Price (High to Low)</option>
+
+                        <option @if ((int)Model.SelectedOption == 3) { <text> selected="selected" </text> } value="3">Price (Low to High)</option>
+
+                        <option @if ((int)Model.SelectedOption == 4) { <text> selected="selected" </text> } value="4">Average Rating</option>
+                    </select>
+                }
+            </div>
+            <div id="productsPanel">
+                @if (ViewBag.Flag != null && ViewBag.Flag)
+                {
+                    <text>
+                        <div class="alert alert-success alert-dismissible" style="width: 800px;">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null).
+                        </div>
+                    </text>
+                }
+                <div class="row">
+                    @if (Model.Stocks == null || Model.Stocks.Count == 0)
+                    {
+                        <text>@ViewBag.EmptyMessage</text>
+                    }
+                    @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
+                    {
+                        using (Html.BeginForm(new { stockId = stock.Id, returnUrl = Request.Url.PathAndQuery }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="col-md-3" style="margin-bottom: 5px; margin-top: 20px">
+                                <div>
+                                    <a href="@Url.Action("Details", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
+                                        <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                             src="@stock.Product.ThumbnailPath" />
+                                    </a>
+                                </div>
+
+                                <div>
+                                    @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(stock.Product.Name,
+                                        "Details",
+                                        new { id = stock.Id,
+                                        returnUrl = Request.Url.PathAndQuery })
+                                </div>
+
+                                <div>
+                                    @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                                </div>
+                                @{
+                                    var inStock = true;
+                                    var stockList = new List<int>();
+                                    if (stock.CurrentStock == 0)
+                                    {
+                                        inStock = false;
+                                    }
+                                    else
+                                    {
+                                        for (int i = 1; i <= Model.Max[stock.Id]; i++)
+                                        {
+                                            stockList.Add(i);
+                                        }
+                                    }
+                                    var qtyList = new SelectList(stockList);
+
+                                    if (!inStock)
+                                    {
+                                        @Html.Label("Out Of Stock")
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(m => m.Qty, qtyList, new { style = "height: 30px; position: relative; top: 1px" })
+                                        <input type="submit" class="btn btn-default" value="Add To Cart" />
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

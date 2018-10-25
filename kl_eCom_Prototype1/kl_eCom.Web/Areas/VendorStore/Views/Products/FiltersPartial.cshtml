@@ -1,5 +1,5 @@
-﻿@model kl_eCom.Web.Models.ShopProductsViewModel
-@using (Html.BeginForm("FiltersPartial", "Shop", FormMethod.Post))
+﻿@model kl_eCom.Web.Areas.VendorStore.Models.ProductsListViewModel
+@using (Html.BeginForm("FiltersPartial", "Products", FormMethod.Post))
 {
 
     @Html.AntiForgeryToken()
@@ -94,6 +94,23 @@
 
 <script>
     $(document).ready(function () {
+        $("#clearPrice").click(function () {
+            $('input:radio[name=PriceList]').prop('checked', false);
+            $(".PriceTxt").prop('disabled', true);
+        });
+
+        $("#clearRating").click(function () {
+            $('input:radio[name=RatingList]').prop('checked', false);
+        });
+
+        $("#clearNewArrvl").click(function () {
+            $('input:radio[name=NewArrivalsList]').prop('checked', false);
+        });
+
+        $("#clearAvlblty").click(function () {
+            $('input:radio[name=AvailabilityList]').prop('checked', false);
+        });
+
         $("#PriceItm3").ready(function () {
             if ($("#PriceItm3").prop('checked') == false) {
                 $(".PriceTxt").prop('disabled', true);
@@ -107,20 +124,6 @@
             else {
                 $(".PriceTxt").prop('disabled', false);
             }
-        });
-
-        $("#clearPrice").click(function () {
-            $('input:radio[name=PriceList]').prop('checked', false);
-            $(".PriceTxt").prop('disabled', true);
-        });
-        $("#clearRating").click(function () {
-            $('input:radio[name=RatingList]').prop('checked', false);
-        });
-        $("#clearNewArrvl").click(function () {
-            $('input:radio[name=NewArrivalsList]').prop('checked', false);
-        });
-        $("#clearAvlblty").click(function () {
-            $('input:radio[name=AvailabilityList]').prop('checked', false);
         });
     });
 </script>

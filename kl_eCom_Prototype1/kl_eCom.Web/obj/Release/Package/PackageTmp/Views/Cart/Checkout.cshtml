@@ -65,18 +65,19 @@
                                     <text>@addr.Line2</text><br />
                                     <text>@addr.Line3</text><br />
                                 </div>
-                                <text>@addr.Place</text><br />
-                                <text>@addr.City</text><br />
-                                <text>@addr.State</text><br />
+                                <text>@addr.Landmark</text><br />
+                                @*<text>@addr.Place.Name</text><br />
+                                <text>@addr.State.Name</text><br />*@
                                 <div>
-                                    <text>@addr.Country</text>
+                                    @*<text>@addr.Country.Name</text>
                                     <text> - </text>
-                                    <text>@addr.Zip</text>
+                                    <text>@addr.Zip</text>*@
                                 </div>
                                 <div>
                                     @Html.ActionLink("Edit", "EditAddress", "Customer", new { id = addr.Id, returnUrl = Request.Url.PathAndQuery }, null)<text> | </text>
                                     @Html.ActionLink("Delete", "DeleteAddress", "Customer", new { id = addr.Id, returnUrl = Request.Url.PathAndQuery }, null)
                                 </div>
+                                <br />
                             </div>
                         </div>
                     }
@@ -89,10 +90,10 @@
                         <input type="radio" name="PaymentMode" value="1" />
                         <text>Cash on delivery</text>
                     </div>
-                    <div style="margin-left: 15px">
+                    @*<div style="margin-left: 15px">
                         <input type="radio" name="PaymentMode" value="2" />
                         <text>Paytm</text>
-                    </div>
+                    </div>*@
                 </div>
             </div>
         </div>

@@ -10,7 +10,9 @@
         <text>
             <div class="alert alert-danger alert-dismissible" style="width: 800px;">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Cart Updated!</strong> @Html.ActionLink((string)ViewBag.ProdName, "ProductDetails", "Shop", new { id = (int)ViewBag.StockId }, null) was deleted successfully.
+                <strong>Cart Updated!</strong> @Html.ActionLink((string)ViewBag.ProdName,
+                    "ProductDetails", "Shop", new { id = (int)ViewBag.StockId },
+                    null) was deleted successfully.
             </div>
         </text>
     }
@@ -43,7 +45,7 @@
 
             </th>
         </tr>
-        
+
         @if (Model.Cart.CartItems == null)
         {
             Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
@@ -54,11 +56,11 @@
             <tr>
                 <td>
                     @*<img class="img-thumbnail" width="45" height="45"
-                         src="@Url.Action("GetThumbnail", "Product",
-                            new { id = itm.Stock.ProductId  })" />*@
+                        src="@Url.Action("GetThumbnail", "Product",
+                           new { id = itm.Stock.ProductId  })" />*@
                 </td>
                 <td>
-                    @Html.ActionLink(Model.ProductNames[itm], "ProductDetails", 
+                    @Html.ActionLink(Model.ProductNames[itm], "ProductDetails",
                         "Shop", new { id = itm.StockId }, null)
                 </td>
                 <td>
@@ -68,7 +70,7 @@
                     <text>@Model.Prices[itm]</text>
                 </td>
                 <td>
-                    @Html.ActionLink("Remove", "Delete", new { id = itm.Id, return_Url = ViewBag.ReturnUrl })
+                    @Html.ActionLink("Remove", "Delete", new { id = itm.StockId, return_Url = ViewBag.ReturnUrl })
                 </td>
             </tr>
         }

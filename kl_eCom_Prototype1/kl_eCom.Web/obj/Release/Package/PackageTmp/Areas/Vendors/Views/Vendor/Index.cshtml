@@ -20,7 +20,10 @@
     }
 
     @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" })
-    <br /><br />
+    
+    <br />
+    <br />
+    
     @Html.ActionLink("Go to Stores", "Index", "Store")
     <text> | </text>
     @Html.ActionLink("All Products", "AllProducts", controllerName: "Product")
@@ -37,5 +40,10 @@
     @Html.ActionLink("Discounts", "Discounts")
 
     <br />
-    @Html.ActionLink("Promotions & Referrals", "Refferals")
+    <br />
+    <br />
+
+    @Html.ActionLink("Refferals", "Refferals")
+    <text> | </text>
+    @Html.ActionLink("Generate Exclusive Link", "ExclusiveLink")
 </div>

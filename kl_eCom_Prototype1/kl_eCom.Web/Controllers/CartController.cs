@@ -24,15 +24,19 @@ namespace kl_eCom.Web.Controllers
         {
             var cart = GetCart();
             var total = 0.0f;
+
             var prices = new Dictionary<CartItem, string>();
             var names = new Dictionary<CartItem, string>();
+
             ViewBag.Flag = flag;
             if (flag)
             {
                 ViewBag.ProdName = removedProd;
                 ViewBag.StockId = prodId;
             }
+
             ViewBag.CheckoutErr = checkoutErr;
+
             foreach (var itm in cart.CartItems)
             {
                 if (itm.StockId != null)
@@ -47,10 +51,10 @@ namespace kl_eCom.Web.Controllers
                 else
                 {
                     var cartItm = db.CartItems
-                                           .Include(m => m.Constraint)
-                                           .Include(m => m.Constraint.Discount)
-                                           .Include(m => m.Constraint.BundledItems)
-                                           .FirstOrDefault(m => m.Id == itm.Id);
+                                     .Include(m => m.Constraint)
+                                     .Include(m => m.Constraint.Discount)
+                                     .Include(m => m.Constraint.BundledItems)
+                                     .FirstOrDefault(m => m.Id == itm.Id);
 
                     var bundledItems = cartItm
                                         .Constraint
@@ -94,7 +98,7 @@ namespace kl_eCom.Web.Controllers
                 }
             }
 
-           var vouchers = new List<int>();
+            var vouchers = new List<int>();
             if (HttpContext.Request.Cookies["Vouchers"] is HttpCookie cookie)
                 vouchers = JsonConvert.DeserializeObject<List<int>>(cookie.Value);
             
@@ -156,19 +160,27 @@ namespace kl_eCom.Web.Controllers
 
         public ActionResult Delete(int? id, string return_Url)
         {
-            string prodName = "";
             int prodId = 0;
-            if (id == null) return RedirectToAction("Index");
+            string prodName = "";
+            if (id == null) return View("Error");
             else
             {
                 var cart = GetCart();
                 CartItem cartItm = null;
                 if (User.Identity.IsAuthenticated)
                 {
+                    var applicationUserId = User.Identity.GetUserId();
+
+                    var ecomUserId = db.EcomUsers
+                        .FirstOrDefault(m => m.ApplicationUserId
+                            == applicationUserId)
+                        .Id;
+
                     cartItm = db.CartItems
-                        .Include(m => m.Stock)
-                        .Include(m => m.Stock.Product)
-                        .FirstOrDefault(m => m.Id == id);
+                                  .Include(m => m.Cart)
+                                  .Include(m => m.Stock)
+                                  .FirstOrDefault(m => m.StockId == id
+                                    && m.Cart.EcomUserId == ecomUserId);
 
                     prodName = cartItm.Stock.Product.Name;
                     prodId = cartItm.Stock.Id;
@@ -183,7 +195,10 @@ namespace kl_eCom.Web.Controllers
                 }
                 else
                 {
-                    cartItm = cart.CartItems.FirstOrDefault(m => m.Id == id);
+                    cartItm = cart.CartItems.FirstOrDefault(m => m.StockId == id);
+                    var stock = db.Stocks.FirstOrDefault(m => m.Id == id);
+                    prodName = stock.Product.Name;
+                    prodId = stock.Id;
                     cart.CartItems.Remove(cartItm);
                 }
 
@@ -204,7 +219,7 @@ namespace kl_eCom.Web.Controllers
                 }
 
                 return RedirectToAction("Index", new { flag = true,
-                    returnUrl = return_Url, removedProd = prodName, prodId = prodId });
+                    returnUrl = return_Url, removedProd = prodName, prodId });
             }
         }
 

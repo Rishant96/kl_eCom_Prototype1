@@ -86,7 +86,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             ViewBag.CurrProds = prods.Count;
             ViewBag.MaxProds = pkg.MaxProducts;
 
-            return View();
+            return View(vendor);
         }
 
         public ActionResult Details()
@@ -273,7 +273,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(VendorEditViewModel model, [Form] int[] specs)
+        public ActionResult Edit(VendorEditViewModel model, 
+                    [Form] int[] specs)
         {
             if(ModelState.IsValid && User.Identity.IsAuthenticated)
             {
@@ -287,7 +288,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 if (Request.Files.Count > 0)
                 {
                     if (Request.Files.Count != 1) return View("Error");
-                    HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                    HttpPostedFileBase hpf = Request.Files["logo"];
                     if (hpf != null && hpf.ContentLength != 0)
                     {
                         user.VendorDetails.Logo_Mime_Type = hpf.ContentType;
@@ -338,6 +339,24 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 return RedirectToAction("Details");
             }
             return RedirectToAction("Edit", new { id = model.Id });
+        }
+
+        [AllowAnonymous]
+        public FileContentResult GetLogo(int? id)
+        {
+            if (id == null) return null;
+            EcomUser user = db.EcomUsers
+                                .Include(m => m.VendorDetails)
+                                .FirstOrDefault(m => m.Id == id);
+            if (user == null || user.VendorDetails == null) return null;
+            try
+            {
+                return File(user.VendorDetails.Logo_Img_Data, user.VendorDetails.Logo_Mime_Type);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public ActionResult ChangePassword()
@@ -441,7 +460,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                            .Include(m => m.VendorDetails)
                            .FirstOrDefault(m => m.ApplicationUserId == userId);
 
-            if (currPlan.Price < nextPlan.Price)
+            if (currPlan.Price <= nextPlan.Price)
             {
                 var diff = 0.0f;
                 diff = ((nextPlan.Price / 365) * 

@@ -22,6 +22,7 @@ namespace kl_eCom.Web.Areas.VendorStore.Controllers
 
         public ProductsController()
         {
+            TempData["Lockdown"] = true;
         }
 
         // GET: VendorStore/Products
@@ -88,7 +89,8 @@ namespace kl_eCom.Web.Areas.VendorStore.Controllers
                                   [Form] ShopFilteringOptions filteringOptions,
                                   [Form] SelectedFilters selectedFilters,
                                   [Form] QueryOptions queryOptions,
-                                  string searchQuery = null, bool flag1 = false, bool isKLId = false)
+                                  string searchQuery = null, bool flag1 = false, 
+                                  bool isKLId = false)
         {
             if (vendorId is null || vendorId == 0)
                 return View("Error");

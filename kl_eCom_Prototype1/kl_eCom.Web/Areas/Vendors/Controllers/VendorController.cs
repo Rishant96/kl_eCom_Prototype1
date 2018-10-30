@@ -284,6 +284,19 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     .Include(m => m.VendorDetails.BusinessAddress)
                     .FirstOrDefault(m => m.ApplicationUserId == userId);
 
+                if (Request.Files.Count > 0)
+                {
+                    if (Request.Files.Count != 1) return View("Error");
+                    HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                    if (hpf != null && hpf.ContentLength != 0)
+                    {
+                        user.VendorDetails.Logo_Mime_Type = hpf.ContentType;
+                        user.VendorDetails.Logo_Img_Data = new byte[hpf.ContentLength];
+                        hpf.InputStream.Read(user.VendorDetails.Logo_Img_Data,
+                            0, hpf.ContentLength);
+                    }
+                }
+
                 user.User.Email = model.Email;
                 user.User.FirstName = model.FirstName;
                 user.User.LastName = model.LastName;

@@ -23,6 +23,9 @@ namespace kl_eCom.Web.Utilities
         public DateTime RegistrationDate { get; set; }
         public DateTime? DomainRegistrationDate { get; set; }
 
+        public byte[] Logo_Img_Data { get; set; }
+        public string Logo_Mime_Type { get; set; }
+
         [Required]
         public int AddressId { get; set; }
         public Address BusinessAddress { get; set; }

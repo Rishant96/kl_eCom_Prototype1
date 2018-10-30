@@ -253,6 +253,7 @@
     <Compile Include="Areas\KL_Admin\Models\AdminMarketsPlacesViewModels.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\CartController.cs" />
     <Compile Include="Areas\VendorStore\Controllers\ProductsController.cs" />
     <Compile Include="Areas\VendorStore\Models\ProductsViewModels.cs" />
     <Compile Include="Areas\VendorStore\VendorStoreAreaRegistration.cs" />
@@ -295,6 +296,14 @@
     <Compile Include="Migrations\201810010926522_Init.cs" />
     <Compile Include="Migrations\201810010926522_Init.Designer.cs">
       <DependentUpon>201810010926522_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810291045077_company_logo.cs" />
+    <Compile Include="Migrations\201810291045077_company_logo.Designer.cs">
+      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810291102389_company_logo_2.cs" />
+    <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
+      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -582,6 +591,9 @@
     <Content Include="Areas\VendorStore\Views\Shared\_Layout1.cshtml" />
     <Content Include="Areas\VendorStore\Views\Shared\_ShopPartial1.cshtml" />
     <Content Include="Areas\Vendors\Views\Vendor\ExclusiveLink.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\Checkout.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\Index.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\VoucherPartial.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />
@@ -712,6 +724,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201810010926522_Init.resx">
       <DependentUpon>201810010926522_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810291045077_company_logo.resx">
+      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
+      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

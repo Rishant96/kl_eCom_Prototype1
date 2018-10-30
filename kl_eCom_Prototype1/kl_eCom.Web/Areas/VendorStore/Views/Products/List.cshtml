@@ -45,7 +45,6 @@
         }
     </div>
     <br />
-
     <div class="row" style="margin-top: -10px; margin-right: 0">
         <div id="filterPanel" class="col-md-3" style="margin-top: 20px;">
             @if (Model.IsKlCat && Model.KL_Categories.Count > 0 && Model.Stocks != null && Model.Stocks.Count > 0)
@@ -91,7 +90,7 @@
                     <text>
                         <div class="alert alert-success alert-dismissible" style="width: 800px;">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null).
+                            <strong>Cart Updated</strong> Product added to @Html.ActionLink("cart", "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery, area = "" }, null).
                         </div>
                     </text>
                 }
@@ -100,6 +99,7 @@
                     {
                         <text>@ViewBag.EmptyMessage</text>
                     }
+                    
                     @foreach (var stock in Model.Stocks ?? new List<kl_eCom.Web.Entities.Stock>())
                     {
                         using (Html.BeginForm(new { stockId = stock.Id, returnUrl = Request.Url.PathAndQuery }))

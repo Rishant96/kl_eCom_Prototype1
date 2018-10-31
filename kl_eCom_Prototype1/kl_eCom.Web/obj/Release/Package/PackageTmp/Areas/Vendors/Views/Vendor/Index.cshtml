@@ -1,9 +1,16 @@
-﻿
+﻿@model kl_eCom.Web.Models.EcomUser
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Vendor - Home</h2>
+<div>
+    <img class="" width="45" height="45"
+         style="display: inline"
+         src="@Url.Action("GetLogo", "Vendor",
+                            new { id = Model.Id })" />
+    <h2 style="display: inline; margin-left: 15px; vertical-align: middle">
+            @Model.VendorDetails.BusinessName</h2>
+</div>
 
 <div style="margin: 25px 50px 15px">
     @if (ViewBag.Flag)

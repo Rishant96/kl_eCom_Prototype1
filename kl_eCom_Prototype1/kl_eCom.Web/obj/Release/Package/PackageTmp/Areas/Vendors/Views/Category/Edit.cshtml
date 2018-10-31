@@ -1,4 +1,5 @@
-﻿@model kl_eCom.Web.Areas.Vendors.Models.CategoryEditViewModel
+﻿@using kl_eCom.Web.Areas.Vendors.Models
+@model CategoryEditViewModel
 @{ 
     ViewBag.Title = "Edit";
 }
@@ -19,7 +20,7 @@
                 @Html.ValidationMessageFor(m => m.SelectedCat, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        
         @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
@@ -61,7 +62,7 @@
     <div id="divAddAttributes" class="col-md-offset-2">
         @foreach (var atr in Model.Attributes)
         {
-            @Html.Partial("AddAttributePartial", new kl_eCom.Web.Areas.Vendors.Models.AddAttributeViewModel() { AtrbName = atr.Name, Default = atr.Default, Type = atr.InfoType })
+            @Html.Partial("AddAttributePartial", new AddAttributeViewModel() { AtrbName = atr.Name, Default = atr.Default, Type = atr.InfoType })
         }
     </div>
 

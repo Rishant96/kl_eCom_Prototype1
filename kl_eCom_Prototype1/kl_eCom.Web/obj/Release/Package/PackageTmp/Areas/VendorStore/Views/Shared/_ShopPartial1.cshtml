@@ -39,21 +39,35 @@
         {
             @Html.AntiForgeryToken()
 
-            <ul class="nav navbar-nav navbar-right">
-                <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { area = "", returnUrl = Request.Url.PathAndQuery }, null)</li>
-                <li>
-                    @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Customer", routeValues: null, htmlAttributes: new { title = "Manage" })
-                </li>
-                <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-            </ul>
+<ul class="nav navbar-nav navbar-right">
+    @if (ViewBag.IsCart is null || !ViewBag.IsCart)
+    {
+        <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null)</li>
+    }
+    else
+    {
+        <li>@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })</li>
+    }
+    <li>
+        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Customer", routeValues: null, htmlAttributes: new { title = "Manage" })
+    </li>
+    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+</ul>
         }
     }
     else
     {
-        <ul class="nav navbar-nav navbar-right">
-            <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { area = "", returnUrl = Request.Url.PathAndQuery }, null)</li>
-            <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-            <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: new { returnUrl = Request.Url.PathAndQuery }, htmlAttributes: new { id = "loginLink" })</li>
-        </ul>
+<ul class="nav navbar-nav navbar-right">
+    @if (ViewBag.IsCart is null || !ViewBag.IsCart)
+    {
+        <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null)</li>
+    }
+    else
+    {
+        <li>@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })</li>
+    }
+    <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: new { returnUrl = Request.Url.PathAndQuery }, htmlAttributes: new { id = "loginLink" })</li>
+</ul>
     }
 }

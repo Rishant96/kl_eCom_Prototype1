@@ -233,7 +233,8 @@ namespace kl_eCom.Web.Areas.VendorStore.Controllers
                                                                 : null,
                 SelectedOption = queryOptions.SortOption,
                 StoreId = storeId,
-                FilteringOptions = filteringOptions
+                FilteringOptions = filteringOptions,
+                CurrencySymbol = store.DefaultCurrencyType
             };
 
             if (search != null)

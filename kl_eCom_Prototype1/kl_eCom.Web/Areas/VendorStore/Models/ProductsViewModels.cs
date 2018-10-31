@@ -19,6 +19,7 @@ namespace kl_eCom.Web.Areas.VendorStore.Models
 
     public class ProductsListViewModel
     {
+        public string CurrencySymbol { get; set; }
         public ShopFilteringOptions FilteringOptions { get; set; }
         public ShopFilterViewModel FilterViewModel { get; set; }
         public int? CategoryId { get; set; }

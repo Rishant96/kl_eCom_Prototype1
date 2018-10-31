@@ -465,7 +465,8 @@ namespace kl_eCom.Web.Controllers
                                                                 : null,
                 SelectedOption = queryOptions.SortOption,
                 StoreId = storeId,
-                FilteringOptions = filteringOptions
+                FilteringOptions = filteringOptions,
+                CurrencySymbol = store.DefaultCurrencyType
             };
 
             if (search != null)
@@ -617,7 +618,7 @@ namespace kl_eCom.Web.Controllers
                 ViewBag.ReturnUrl = returnUrl;
 
             var stock = db.Stocks
-                .Include(m =>m.Store)
+                .Include(m => m.Store)
                 .Include(m => m.Product)
                 .Include(m => m.Product.Category)
                 .Include(m => m.Product.ProductImages)
@@ -662,6 +663,7 @@ namespace kl_eCom.Web.Controllers
                 BundleNewPrices = new Dictionary<DiscountConstraint, string>(),
                 MinOrderDiscounts = new List<DiscountConstraint>(),
                 MinQtyDiscounts = new List<DiscountConstraint>(),
+                CurrencySymbol = stock.Store.DefaultCurrencyType,
                 NewPrice = null
             };
 

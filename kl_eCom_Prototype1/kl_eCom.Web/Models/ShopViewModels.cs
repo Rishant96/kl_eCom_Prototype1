@@ -18,6 +18,7 @@ namespace kl_eCom.Web.Models
 
     public class ShopProductsViewModel
     {
+        public string CurrencySymbol { get; set; }
         public ShopFilteringOptions FilteringOptions { get; set; }
         public ShopFilterViewModel FilterViewModel { get; set; }
         public int? CategoryId { get; set; }
@@ -34,6 +35,7 @@ namespace kl_eCom.Web.Models
 
     public class ShopProductDetailsViewModel
     {
+        public string CurrencySymbol { get; set; }
         public string ReturnUrl { get; set; }
         public string Description { get; set; }
         public Stock Stock { get; set; }

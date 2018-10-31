@@ -8,7 +8,7 @@
 <h2>Edit - Vendor</h2>
 
 <div class="row">
-    @using (Html.BeginForm("Edit", "Vendor", FormMethod.Post, new { @class = "row" }))
+    @using (Html.BeginForm("Edit", "Vendor", FormMethod.Post, new { @class = "row", enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.Id)
@@ -38,6 +38,16 @@
             <div class="col-md-10">
                 @Html.EditorFor(m => m.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.WebsiteUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Logo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" name="logo" id="logo" />
+                <img class="img-thumbnail" width="45" height="45"
+                     src="@Url.Action("GetLogo", "Vendor",
+                            new { id = Model.Id })" />
             </div>
         </div>
 

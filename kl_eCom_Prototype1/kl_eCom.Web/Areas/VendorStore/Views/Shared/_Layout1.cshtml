@@ -118,11 +118,13 @@
         }
     </style>
 
-    @{ 
+    @{
         string titleImgPath = kl_eCom.Web.MvcApplication.pageTitleLogo_Path;
         string navbarImgPath = kl_eCom.Web.MvcApplication.navbarBrandLogo_Path;
 
-        //string url = ;
+        var routeData = (RouteData)Url.RequestContext.RouteData;
+
+        string vendorId = (string)routeData.DataTokens["vendorId"];
     }
 
     <!-- Favicon -->

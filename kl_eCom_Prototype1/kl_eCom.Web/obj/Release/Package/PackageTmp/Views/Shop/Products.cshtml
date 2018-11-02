@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div>
-                                        @Html.DisplayNameFor(m => stock.Price) : @Html.DisplayFor(m => stock.Price)
+                                        @Html.DisplayNameFor(m => stock.Price) : @Model.CurrencySymbol @Html.DisplayFor(m => stock.Price)
                                     </div>
                                     @{
                                         var inStock = true;

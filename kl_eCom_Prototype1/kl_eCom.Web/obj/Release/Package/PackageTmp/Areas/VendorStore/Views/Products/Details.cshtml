@@ -12,7 +12,14 @@
 <div class="container">
     <div class=" row" style="margin-bottom: 15px; margin-top: 15px">
         <div class="col-md-offset-1">
-            <a href="@ViewBag.ReturnUrl">Go back</a>
+            @if (ViewBag.ReturnUrl != "#")
+            {
+                <a href="@ViewBag.ReturnUrl">Go back</a>
+            }
+            else
+            {
+                @Html.ActionLink("Go back", "Categories", null, null)
+            }
         </div>
     </div>
 
@@ -40,8 +47,7 @@
                     </div>
                     <div class="col-md-6">
                         <img id="mainImg" width="350" height="230"
-                             style="min-height: 230px; min-width: 350px;
-                                max-height: 230px; max-width: 350px;
+                             style="min-height: 230px; min-width: 350px; max-height: 230px; max-width: 350px;
                                 margin: 10px 25px; position: relative;
                                 right: 30px" />
                     </div>

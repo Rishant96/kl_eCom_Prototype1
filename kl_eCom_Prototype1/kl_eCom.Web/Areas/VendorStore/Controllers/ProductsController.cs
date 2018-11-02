@@ -992,5 +992,29 @@ namespace kl_eCom.Web.Areas.VendorStore.Controllers
                 });
         }
         #endregion
+
+        [AllowAnonymous]
+        public FileContentResult GetLogo(int? id)
+        {
+            if (id is null) return null;
+
+            var vendor = db.EcomUsers
+                    .Include(m => m.VendorDetails)
+                    .FirstOrDefault(m => m.Id == id);
+            
+            //RouteData
+
+            if (vendor is null) return null;
+
+            try
+            {
+                return File(vendor.VendorDetails.Logo_Img_Data, 
+                            vendor.VendorDetails.Logo_Mime_Type);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

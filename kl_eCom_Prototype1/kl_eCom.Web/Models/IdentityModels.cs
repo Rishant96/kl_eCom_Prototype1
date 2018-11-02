@@ -108,6 +108,18 @@ namespace kl_eCom.Web.Models
                 .HasColumnAnnotation(
                     "Index",
                     new IndexAnnotation(new IndexAttribute("IX_Name") { IsUnique = true }));
+
+            modelBuilder.Entity<VendorPlanChangeRecord>()
+                .HasOptional(u => u.NewPlan)
+                .WithMany(t => t.NewPlanChanges)
+                .HasForeignKey(u => u.NewVendorPlanId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<VendorPlanChangeRecord>()
+                .HasOptional(u => u.OldPlan) // <--
+                .WithMany(t => t.OldPlanChanges) // <--
+                .HasForeignKey(u => u.OldVendorPlanId)
+                .WillCascadeOnDelete(false);
         }
 
         public DbSet<EcomUser> EcomUsers { get; set; }

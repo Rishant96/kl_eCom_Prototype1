@@ -14,12 +14,11 @@ namespace kl_eCom.Web.Utilities
         public int Id { get; set; }
 
         [Required]
-        public int EcomUserId { get; set; }
-        public EcomUser Vendor { get; set; }
+        public bool IsPending { get; set; }
 
         [Required]
-        public int ActivePlanId { get; set; }
-        public ActivePlan ActivePlan { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
 
         [Required]
         public int VendorPlanId { get; set; }

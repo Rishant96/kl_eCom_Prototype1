@@ -12,13 +12,17 @@ namespace kl_eCom.Web.Utilities
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
         public string BusinessName { get; set; }
+
         [Display(Name = "Website URL")]
         public string WebsiteUrl { get; set; }
+
         public int? ActivePlanId { get; set; }
         [Display(Name = "Active Plan")]
         public ActivePlan ActivePlan { get; set; }
+
         [Required]
         public DateTime RegistrationDate { get; set; }
         public DateTime? DomainRegistrationDate { get; set; }

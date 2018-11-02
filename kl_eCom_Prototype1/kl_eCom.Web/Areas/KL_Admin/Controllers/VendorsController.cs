@@ -159,17 +159,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 var validRefund = ((vendor.VendorDetails.ActivePlan.Plan.Price
                                     * (1 + (vendor.VendorDetails.ActivePlan.Plan.GST / 100)))
                                     / 365) * daysNotToCharge;
-
-                db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
-                    EcomUserId = vendor.Id,
-                    Balance = vendor.VendorDetails.ActivePlan.Balance ?? 0.0f,
-                    VendorPlanPaymentDetailId = null,
-                    PlanName = vendor.VendorDetails.ActivePlan.Plan.DisplayName,
-                    StartDate = vendor.VendorDetails.ActivePlan.StartDate,
-                    TimeStamp = DateTime.Now,
-                    VendorPlanId = vendor.VendorDetails.ActivePlan.Plan.Id,
-                });
-
+                
                 vendor.VendorDetails.ActivePlan.Balance -= validRefund;
                 vendor.VendorDetails.ActivePlan.EndDate = date.AddYears(DateTime.Now.Year - date.Year + 1);
                 vendor.VendorDetails.ActivePlan.StartDate = DateTime.Now;
@@ -214,6 +204,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 var ecomModel = db.EcomUsers
                     .FirstOrDefault(m => m.ApplicationUserId
                         == model.VendorId);
+
                 var activePkg = db.ActivePlans
                         .Include(m => m.Plan)
                         .FirstOrDefault(m => m.EcomUserId == ecomModel.Id);
@@ -221,36 +212,45 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 var downgradeRecord = db.VendorDowngradeRecords
                                 .Include(m => m.NewPlan)
                                 .FirstOrDefault(m => m.EcomUserId == ecomModel.Id);
-
-                var changeRecord = new VendorPlanChangeRecord
-                {
-                    Balance = activePkg.Balance ?? 0.0f,
-                    PlanName = activePkg.Plan.DisplayName,
-                    StartDate = activePkg.StartDate,
-                    TimeStamp = DateTime.Now,
-                    VendorPlanId = downgradeRecord.VendorPlanId,
-                    VendorPlanPaymentDetailId = null
-                };
-                db.VendorPlanChangeRecord.Add(changeRecord);
-
+                
                 var balanceType = int.Parse(Request.Form["BalanceType"]);
                 switch (balanceType)
                 {
                     case 1:
                         {
+                            activePkg.PaymentDetail = new VendorPlanPaymentDetail
+                            {
+                                AmountPaid = (float)activePkg.Balance,
+                                PaymentDate = DateTime.Now,
+                                PaymentType = PaymentType.Other,
+                                Notes = "Balance cleared by Admin."
+                            };
+
                             activePkg.Balance = 0.0f;
                             activePkg.PaymentStatus = true;
+
                             break;
                         }
                     case 2:
                         {
                             var balance = ((activePkg.Plan.Price - downgradeRecord.NewPlan.Price) / 365)
                                             * (activePkg.EndDate - DateTime.Now).Days;
+
+
+                            activePkg.PaymentDetail = new VendorPlanPaymentDetail
+                            {
+                                AmountPaid = (float)balance,
+                                PaymentDate = DateTime.Now,
+                                PaymentType = PaymentType.Other,
+                                Notes = "Account credited by Admin."
+                            };
+
                             activePkg.Balance -= balance;
                             activePkg.Balance = (float)Math.Floor((float)activePkg.Balance);
-                            if (activePkg.Balance >= -5 && activePkg.Balance <= 5)
-                                activePkg.Balance = 0.0f;
-                            if (activePkg.Balance <= 0.0f) activePkg.PaymentStatus = true;
+
+                            if (activePkg.Balance == 0.0f) activePkg.PaymentStatus = true;
+                            else if (activePkg.Balance < 0.0f) return View("Error");
+
                             break;
                         }
                     default:
@@ -258,11 +258,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                             return View("Error");
                         }
                 }
-                activePkg.VendorPlanId = downgradeRecord.VendorPlanId;
-
+                
                 db.Entry(activePkg).State = EntityState.Modified;
-                db.Entry(downgradeRecord).State = EntityState.Deleted;
                 db.SaveChanges();
+
                 return RedirectToAction("Details", new { id = model.VendorId });
             }
 
@@ -305,13 +304,16 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                             return View("Error");
                         }
                 }
+
                 activePkg.Balance -= model.Amount;
                 activePkg.Balance =  (float)Math.Floor((float)activePkg.Balance);
                 if (activePkg.Balance >= -5 && activePkg.Balance <= 5)
                     activePkg.Balance = 0.0f;
                 activePkg.PaymentStatus = (activePkg.Balance == 0.0f) ? true : false;
+
                 db.Entry(activePkg).State = EntityState.Modified;
                 db.SaveChanges();
+
                 return RedirectToAction("Details", new { id = model.VendorId });
             }
             return View("Error");

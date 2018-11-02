@@ -460,12 +460,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                            .Include(m => m.VendorDetails)
                            .FirstOrDefault(m => m.ApplicationUserId == userId);
 
-            if (currPlan.Price <= nextPlan.Price)
+            if (currPlan.Price < nextPlan.Price)
             {
                 var diff = 0.0f;
+
                 diff = ((nextPlan.Price / 365) * 
                          ((activePlan.EndDate - DateTime.Now).Days))
                          * (1 + (nextPlan.GST / 100));
+
                 return View("PlanUpgradeConfirmation", new VendorPlanConfirmViewModel
                 {
                     CurrentPlan = currPlan,
@@ -509,19 +511,21 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                            .FirstOrDefault(m => m.ApplicationUserId == userId);
 
             var ecomUser = db.EcomUsers.FirstOrDefault(
-                m => m.ApplicationUserId == User.Identity.GetUserId());
+                m => m.ApplicationUserId == userId);
             switch (paymentType)
             {
                 case 1:
                     {
                         db.VendorPlanChangeRecord.Add(new VendorPlanChangeRecord {
                             EcomUserId = ecomUser.Id,
-                            StartDate = activePlan.StartDate,
+                            OldStartDate = activePlan.StartDate,
                             TimeStamp = DateTime.Now,
-                            VendorPlanId = nextPlan.Id,
+                            OldVendorPlanId = currPlan.Id,
+                            OldPlanName = currPlan.Name,
+                            NewVendorPlanId = nextPlan.Id,
                             VendorPlanPaymentDetailId = activePlan.VendorPlanPaymentDetailId,
-                            PlanName = nextPlan.Name,
-                            Balance = ((nextPlan.Price / 365) *
+                            NewPlanName = nextPlan.Name,
+                            OldBalance = ((nextPlan.Price / 365) *
                                         ((activePlan.EndDate - DateTime.Now).Days))
                                         * (1 + (nextPlan.GST / 100))
                         });
@@ -579,8 +583,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             db.VendorDowngradeRecords.Add(new VendorPlanDowngradeRecord {
                 EcomUserId = ecomUser.Id,
-                ActivePlanId = activePlanId,
-                VendorPlanId = newPlan.Id
+                VendorPlanId = newPlan.Id,
+                IsPending = true,
             });
             db.SaveChanges();
 

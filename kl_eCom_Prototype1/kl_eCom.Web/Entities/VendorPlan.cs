@@ -1,4 +1,5 @@
-﻿using System;
+﻿using kl_eCom.Web.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,5 +28,8 @@ namespace kl_eCom.Web.Entities
         [Range(minimum: 0.0, maximum: 100.0, ErrorMessage = "Please enter a value between 0.0 to 100.0")]
         public float GST { get; set; }
         public int? ValidityPeriod { get; set; }
+
+        public virtual ICollection<VendorPlanChangeRecord> NewPlanChanges { get; set; }
+        public virtual ICollection<VendorPlanChangeRecord> OldPlanChanges { get; set; }
     }
 }

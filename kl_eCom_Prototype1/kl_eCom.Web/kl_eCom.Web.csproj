@@ -305,6 +305,18 @@
     <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
       <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811010537199_trial.cs" />
+    <Compile Include="Migrations\201811010537199_trial.Designer.cs">
+      <DependentUpon>201811010537199_trial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811010616499_trial1.cs" />
+    <Compile Include="Migrations\201811010616499_trial1.Designer.cs">
+      <DependentUpon>201811010616499_trial1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811010723578_trial2.cs" />
+    <Compile Include="Migrations\201811010723578_trial2.Designer.cs">
+      <DependentUpon>201811010723578_trial2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -730,6 +742,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
       <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811010537199_trial.resx">
+      <DependentUpon>201811010537199_trial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811010616499_trial1.resx">
+      <DependentUpon>201811010616499_trial1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811010723578_trial2.resx">
+      <DependentUpon>201811010723578_trial2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

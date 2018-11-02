@@ -117,8 +117,16 @@
             color: deepskyblue;
         }
     </style>
+
+    @{ 
+        string titleImgPath = kl_eCom.Web.MvcApplication.pageTitleLogo_Path;
+        string navbarImgPath = kl_eCom.Web.MvcApplication.navbarBrandLogo_Path;
+
+        //string url = ;
+    }
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="@kl_eCom.Web.MvcApplication.pageTitleLogo_Path">
+    <link rel="icon" type="image/png" sizes="192x192" href="@navbarImgPath">
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-static-top example6" style="border:none; border-top: none; margin-bottom: 0">
@@ -132,7 +140,7 @@
                 </button>
                 @*@Url.Action("Index", "Products", new { vendorId = int.Parse(Request.Params["vendorId"]) })*@
                 <a class="navbar-brand text-hide" href="#">
-                    <p class="img-fluid"><img class="logo" src="@kl_eCom.Web.MvcApplication.navbarBrandLogo_Path" height="100" width="100" title="KhushLIFE - Lets Celebrate Life"><img style="padding-left:5px; padding-right:5px;  " src="~/assets/images/logo/KL_E-Commerce_Top_Tri-Color.jpg" title="KhushLIFE E-Commerce - Lets Do Commerce"></p>
+                    <p class="img-fluid"><img class="logo" src="@navbarImgPath" height="100" width="100" title="KhushLIFE - Lets Celebrate Life"><img style="padding-left:5px; padding-right:5px;  " src="~/assets/images/logo/KL_E-Commerce_Top_Tri-Color.jpg" title="KhushLIFE E-Commerce - Lets Do Commerce"></p>
                 </a>
             </div>
             <div class="nav navbar-nav" style="height: 50px; margin-left: 100px; margin-top: 18px">

@@ -13,19 +13,31 @@ namespace kl_eCom.Web.Utilities
         [Key]
         public int Id { get; set; }
 
-        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime OldStartDate { get; set; }
+
+        [Required]
         public DateTime TimeStamp { get; set; }
+        
+        [Required]
+        public string OldPlanName { get; set; }
 
-        public string PlanName { get; set; }
+        [Required]
+        public string NewPlanName { get; set; }
 
-        public float Balance { get; set; }
+        [Required]
+        public float OldBalance { get; set; }
 
+        [Required]
         public int EcomUserId { get; set; }
         public EcomUser Vendor { get; set; }
-
-        public int VendorPlanId { get; set; }
-        public VendorPlan Plan { get; set; }
-
+        
+        public int? OldVendorPlanId { get; set; }
+        public VendorPlan OldPlan { get; set; }
+        
+        public int? NewVendorPlanId { get; set; }
+        public VendorPlan NewPlan { get; set; }
+        
         public int? VendorPlanPaymentDetailId { get; set; }
         public VendorPlanPaymentDetail PaymentDetail { get; set; }
     }

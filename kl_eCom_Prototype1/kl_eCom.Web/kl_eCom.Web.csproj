@@ -254,7 +254,9 @@
     <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
     <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
     <Compile Include="Areas\VendorStore\Controllers\CartController.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\ManageController.cs" />
     <Compile Include="Areas\VendorStore\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\VendorStore\Models\ManageViewModels.cs" />
     <Compile Include="Areas\VendorStore\Models\ProductsViewModels.cs" />
     <Compile Include="Areas\VendorStore\VendorStoreAreaRegistration.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
@@ -304,6 +306,26 @@
     <Compile Include="Migrations\201810291102389_company_logo_2.cs" />
     <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
       <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.cs" />
+    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.Designer.cs">
+      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811010608543_more_model_channges.cs" />
+    <Compile Include="Migrations\201811010608543_more_model_channges.Designer.cs">
+      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811010625532_more_model_channges_2.cs" />
+    <Compile Include="Migrations\201811010625532_more_model_channges_2.Designer.cs">
+      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811020525049_Payment_models_changed.cs" />
+    <Compile Include="Migrations\201811020525049_Payment_models_changed.Designer.cs">
+      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.cs" />
+    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.Designer.cs">
+      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -705,6 +727,7 @@
   <ItemGroup>
     <Folder Include="Abstract\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\VendorStore\Views\Manage\" />
     <Folder Include="images\" />
     <Folder Include="Static\LoginRegistrationForm\images\" />
   </ItemGroup>
@@ -730,6 +753,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
       <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810311048167_Downgrade_Model_Changed.resx">
+      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811010608543_more_model_channges.resx">
+      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811010625532_more_model_channges_2.resx">
+      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811020525049_Payment_models_changed.resx">
+      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811020650564_Payment_models_changed_2.resx">
+      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -54,10 +54,10 @@ namespace kl_eCom.Web.Areas.VendorStore.Controllers
                 else
                 {
                     var cartItm = db.CartItems
-                                     .Include(m => m.Constraint)
-                                     .Include(m => m.Constraint.Discount)
-                                     .Include(m => m.Constraint.BundledItems)
-                                     .FirstOrDefault(m => m.Id == itm.Id);
+                            .Include(m => m.Constraint)
+                            .Include(m => m.Constraint.Discount)
+                            .Include(m => m.Constraint.BundledItems)
+                            .FirstOrDefault(m => m.Id == itm.Id);
 
                     var bundledItems = cartItm
                                         .Constraint

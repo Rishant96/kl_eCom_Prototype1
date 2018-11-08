@@ -1,0 +1,129 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.ProductEditListedViewModel
+@{
+    ViewBag.Title = "Edit - Active Products";
+    var first = Guid.NewGuid();
+    var second = Guid.NewGuid();
+}
+
+<h2>Edit - Active Products</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" id="currProdCnt" value="@Model.CurrentSelectedProducts" />
+    <input type="hidden" id="maxProdCnt" value="@Model.MaxAllowedProducts" />
+
+    <table class="table" style="position: relative; left: 11px;">
+        <tr>
+            <th>
+
+            </th>
+            <th>
+                @Html.Label("Name")
+            </th>
+            <th>
+                @Html.Label("Stores")
+            </th>
+            <th>
+                @Html.Label("Category")
+            </th>
+            <th>
+                @Html.Label("Listable")
+            </th>
+            <th>
+                @Html.Label("IsActive")<text> </text>
+                (<input class="btn btn-link" type="submit" value="Save" style="padding: 0 9px; font-weight: bold" />)
+            </th>
+        </tr>
+        @{ var i = 0; }
+        @foreach (var prod in Model.Products)
+        {
+            <tr>
+                @Html.HiddenFor(m => prod.Id)
+                <td>
+                    @if (prod.ThumbnailPath != null && prod.ThumbnailMimeType != null)
+                    {
+                        <text>
+                            <img class="img-thumbnail" width="45" height="45"
+                                 src="@Url.Action("GetThumbnail", "Product",
+           new { prod.Id })" />
+                        </text>
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink(prod.Name, "Details", new { id = prod.Id })
+                </td>
+                <td>
+                    @if (Model.Inventory[prod] is List<kl_eCom.Web.Entities.Stock> stocks && stocks.Count > 0)
+                    {
+                        foreach (var stock in stocks)
+                        {
+                            @Html.ActionLink(stock.Store.Name, "Stock", "Product", new { prodId = prod.Id, storeId = stock.StoreId }, null)
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        @Html.Label("Not Stocked")<br />
+                        <text>(</text>@Html.ActionLink("Add Stock", "Stock", "Product", new { prodId = prod.Id, storeId = prod.Category.StoreId }, null)<text>)</text>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink(prod.Category.Name, "Details", "Category", new { storeId = prod.Category.StoreId, catId = prod.Category.Id }, null)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => Model.HasListing[prod], new { htmlAttributes = new { @class = "checkbox" } })
+                </td>
+                <td>
+                    <input type="checkbox" class="checkbox activeCheck" name="actives" checked="@prod.IsActive" value="@prod.Id" />     
+                </td>
+            </tr>
+            i++;
+        }
+    </table>
+}
+<div class="row">
+    <div class="navbar-fixed-bottom col-md-offset-10 col-md-2"
+         style="background-color: darkslategray; color: white; padding-top: 3px">
+        <text>Selected: </text><label id="currLbl"></label><text>, Max allowed: </text><label id="maxLbl"></label>
+    </div>
+</div>
+
+@Html.ActionLink("Go to Stores List", "Index", controllerName: "Store")<text> | </text>
+@Html.ActionLink("All Products List", "AllProducts")
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $("#maxLbl").text($("#maxProdCnt").val());
+            $("#currLbl").text($("#currProdCnt").val());
+
+            $(".activeCheck").click(function () {
+                // alert($(this).prop("checked"));
+                var tmp = parseInt($("#currProdCnt").val());
+                $("#currProdCnt").val("");
+
+                if ($(this).prop("checked") == true) {
+                    if (tmp >= parseInt($("#maxProdCnt").val())) {
+                        $("#currProdCnt").val(tmp);
+                        $(this).prop("checked", false);
+                    }
+                    else {
+                        $("#currProdCnt").val(tmp + 1);
+                        $("#currLbl").text($("#currProdCnt").val());
+                    }
+                }
+                else {
+                    $("#currProdCnt").val(tmp - 1);
+                    $("#currLbl").text($("#currProdCnt").val());
+                }
+            });
+        });
+    </script>
+}

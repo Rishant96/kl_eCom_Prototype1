@@ -1,0 +1,68 @@
+﻿@model kl_eCom.Web.Entities.Voucher
+@{
+    ViewBag.Title = "Deactivate Voucher";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Deactivate Voucher</h2>
+<div>
+    <h3>Are you sure you want to deactivate this voucher?</h3>
+    <div>
+        <h4>Voucher</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+
+            @if (Model.IsExpirable)
+            {
+                <dd>
+                    @Html.DisplayFor(model => model.EndDate)
+                </dd>
+            }
+            else
+            {
+                <dd>
+                    -
+                </dd>
+            }
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Value)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Value)
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(m => m.Id)
+
+            <div class="form-actions no-color">
+                @Html.ActionLink("Go Back", "Vouchers") | 
+                <input type="submit" value="De-Activate" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>

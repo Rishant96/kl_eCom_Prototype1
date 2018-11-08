@@ -3,18 +3,24 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Stores</h2>
+<h2>Store Stocks</h2>
 
-@Html.ActionLink("+ Create Your Store", "Create", new { id = ViewBag.VendorId })
+@Html.ActionLink("+ Create Your Store", "Create")
+
+@{ int i = 1; }
 
 @foreach (var store in Model.Stores)
 {
     <br /><br />
-    <text>Store: </text>@Html.ActionLink(store.Name, "Index", controllerName: "Category", routeValues: new { id = store.Id }, htmlAttributes: null)
-    <table class="table">
+    <div>
+        <h4 style="display: inline">Store stock #@(i++): </h4>
+        @Html.ActionLink(store.Name, "Details", new { id = store.Id },
+        new { style = "position: relative; bottom: 2px; left: 5px;" })
+    </div>
+
+    <table class="table" style="margin-bottom: 0">
         <tr>
             <th>
-                @Html.Label("Id")
             </th>
             <th>
                 @Html.Label("Name")
@@ -27,6 +33,9 @@
             </th>
             <th>
                 @Html.Label("Stock")
+            </th>
+            <th>
+                @Html.Label("Taxes")
             </th>
             <th>
                 @Html.Label("Price")
@@ -42,25 +51,47 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Id)
+                    @if (stkProd.Product.ThumbnailPath != null && stkProd.Product.ThumbnailMimeType != null)
+                    {
+                        <text>
+                            <img class="img-thumbnail" width="45" height="45"
+                                 src="@stkProd.Product.ThumbnailPath" />
+                        </text>
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Product.Name)
+                    @Html.ActionLink(stkProd.Product.Name, "Details", "Product", new { id = stkProd.ProductId }, null)
                 </td>
                 <td>
                     @Html.DisplayFor(m => stkProd.Product.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Product.Category.Name)
+                    @Html.ActionLink(stkProd.Product.Category.Name, "Details", "Category", new { storeId = stkProd.StoreId, catId = stkProd.Product.Category.Id }, null)
                 </td>
                 <td>
                     @Html.DisplayFor(m => stkProd.CurrentStock)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => stkProd.Price)
+                    @Html.DisplayFor(m => stkProd.GST)%
+                </td>
+                <td>
+                    <p>@stkProd.Store.DefaultCurrencyType @stkProd.Price</p>
+                </td>
+                <td>
+                    @Html.ActionLink("Stock", "Stock", "Product", new { prodId = stkProd.ProductId, storeId = stkProd.StoreId }, null)
+                    <text> | </text>
+                    @Html.ActionLink("Delete", "DeleteStock", new { id = stkProd.Id })
                 </td>
             </tr>
         }
     </table>
-    <br />
+    @Html.ActionLink("View complete catalog for " + store.Name, "Index", "Category", new { id = store.Id },
+        new { style = "font-size: 16px; text-decoration: underline;" })
+    <hr style="margin-bottom: 0; border-top-color: #ddd" />
 }
+<br />
+@Html.ActionLink("Go Back", "Index", controllerName: "Vendor")

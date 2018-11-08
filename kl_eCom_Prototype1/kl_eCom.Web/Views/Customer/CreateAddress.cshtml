@@ -1,0 +1,154 @@
+﻿@model kl_eCom.Web.Models.CustomerCreateAddressViewModel
+
+@{
+    ViewBag.Title = "Create Address";
+}
+
+<h2>Create Address</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>Address</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Line1, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Line1, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Line1, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Line2, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Line2, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Line2, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Line3, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Line3, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Line3, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Zip, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Landmark, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Landmark, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Landmark, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.SelectedCountry, new SelectList(Model.Countries, "Value", "Text"), "Please select a country", new {
+                @class = "form-control", id = "Country" })
+            @Html.ValidationMessageFor(m => m.SelectedCountry, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("State", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.SelectedState, new SelectList(Model.States, "Value", "Text"), new {
+                @class = "form-control", id = "State" })
+            @Html.ValidationMessageFor(m => m.SelectedState, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("City", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.SelectedCity, new SelectList(Model.Cities, "Value", "Text"), new {
+                @class = "form-control", id = "City" })
+            @Html.ValidationMessageFor(m => m.SelectedCity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Addresses")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+  <script>
+    $(document).ready(function () {
+        $('#Country').change(function () {
+            var selectedCountry = $('#Country').val();
+            var statesSelect = $('#State');
+            statesSelect.empty();
+            if (selectedCountry != null && selectedCountry != "") {
+                $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
+                    if (states != null && !jQuery.isEmptyObject(states)) {
+                        statesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a state ---"
+                        }));
+                        $.each(states, function (index, state) {
+                            statesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+
+        $('#State').change(function () {
+            var selectedState = $('#State').val();
+            var citiesSelect = $('#City');
+            citiesSelect.empty();
+            if (selectedState != null && selectedState != "") {
+                $.getJSON('@Url.Action("GetCities")', { idStr: selectedState }, function (cities) {
+                    if (cities != null && !jQuery.isEmptyObject(cities)) {
+                        citiesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a city ---"
+                        }));
+                        $.each(cities, function (index, state) {
+                            citiesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+    });
+  </script>
+}

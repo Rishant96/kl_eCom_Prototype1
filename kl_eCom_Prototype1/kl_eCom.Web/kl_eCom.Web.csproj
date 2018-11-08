@@ -19,9 +19,9 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressSSLPort>44334</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -46,10 +46,50 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Azure.Documents.Client, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.DocumentDB.2.1.3\lib\net461\Microsoft.Azure.Documents.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.9.3.2\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.0\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WinHttpHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.WinHttpHandler.4.5.0\lib\net461\System.Net.Http.WinHttpHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -102,6 +142,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivator, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -193,75 +236,245 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\CustomersController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\Markets_PlacesController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\PlansController.cs" />
+    <Compile Include="Areas\KL_Admin\Controllers\VendorsController.cs" />
+    <Compile Include="Areas\KL_Admin\KL_AdminAreaRegistration.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminCategoriesViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminCustomersViewModels.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminEditViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminHomeViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminLoginViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminMarketsPlacesViewModels.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminPlansViewModel.cs" />
+    <Compile Include="Areas\KL_Admin\Models\AdminVendorsViewModel.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\CartController.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\ManageController.cs" />
+    <Compile Include="Areas\VendorStore\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\VendorStore\Models\ManageViewModels.cs" />
+    <Compile Include="Areas\VendorStore\Models\ProductsViewModels.cs" />
+    <Compile Include="Areas\VendorStore\VendorStoreAreaRegistration.cs" />
     <Compile Include="Areas\Vendors\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Vendors\Controllers\CustomersController.cs" />
     <Compile Include="Areas\Vendors\Controllers\HomeController.cs" />
     <Compile Include="Areas\Vendors\Controllers\ProductController.cs" />
     <Compile Include="Areas\Vendors\Controllers\StoreController.cs" />
     <Compile Include="Areas\Vendors\Controllers\VendorController.cs" />
     <Compile Include="Areas\Vendors\Models\CategoryViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\CustomersViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\HomeViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\ProductViewModels.cs" />
     <Compile Include="Areas\Vendors\Models\StoreViewModels.cs" />
+    <Compile Include="Areas\Vendors\Models\VendorViewModels.cs" />
     <Compile Include="Areas\Vendors\VendorsAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BlobsController.cs" />
     <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MarketController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
     <Compile Include="Entities\Cart.cs" />
     <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\Discount.cs" />
+    <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\Specialization.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Store.cs" />
+    <Compile Include="Entities\VendorPlan.cs" />
+    <Compile Include="Entities\Voucher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806230948081_Init.cs" />
-    <Compile Include="Migrations\201806230948081_Init.Designer.cs">
-      <DependentUpon>201806230948081_Init.cs</DependentUpon>
+    <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
+    <Compile Include="Infrastructure\QueryOptions.cs" />
+    <Compile Include="Migrations\201810010926522_Init.cs" />
+    <Compile Include="Migrations\201810010926522_Init.Designer.cs">
+      <DependentUpon>201810010926522_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806231529422_intNullableParentCat.cs" />
-    <Compile Include="Migrations\201806231529422_intNullableParentCat.Designer.cs">
-      <DependentUpon>201806231529422_intNullableParentCat.cs</DependentUpon>
+    <Compile Include="Migrations\201810291045077_company_logo.cs" />
+    <Compile Include="Migrations\201810291045077_company_logo.Designer.cs">
+      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806231535179_intNullableParentCat2.cs" />
-    <Compile Include="Migrations\201806231535179_intNullableParentCat2.Designer.cs">
-      <DependentUpon>201806231535179_intNullableParentCat2.cs</DependentUpon>
+    <Compile Include="Migrations\201810291102389_company_logo_2.cs" />
+    <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
+      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806241144302_CartModelsAdded.cs" />
-    <Compile Include="Migrations\201806241144302_CartModelsAdded.Designer.cs">
-      <DependentUpon>201806241144302_CartModelsAdded.cs</DependentUpon>
+    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.cs" />
+    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.Designer.cs">
+      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806241221268_CartModelsEdited.cs" />
-    <Compile Include="Migrations\201806241221268_CartModelsEdited.Designer.cs">
-      <DependentUpon>201806241221268_CartModelsEdited.cs</DependentUpon>
+    <Compile Include="Migrations\201811010608543_more_model_channges.cs" />
+    <Compile Include="Migrations\201811010608543_more_model_channges.Designer.cs">
+      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201806241248520_CartModelEdited.cs" />
-    <Compile Include="Migrations\201806241248520_CartModelEdited.Designer.cs">
-      <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
+    <Compile Include="Migrations\201811010625532_more_model_channges_2.cs" />
+    <Compile Include="Migrations\201811010625532_more_model_channges_2.Designer.cs">
+      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811020525049_Payment_models_changed.cs" />
+    <Compile Include="Migrations\201811020525049_Payment_models_changed.Designer.cs">
+      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.cs" />
+    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.Designer.cs">
+      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
+    <Compile Include="Models\CustomerViewModels.cs" />
+    <Compile Include="Models\FilterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KL_Category.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MarketViewModels.cs" />
     <Compile Include="Models\ShopViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\ActivePlans.cs" />
     <Compile Include="Utilities\Address.cs" />
+    <Compile Include="Utilities\AddressSearchModels.cs" />
     <Compile Include="Utilities\CartItem.cs" />
     <Compile Include="Utilities\CategoryAttribute.cs" />
+    <Compile Include="Utilities\DiscountConstraint.cs" />
+    <Compile Include="Utilities\DiscountedItem.cs" />
+    <Compile Include="Utilities\OrderDeliveryDetails.cs" />
+    <Compile Include="Utilities\OrderItem.cs" />
+    <Compile Include="Utilities\OrderStateInfo.cs" />
+    <Compile Include="Utilities\ProductImage.cs" />
+    <Compile Include="Utilities\RedeemedVoucher.cs" />
+    <Compile Include="Utilities\Refferal.cs" />
+    <Compile Include="Utilities\SearchParams.cs" />
     <Compile Include="Utilities\Specification.cs" />
     <Compile Include="Utilities\StoreAddress.cs" />
+    <Compile Include="Utilities\VendorDetails.cs" />
+    <Compile Include="Utilities\VendorPlanChangeRecord.cs" />
+    <Compile Include="Utilities\VendorPlanDowngradeRecords.cs" />
+    <Compile Include="Utilities\VendorPlanPaymentDetails.cs" />
+    <Compile Include="Utilities\VoucherItem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\bootstrap.min.css" />
+    <Content Include="assets\css\font-awesome.css" />
+    <Content Include="assets\css\magnific-popup.css" />
+    <Content Include="assets\css\responsive.css" />
+    <Content Include="assets\css\responsiveslides.css" />
+    <Content Include="assets\css\style.css" />
+    <Content Include="assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="assets\images\1.jpg" />
+    <Content Include="assets\images\2.jpg" />
+    <Content Include="assets\images\3.jpg" />
+    <Content Include="assets\images\4.jpg" />
+    <Content Include="assets\images\Conect_Image\conect.gif" />
+    <Content Include="assets\images\d\1.jpg" />
+    <Content Include="assets\images\indiagate.jpg" />
+    <Content Include="assets\images\KhushLife-Top.jpg" />
+    <Content Include="assets\images\KhushLIFELogo.jpg" />
+    <Content Include="assets\images\KL-Connect-Slide\1.jpg" />
+    <Content Include="assets\images\KL-Connect-Slide\2.jpg" />
+    <Content Include="assets\images\KL-Connect-Slide\3.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\1.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\2.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\3.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\4.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\5.jpg" />
+    <Content Include="assets\images\KL-ECommerce-Slide\6.jpg" />
+    <Content Include="assets\images\KL_E-Commerce_Top_Tri-Color.jpg" />
+    <Content Include="assets\images\KL_E-Connect_Top1_Tri-Color.jpg" />
+    <Content Include="assets\images\logo\final-logo\Connect.jpg" />
+    <Content Include="assets\images\logo\final-logo\E-Commerce.jpg" />
+    <Content Include="assets\images\logo\final-logo\Familytree.jpg" />
+    <Content Include="assets\images\logo\final-logo\Health.jpg" />
+    <Content Include="assets\images\logo\final-logo\Insurance.jpg" />
+    <Content Include="assets\images\logo\final-logo\Jobs.jpg" />
+    <Content Include="assets\images\logo\final-logo\KhushLIFE_Logo_MyCity.jpg" />
+    <Content Include="assets\images\logo\final-logo\Matrimonials.jpg" />
+    <Content Include="assets\images\logo\final-logo\Services.jpg" />
+    <Content Include="assets\images\logo\final-logo\zcity.jpg" />
+    <Content Include="assets\images\logo\KhushLife-Top1Tri-Color.jpg" />
+    <Content Include="assets\images\logo\KL_E-Commerce_Top_Tri-Color.jpg" />
+    <Content Include="assets\images\logo\KL_E-Connect_Top1_Tri-Color.jpg" />
+    <Content Include="assets\images\logo\KL_Services_Top1_Tri-Color.jpg" />
+    <Content Include="assets\images\service.png" />
+    <Content Include="assets\images\services.gif" />
+    <Content Include="assets\images\service\1.gif" />
+    <Content Include="assets\images\service\2.gif" />
+    <Content Include="assets\images\sliderhome\1.jpg" />
+    <Content Include="assets\images\sliderhome\2.jpg" />
+    <Content Include="assets\images\sliderhome\3.jpg" />
+    <Content Include="assets\images\sliderhome\4.jpg" />
+    <Content Include="assets\images\sliderhome\5.jpg" />
+    <Content Include="assets\images\sliderhome\6.jpg" />
+    <Content Include="assets\images\sliderhome\7.jpg" />
+    <Content Include="assets\js\bootstrap.min.js" />
+    <Content Include="assets\js\jquery.counterup.min.js" />
+    <Content Include="assets\js\jquery.easing.min.js" />
+    <Content Include="assets\js\jquery.fitvids.js" />
+    <Content Include="assets\js\jquery.isotope.min.js" />
+    <Content Include="assets\js\jquery.magnific-popup.min.js" />
+    <Content Include="assets\js\jquery.min.js" />
+    <Content Include="assets\js\jquery.parallax.js" />
+    <Content Include="assets\js\popper.min.js" />
+    <Content Include="assets\js\responsiveslides.js" />
+    <Content Include="assets\js\responsiveslides.min.js" />
+    <Content Include="assets\js\scripts.js" />
+    <Content Include="assets\js\waypoints.min.js" />
+    <Content Include="Content\basic.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\dropzone.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -289,17 +502,160 @@
     <Content Include="Areas\Vendors\Views\Shared\Error.cshtml" />
     <Content Include="Areas\Vendors\Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Areas\Vendors\Views\Home\Register.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Details.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Details.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Category\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\Details.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\Edit.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\AllProducts.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\ChangeCategory.cshtml" />
+    <Content Include="Areas\Vendors\Views\Category\ImportProduct.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\DeleteStock.cshtml" />
+    <Content Include="Areas\Vendors\Views\Store\MultipleStores.cshtml" />
+    <Content Include="Areas\Vendors\Views\Home\Login.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\web.config" />
+    <Content Include="Areas\KL_Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Home.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Plans.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Create.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Edit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Plans\Delete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ChangePassword.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Plan.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ChangePlan.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\PlanChange.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\EditDomain.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\EditActiveProducts.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\FixActiveProducts.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\EditDetailsImages.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\Index.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\Orders.cshtml" />
+    <Content Include="Areas\Vendors\Views\Customers\OrderDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Discounts.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\CreateDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DiscountDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\EditDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\StopDiscount.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\Vouchers.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\CreateVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\AddVoucherConstraint.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DeactivateVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\DeleteVoucher.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\PlanUpgradeConfirmation.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\PlanDowngradeConfirmation.cshtml" />
+    <Content Include="assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="assets\fonts\FontAwesome.otf" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Delete.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\Details.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Customers\ResetPassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\ResetPassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\Categories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CreateCategory.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryEdit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\MissingCategories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AllocateCategories.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\CategoryDelete.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\Specializations.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\CreateSpecialization.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationEdit.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\SpecializationDelete.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\SpecialityPartialView.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\Index.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CountryDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteCountry.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\StateDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteState.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CityDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteCity.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\MarketDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\EditMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\DeleteMarket.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminDetails.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminEditProfile.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Admin\AdminChangePassword.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleCountries.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleStates.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleCities.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Markets_Places\CreateMultipleMarkets.cshtml" />
+    <Content Include="Areas\Vendors\Views\Product\ReorderDetailsImages.cshtml" />
+    <Content Include="Areas\VendorStore\Views\web.config" />
+    <Content Include="Areas\VendorStore\Views\Products\Index.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\Categories.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\List.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\FiltersPartial.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Products\Details.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Shared\_Layout1.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Shared\_ShopPartial1.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\ExclusiveLink.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\Checkout.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\Index.cshtml" />
+    <Content Include="Areas\VendorStore\Views\Cart\VoucherPartial.cshtml" />
+    <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushLifeTrial1 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\KhushLifeTrial1 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\dropzone.js" />
+    <Content Include="Scripts\dropzone.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Static\index.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Shop-From-Markets.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Shop-From-Place.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Shop-From-Products.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Shop-From-Vendor.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Vendor-Login.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce-Vendor-Registration.html" />
+    <Content Include="Static\KhushLIFE-E-Commerce.html" />
+    <Content Include="Static\KhushLIFE-E-Connect.html" />
+    <Content Include="Static\KhushLIFE-Services.html" />
+    <Content Include="Static\LoginRegistrationForm\css\animate-custom.css" />
+    <Content Include="Static\LoginRegistrationForm\css\demo.css" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\BebasNeue-webfont %282%29.svg" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\BebasNeue-webfont.svg" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\Dharma Type Font License.txt" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\fontomas-webfont.svg" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.svg" />
+    <Content Include="Static\LoginRegistrationForm\css\style.css" />
+    <Content Include="Static\LoginRegistrationForm\index.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -337,12 +693,43 @@
     <Content Include="Views\Market\Index.cshtml" />
     <Content Include="Views\Market\Shops.cshtml" />
     <Content Include="Views\Shop\Index.cshtml" />
-    <Content Include="Views\Shop\Products.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
+    <Content Include="Views\Shared\_ProductsLayout.cshtml" />
+    <Content Include="Views\Shared\_ShopPartial.cshtml" />
+    <Content Include="Views\Shared\_EcomLayout.cshtml" />
+    <Content Include="Views\Shared\_SearchPartial.cshtml" />
+    <Content Include="Views\Shop\FiltersPartial.cshtml" />
+    <Content Include="Views\Shop\ProductDetails.cshtml" />
+    <Content Include="Views\Customer\Addresses.cshtml" />
+    <Content Include="Views\Customer\CreateAddress.cshtml" />
+    <Content Include="Views\Customer\EditAddress.cshtml" />
+    <Content Include="Views\Customer\DeleteAddress.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Shop\Products.cshtml" />
+    <Content Include="Views\Shared\_LayoutProdList.cshtml" />
+    <Content Include="Views\Customer\MyOrders.cshtml" />
+    <Content Include="Views\Customer\Cancellation.cshtml" />
+    <Content Include="Views\Cart\VoucherPartial.cshtml" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\BebasNeue-webfont.eot" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\BebasNeue-webfont.ttf" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\BebasNeue-webfont.woff" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\fontomas-webfont.eot" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\fontomas-webfont.ttf" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\fontomas-webfont.woff" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.eot" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.ttf" />
+    <Content Include="Static\LoginRegistrationForm\css\fonts\franchise-bold-webfont.woff" />
+    <Content Include="Views\Shop\ByProducts.cshtml" />
+    <Content Include="Views\Shop\KL_Categories_Partial.cshtml" />
+    <Content Include="Views\Blobs\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Abstract\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\VendorStore\Views\Manage\" />
+    <Folder Include="images\" />
+    <Folder Include="Static\LoginRegistrationForm\images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -358,23 +745,29 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201806230948081_Init.resx">
-      <DependentUpon>201806230948081_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201810010926522_Init.resx">
+      <DependentUpon>201810010926522_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806231529422_intNullableParentCat.resx">
-      <DependentUpon>201806231529422_intNullableParentCat.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201810291045077_company_logo.resx">
+      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806231535179_intNullableParentCat2.resx">
-      <DependentUpon>201806231535179_intNullableParentCat2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
+      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241144302_CartModelsAdded.resx">
-      <DependentUpon>201806241144302_CartModelsAdded.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201810311048167_Downgrade_Model_Changed.resx">
+      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241221268_CartModelsEdited.resx">
-      <DependentUpon>201806241221268_CartModelsEdited.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811010608543_more_model_channges.resx">
+      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201806241248520_CartModelEdited.resx">
-      <DependentUpon>201806241248520_CartModelEdited.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811010625532_more_model_channges_2.resx">
+      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811020525049_Payment_models_changed.resx">
+      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811020650564_Payment_models_changed_2.resx">
+      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -411,7 +804,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Azure.DocumentDB.2.1.3\build\Microsoft.Azure.DocumentDB.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.DocumentDB.2.1.3\build\Microsoft.Azure.DocumentDB.targets'))" />
   </Target>
+  <Import Project="..\packages\Microsoft.Azure.DocumentDB.2.1.3\build\Microsoft.Azure.DocumentDB.targets" Condition="Exists('..\packages\Microsoft.Azure.DocumentDB.2.1.3\build\Microsoft.Azure.DocumentDB.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

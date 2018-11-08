@@ -1,0 +1,69 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.VendorPlanConfirmViewModel
+@{
+    ViewBag.Title = "Plan Upgrade - Confirmation";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Plan Upgrade - Confirmation</h2>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            Vendor Name
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.UserName)
+        </dd>
+        <dt>
+            Current Plan
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.CurrentPlan.DisplayName)
+        </dd>
+        <dt>
+            New Plan
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.NewPlan.DisplayName)
+        </dd>
+        <dt>
+            Cost
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.Difference)
+        </dd>
+        <dt>
+            End Date
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.EndDate)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm("PlanUpgradeConfirmation", "Vendor", 
+                    new { amount = Model.Difference, id = Model.NewPlan.Id }, 
+                    FormMethod.Post,
+                    null))
+    {
+        @Html.AntiForgeryToken()
+
+        <dl class="dl-horizontal">
+            <dt>
+                Payment
+            </dt>
+            <dd>
+                <div style="display: flex; flex-direction: column">
+                    <div>
+                        <input type="radio" value="1" name="Payment" />
+                        Trial
+                    </div>
+                    <div>
+                        <input type="radio" value="2" name="Payment" />
+                        Paytm
+                    </div>
+                </div>
+            </dd>
+        </dl>
+        <input class="btn btn-success col-md-offset-2" type="submit" value="Confirm" />
+    }
+</div>

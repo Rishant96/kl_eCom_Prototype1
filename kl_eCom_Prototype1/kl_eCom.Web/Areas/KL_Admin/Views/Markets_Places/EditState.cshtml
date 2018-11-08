@@ -1,0 +1,36 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_EditStateViewModel
+@{
+    ViewBag.Title = "Edit - State";
+}
+
+<h2>Edit - State</h2>
+
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(m => m.CountryName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CountryName)
+    </dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.CountryName)
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.StateName, new { @class = "control-label col-md-2" })
+            <div class="col-md-offset-2">
+                @Html.EditorFor(m => m.StateName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.StateName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <input class="btn btn-primary col-md-offset-2" value="Save Changes" type="submit" />
+    </div>
+}
+@Html.ActionLink("Go back", "StateDetails", new { id = Model.Id }, new { style = "margin-left:15px" })

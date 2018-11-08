@@ -1,0 +1,46 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminCustomersDetailsViewModel
+@{
+    ViewBag.Title = "Customer Details";
+}
+
+<h2>Customer Details</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        Name
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.EcomUser.User.FirstName)
+        <label> </label>
+        @Html.DisplayFor(m => m.EcomUser.User.LastName)
+    </dd>
+    <dt>
+        Email
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.EcomUser.User.Email)
+    </dd>
+    <dt>
+        Phone Number
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.EcomUser.User.PhoneNumber)
+    </dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.EcomUser.Id)
+
+    <div class="form-group" style="display: flex; align-items: center">
+        <label class="control-label col-md-offset-1 col-md-1">Status</label>
+        <div class="col-md-10" style="display: flex; align-items: center;">
+            @Html.EditorFor(m => m.EcomUser.IsActive, new { htmlAttributes = new { @class = "checkbox" } })
+            <input type="submit" class="btn btn-link" value="save" />
+        </div>
+    </div>
+}
+
+@Html.ActionLink("Reset Password", "ResetPassword",
+    new { id = Model.EcomUser.Id }, new { @class = "col-md-offset-1" })

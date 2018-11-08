@@ -1,10 +1,11 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
+/kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/.suo
+/kl_eCom_Prototype1/kl_eCom.Web/kl_eCom.Web.csproj.user
+/kl_eCom_Prototype1/kl_eCom.Web/obj/Debug/kl_eCom.Web.csproj.CoreCompileInputs.cache
+/kl_eCom_Prototype1/kl_eCom.Web/obj/Debug/kl_eCom.Web.csprojAssemblyReference.cache
 /KL_eCom.Web/KL_eCom.Web/Scripts
 /KL_eCom.Web/KL_eCom.Web/Content
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/db.lock
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-shm
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-wal
+

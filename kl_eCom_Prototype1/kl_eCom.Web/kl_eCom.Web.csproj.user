@@ -3,9 +3,9 @@
   <PropertyGroup>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressSSLPort>44334</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
@@ -13,13 +13,16 @@
     <Controller_SelectedScaffolderID>MvcControllerEmptyScaffolder</Controller_SelectedScaffolderID>
     <Controller_SelectedScaffolderCategoryPath>root/Controller</Controller_SelectedScaffolderCategoryPath>
     <WebStackScaffolding_ControllerDialogWidth>600</WebStackScaffolding_ControllerDialogWidth>
-    <WebStackScaffolding_IsLayoutPageSelected>True</WebStackScaffolding_IsLayoutPageSelected>
+    <WebStackScaffolding_IsLayoutPageSelected>False</WebStackScaffolding_IsLayoutPageSelected>
     <WebStackScaffolding_IsPartialViewSelected>False</WebStackScaffolding_IsPartialViewSelected>
     <WebStackScaffolding_IsReferencingScriptLibrariesSelected>False</WebStackScaffolding_IsReferencingScriptLibrariesSelected>
-    <WebStackScaffolding_LayoutPageFile />
+    <WebStackScaffolding_LayoutPageFile>
+    </WebStackScaffolding_LayoutPageFile>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
+    <WebStackScaffolding_DbContextTypeFullName>kl_eCom.Web.Models.ApplicationDbContext</WebStackScaffolding_DbContextTypeFullName>
     <ProjectView>ProjectFiles</ProjectView>
+    <NameOfLastUsedPublishProfile>khushlifeecom - Web Deploy1</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
@@ -27,7 +30,7 @@
         <WebProjectProperties>
           <StartPageUrl>
           </StartPageUrl>
-          <StartAction>CurrentPage</StartAction>
+          <StartAction>SpecificPage</StartAction>
           <AspNetDebugging>True</AspNetDebugging>
           <SilverlightDebugging>False</SilverlightDebugging>
           <NativeDebugging>False</NativeDebugging>

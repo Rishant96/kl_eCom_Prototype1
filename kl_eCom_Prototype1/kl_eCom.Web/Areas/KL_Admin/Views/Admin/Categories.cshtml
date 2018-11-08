@@ -1,0 +1,36 @@
+﻿@using kl_eCom.Web.Models
+@model kl_eCom.Web.Areas.KL_Admin.Models.AdminCategoriesViewModel
+@{
+    ViewBag.Title = "KL Categories";
+    Layout = "~/Areas/KL_Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>KL Categories</h2>
+
+@Html.ActionLink("+ Create a Category", "CreateCategory", new { id = null as int? })
+<br />
+@Html.ActionLink("Unassigned Categories", "MissingCategories", null, new { @class = "btn-link" })
+<text> | </text>
+@Html.ActionLink("Allocate Categories", "AllocateCategories", null, new { @class = "btn-link" })
+<hr />
+@foreach (var root_cat in Model.BaseCategories)
+{
+    var cat_queue = new Stack<KL_Category>();
+    cat_queue.Push(root_cat);
+
+    var indentDict = new Dictionary<KL_Category, int>();
+    indentDict.Add(root_cat, 1);
+
+    while (cat_queue.Count > 0 && cat_queue.Pop() is KL_Category curr_cat)
+    {
+        <div class="@string.Format("col-md-offset-{0}", indentDict[curr_cat])">
+            <h5>@Html.ActionLink(curr_cat.Name, "CategoryDetails", new { id = curr_cat.Id })</h5><br />
+        </div>
+        foreach (var cat in Model.ChildCategories[curr_cat])
+        {
+            indentDict.Add(cat, indentDict[curr_cat] + 1);
+            cat_queue.Push(cat);
+        }
+    }
+    <hr />
+}

@@ -1,0 +1,133 @@
+﻿@model kl_eCom.Web.Models.EcomUser
+@{
+    ViewBag.Title = "Vendor Details";
+}
+
+<h2 style="margin-left: 35px">Vendor Details</h2>
+<div class="row">
+    <div class="col-md-6">
+        <dl class="dl-horizontal" style="margin-left: 70px; margin-top: 20px">
+            <dt>
+                @Html.LabelFor(m => m.User.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.User.UserName, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.User.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.User.Email, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.User.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.User.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.User.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.User.LastName, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+
+            <dt>
+                @Html.LabelFor(m => m.User.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.User.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                <label class="control-label col-md-2">Logo</label>
+            </dt>
+            <dd>
+                <img class="img-thumbnail" width="45" height="45"
+                         src="@Url.Action("GetLogo", "Vendor",
+                            new { id = Model.Id })" />
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.RegistrationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Model.VendorDetails.RegistrationDate.ToLongDateString()
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessAddress.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessAddress.Zip, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessAddress.Landmark, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessAddress.Landmark, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessAddress.Place.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessAddress.Place.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessAddress.State.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessAddress.State.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+            <dt>
+                @Html.LabelFor(m => m.VendorDetails.BusinessAddress.Country.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.VendorDetails.BusinessAddress.Country.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Specialities")
+            </dt>
+            <dd>
+                <ul>
+                    @foreach (var spec in Model.VendorDetails.Specializations)
+                    {
+                        <li>@spec.Specialization.Name</li>
+                    }
+                </ul>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        <div class="col-md-offset-1" style="position: relative; right: 10px">
+            @Html.ActionLink("Change Password", "ChangePassword", null, new { @class = "btn btn-link" })<text>|</text>
+            @Html.ActionLink("KL Vendor Plan", "Plan", null, new { @class = "btn btn-link" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-1">
+            @Html.ActionLink("Edit Profile", "Edit", null, new { @class = "btn btn-success" })
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to Dashboard", "Index")
+</div>

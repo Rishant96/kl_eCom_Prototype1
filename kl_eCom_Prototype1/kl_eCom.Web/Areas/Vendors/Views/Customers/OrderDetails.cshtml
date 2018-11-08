@@ -1,0 +1,127 @@
+﻿@model kl_eCom.Web.Areas.Vendors.Models.CustomersOrderDetailsViewModel
+@{
+    ViewBag.Title = "Order Details";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Order Details</h2>
+
+<div style="margin-left: 50px">
+    <h3>General Information</h3>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Order Number")
+            </dt>
+            <dd>
+                <text>#</text>@Html.DisplayFor(m => m.OrderItem.Order.OrderNumber)
+            </dd>
+            <dt>
+                @Html.Label("Order Date")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Order.OrderDate)
+            </dd>
+            <dt>
+                @Html.Label("Order Status")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Status)
+            </dd>
+            <dt>
+                @Html.Label("Customer's Name")
+            </dt>
+            <dd>
+                @Model.OrderItem.Order.Customer.FirstName
+                <text> </text>    
+                @Model.OrderItem.Order.Customer.LastName
+            </dd>
+            <dt>
+                @Html.Label("Customer's Email")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Order.Customer.Email)
+            </dd>
+            <dt>
+                @Html.Label("Customer's Mobile")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Order.Customer.PhoneNumber)
+            </dd>
+            <dt>
+                @Html.Label("Customer's Address")
+            </dt>
+            <dd>
+                <br />
+                <div style="display: flex; flex-direction: column">
+                    <p>@Model.OrderItem.Order.Address.Line1</p>
+                    <p>@Model.OrderItem.Order.Address.Line2</p>
+                    <p>@Model.OrderItem.Order.Address.Line3</p>
+                    <div>
+                        <label style="margin-right: 10px">Pin: </label>
+                        <text>@Model.OrderItem.Order.Address.Zip</text>
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">Landmark: </label>
+                        @if (string.IsNullOrEmpty(Model.OrderItem.Order.Address.Place))
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            <text>@Model.OrderItem.Order.Address.Place</text>
+                        }
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">City: </label>
+                        <text>@Model.OrderItem.Order.Address.City</text>
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">State: </label>
+                        <text>@Model.OrderItem.Order.Address.State</text>
+                    </div>
+                    <div>
+                        <label style="margin-right: 10px">Country: </label>
+                        <text>@Model.OrderItem.Order.Address.Country</text>
+                    </div>
+                </div>
+            </dd>
+        </dl>
+    </div>
+    <h3>Details</h3>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Product Name: ")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.ProductName)
+            </dd>
+            <dt>
+                @Html.Label("Product Qty: ")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Qty)
+            </dd>
+            <dt>
+                @Html.Label("Price : ")
+            </dt>
+            <dd>
+                <text>Rs.</text>@Model.OrderItem.FinalCost <text> (</text> 
+                    @Model.OrderItem.Price <text> x </text>@Model.OrderItem.Qty <text>)</text>
+            </dd>
+        </dl>
+    </div>
+    <h3>Status Information</h3>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Order Status")
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => m.OrderItem.Status)
+            </dd>
+        </dl>
+    </div>
+    @Html.ActionLink("Go Back", "Orders", new { id = ViewBag.UserId })
+</div>

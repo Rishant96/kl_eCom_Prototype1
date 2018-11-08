@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using kl_eCom.Web.Models;
+using System.Net.Mail;
+using System.Net;
 
 namespace kl_eCom.Web.Controllers
 {
@@ -75,11 +77,28 @@ namespace kl_eCom.Web.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            ApplicationUser signedUser = UserManager.FindByEmail(model.Email);
+            SignInStatus result = SignInStatus.Failure;
+            try
+            {
+                result = await SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, 
+                            model.RememberMe, shouldLockout: false);
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+
             switch (result)
             {
                 case SignInStatus.Success:
+                {
+                    if (string.IsNullOrEmpty(Session["extVendor"] as string))
+                    {
+                        // Associate with vendor
+                    }
                     return RedirectToLocal(returnUrl);
+                }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -137,9 +156,26 @@ namespace kl_eCom.Web.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string datetimestr = "", string id = "")
         {
-            return View();
+            var datetimeparts = datetimestr.Split('_');
+            DateTime? datetime = null;
+            try
+            {
+                datetime = new DateTime(int.Parse(datetimeparts[2]), 
+                                        int.Parse(datetimeparts[1]),
+                                        int.Parse(datetimeparts[0]));
+
+            }
+            catch (Exception ex)
+            {
+                id = "";
+                datetime = null;
+            }
+            return View(new RegisterViewModel {
+                Key = id,
+                TimeStamp = datetime
+            });
         }
 
         //
@@ -152,21 +188,80 @@ namespace kl_eCom.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                user.FirstName = "No";
+                user.LastName = "Name";
+
+                IdentityResult result;
+                try
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    result = await UserManager.CreateAsync(user, model.Password);
+                
+                    if (result.Succeeded)
+                    {
+                        var db = new ApplicationDbContext();
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    await UserManager.AddToRolesAsync(user.Id, "Customer");
+                        var ecomUser = db.EcomUsers.Add ( 
+                                new EcomUser { ApplicationUserId = user.Id, PrimaryRole = "Customer", IsActive = true }
+                            );
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            UserManager.Delete(user);
+                            return View("Error");
+                        }
 
-                    return RedirectToAction("Index", "Home");
+                        try
+                        {
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                            // Send an email with this link
+                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            await UserManager.AddToRolesAsync(user.Id, "Customer");
+                        }
+                        catch (Exception ex)
+                        {
+                            db.Entry(ecomUser).State = System.Data.Entity.EntityState.Deleted;
+                            db.SaveChanges();
+                            UserManager.Delete(user);
+                        }
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(model.Key))
+                            {
+                                if (model.TimeStamp is DateTime && db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == model.Key)
+                                        is EcomUser vendor)
+                                {
+                                    db.Refferals.Add(new Utilities.Refferal
+                                    {
+                                        CustomerId = ecomUser.Id,
+                                        VendorId = vendor.Id,
+                                        DateOfRegistration = DateTime.Now,
+                                        IsRegisteredUser = true,
+                                        UrlDate = model.TimeStamp
+                                    });
+                                    db.SaveChanges();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                catch (Exception ex)
+                {
+
+                }
             }
 
             // If we got this far, something failed, redisplay form
@@ -203,8 +298,8 @@ namespace kl_eCom.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                var user = UserManager.FindByEmail(model.Email);
+                if (user == null /*|| !(await UserManager.IsEmailConfirmedAsync(user.Id))*/)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -212,14 +307,36 @@ namespace kl_eCom.Web.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                FireEmail(user.Email, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>", true);
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        private void FireEmail(string to, string subject, string message, bool isBodyHtml = false)
+        {
+            var klEmail = "khushlifeecommerce@gmail.com";
+            var klPass = "klEcom1234";
+            using (MailMessage mm = new MailMessage(klEmail, to))
+            {
+                mm.Subject = subject;
+                mm.Body = message;
+                mm.IsBodyHtml = isBodyHtml;
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential NetworkCred = new NetworkCredential(klEmail, klPass);
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = 587;
+                    smtp.Send(mm);
+                }
+            }
         }
 
         //
@@ -243,19 +360,19 @@ namespace kl_eCom.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        public ActionResult ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = UserManager.FindByEmail(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var result = UserManager.ResetPassword(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");

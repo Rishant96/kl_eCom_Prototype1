@@ -14,6 +14,7 @@ namespace kl_eCom.Web.Utilities
         // public bool IsVariable { get; set; }
 
         // public virtual ICollection<SpecOption> SpecOptions { get; set; }
+        public string Name { get; set; }
         public string Value { get; set; }
 
         public int ProductId { get; set; }

@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNet.Identity;
+@using System.Data.Entity;
+@using System.Web;
+@using System.Web.Mvc;
+@using Newtonsoft.Json;
+@using kl_eCom.Web.Utilities;
+@using kl_eCom.Web.Entities;
+
+@{ 
+    var msg = "";
+    var count = 0;
+    var db = new kl_eCom.Web.Models.ApplicationDbContext();
+    var userId = User.Identity.GetUserId();
+    if (!string.IsNullOrEmpty(userId))
+    {
+        var ecomUserId = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId).Id;
+        var cart = db.Carts.Include(m => m.CartItems).FirstOrDefault(m => m.EcomUserId == ecomUserId);
+        if (cart != null)
+        {
+            count = cart.CartItems.Count;
+        }
+    }
+    else
+    {
+        if (Request.Cookies["guestCart"] is HttpCookie cookie)
+        {
+            var cart = JsonConvert.DeserializeObject<Cart>(cookie.Value);
+            if (cart.CartItems != null)
+            {
+                count = cart.CartItems.Count;
+            }
+        }
+    }
+    msg = (count > 0) ? string.Format(" ({0})", count) : "";
+
+    if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+<ul class="nav navbar-nav navbar-right">
+    @if (ViewBag.IsCart is null || !ViewBag.IsCart)
+    {
+        <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null)</li>
+    }
+    else
+    {
+        <li>@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })</li>
+    }
+    <li>
+        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Customer", routeValues: null, htmlAttributes: new { title = "Manage" })
+    </li>
+    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+</ul>
+        }
+    }
+    else
+    {
+<ul class="nav navbar-nav navbar-right">
+    @if (ViewBag.IsCart is null || !ViewBag.IsCart)
+    {
+        <li>@Html.ActionLink(string.Format("Cart{0}", msg), "Index", "Cart", new { returnUrl = Request.Url.PathAndQuery }, null)</li>
+    }
+    else
+    {
+        <li>@Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })</li>
+    }
+    <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: new { returnUrl = Request.Url.PathAndQuery }, htmlAttributes: new { id = "loginLink" })</li>
+</ul>
+    }
+}

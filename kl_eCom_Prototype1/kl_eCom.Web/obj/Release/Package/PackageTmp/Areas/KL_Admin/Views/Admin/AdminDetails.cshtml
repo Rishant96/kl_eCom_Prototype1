@@ -1,0 +1,24 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminDetailsViewModel
+@{
+    ViewBag.Title = "Admin - Details";
+}
+
+<h2>Admin - Details</h2>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(m => m.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.Email)
+        </dd>
+    </dl>
+    <div style="padding-left: 60px">
+        @Html.ActionLink("Change Password", "AdminChangePassword", null,
+                htmlAttributes: new { @class = "btn btn-info" })
+        <text> | </text>
+        @Html.ActionLink("Edit Email", "AdminEditProfile", null,
+                htmlAttributes: new { @class = "btn btn-success" })
+    </div>
+</div>

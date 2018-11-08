@@ -1,4 +1,5 @@
-﻿using kl_eCom.Web.Utilities;
+﻿using kl_eCom.Web.Models;
+using kl_eCom.Web.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,14 +18,20 @@ namespace kl_eCom.Web.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
+        public float DefaultGST { get; set; }
 
         [Required]
         public bool IsBase { get; set; }
+
+        public byte[] ThumbnailData { get; set; }
+        public string ThumbnailMimeType { get; set; }
         
         public int? CategoryId { get; set; }
         public virtual Category Parent { get; set; }
 
-        [Required]
+        public int? KL_CategoryId { get; set; }
+        public KL_Category KL_Category { get; set; }
+        
         public ICollection<CategoryAttribute> Attributes { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
@@ -35,5 +42,10 @@ namespace kl_eCom.Web.Entities
 
         [NotMapped]
         public List<Category> ChildCategories { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -1,0 +1,35 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_CreateStateViewModel
+@{
+    ViewBag.Title = "Create - State";
+}
+
+<h2>Create - State</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(m => m.CountryName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CountryName)
+    </dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CountryId)
+    @Html.HiddenFor(m => m.CountryName)
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-offset-2">
+                @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <input class="btn btn-primary col-md-offset-2" value="Create State" type="submit" />
+    </div>
+}
+@Html.ActionLink("Go back", "CountryDetails", new { id = Model.CountryId }, new { style = "margin-left:15px" })

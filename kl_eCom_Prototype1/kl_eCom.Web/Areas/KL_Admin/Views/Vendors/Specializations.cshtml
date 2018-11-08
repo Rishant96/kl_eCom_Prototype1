@@ -1,0 +1,32 @@
+﻿@using kl_eCom.Web.Entities
+@model kl_eCom.Web.Areas.KL_Admin.Models.AdminVendorsSpecializationsIndexViewModel
+@{
+    ViewBag.Title = "Specializations";
+}
+
+<h2>Specializations</h2>
+
+@Html.ActionLink("+ Create a Specialization", "CreateSpecialization", new { id = null as int? })
+<hr />
+@foreach (var specialization in Model.BaseSpecializations)
+{
+    var specQueue = new Stack<Specialization>();
+    specQueue.Push(specialization);
+    var specIndentDict = new Dictionary<Specialization, int>();
+    specIndentDict.Add(specialization, 0);
+    while (specQueue.Count > 0 && specQueue.Pop() is Specialization spec)
+    {
+        <text>
+          <div class="@string.Format("col-md-offset-{0}", specIndentDict[spec])">
+            @Html.ActionLink(spec.Name, "SpecializationDetails", new { id = spec.Id })
+          </div>
+        </text>
+
+        foreach (var child in Model.ChildSpecializations[spec])
+        {
+            specQueue.Push(child);
+            specIndentDict.Add(child, specIndentDict[spec] + 1);
+        }
+    }
+    <hr />
+}

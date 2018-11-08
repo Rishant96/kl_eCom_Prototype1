@@ -1,0 +1,36 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_CreateCityViewModel
+@{
+    ViewBag.Title = "Create - City";
+}
+
+<h2>Create - City</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(m => m.StateName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.StateName)
+    </dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StateId)
+    @Html.HiddenFor(m => m.StateName)
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <input type="submit" value="Create City" class="btn btn-primary col-md-offset-2" />
+    </div>
+}
+
+@Html.ActionLink("Go back", "StateDetails", new { id = Model.StateId })

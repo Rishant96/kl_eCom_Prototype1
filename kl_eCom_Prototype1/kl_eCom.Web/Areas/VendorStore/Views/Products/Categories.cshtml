@@ -1,0 +1,86 @@
+﻿@model kl_eCom.Web.Areas.VendorStore.Models.ProductsCategoriesViewModel
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Areas/VendorStore/Views/Shared/_Layout1.cshtml";
+    ViewBag.Title = Model.Breadcrum.Keys.ElementAt(Model.Breadcrum.Keys.Count - 1);
+    var store = new { Id = Model.Breadcrum.First().Value, Name = Model.Breadcrum.First().Key };
+    var count = Model.Breadcrum.Keys.Count;
+}
+
+<div style="margin-top: 20px">
+    @for (int i = 0; i < count; i++)
+    {
+        var name = Model.Breadcrum.Keys.ElementAt(i);
+        if (i == count - 1)
+        {
+            <text> @name </text>
+        }
+        else if (i == 0)
+        {
+            @Html.ActionLink(store.Name, "Index", new { id = store.Id })
+            <text> > </text>
+        }
+        else
+        {
+            @Html.ActionLink(Model.Breadcrum.Keys.ElementAt(i), "Index", new { id = store.Id, catId = Model.Breadcrum[name] })
+            <text> > </text>
+        }
+    }
+</div>
+<br />
+<hr style="margin: 0" />
+<h3 class="">Catalog</h3><br />
+<div class="row">
+    <div class="col-md-offset-1 row">
+        @foreach (var cat in Model.Categories)
+        {
+            @*if (cat.ThumbnailData != null && cat.ThumbnailMimeType != null)
+                {
+                    <text>
+                        <img class="img-thumbnail" width="45" height="45"
+                             src="@Url.Action("GetThumbnail", "Category",
+                                new { cat.Id })" />
+                    </text>
+                }
+                else
+                {
+                    <text>-</text>
+                }
+
+                if (Model.IsLeafDict[cat])
+                {
+                    @Html.ActionLink(cat.Name, "Products", new { storeId = ViewBag.storeId, catId = cat.Id })<br />
+                }
+                else
+                {
+                    @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })<br />
+                }*@
+            <div class="col-md-3" style="margin: 5px;">
+                <a href="@if (Model.IsLeafDict[cat])
+                    {
+                        @Url.Action("List", new { storeId = ViewBag.storeId, catId = cat.Id })
+                    }
+                    else
+                    {
+                        @Url.Action("Index", new { id = ViewBag.storeId, catId = cat.Id })
+                    }">
+                    <img style="width: 200px; height: 150px"
+                         src="@Url.Action("GetThumbnail", "Category",
+                                new { cat.Id, area = "Vendors" })" />
+                </a>
+                <div style="width: 200px; margin: 5px 0px 10px; display: flex; justify-content:center">
+                    @if (Model.IsLeafDict[cat])
+                    {
+                        @Html.ActionLink(cat.Name, "List", new { storeId = ViewBag.storeId, catId = cat.Id })<br />
+                    }
+                    else
+                    {
+                        @Html.ActionLink(cat.Name, "Index", new { id = ViewBag.storeId, catId = cat.Id })<br />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<hr />
+@Html.ActionLink("Back to vendors list", "Index", controllerName: "Market") | @Html.ActionLink("Back to stores list", "Index", "Market", new { vendorId = ViewBag.Vendor })

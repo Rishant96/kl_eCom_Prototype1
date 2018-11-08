@@ -1,0 +1,41 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketPlaces_CountryDetailsViewModel
+@{
+    ViewBag.Title = "Details - Country";
+}
+
+<h2>Details - Country</h2>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(m => m.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(m => m.States)
+        </dt>
+        <dd>
+            <div>
+                @Html.ActionLink("+ Add State", "CreateState", new { id = Model.Id })
+                <text> | </text>
+                @Html.ActionLink("Add Multiple States", "CreateMultipleStates", new { id = Model.Id })
+            </div>
+            <hr style="margin: 5px 0" />
+            <ol>
+            @foreach (var state in Model.States)
+            {
+                <li>@Html.ActionLink(state.Key, "StateDetails", new { id = state.Value })</li>
+            }
+            </ol>
+        </dd>
+    </dl>
+
+    <div class="col-md-offset-1">
+        @Html.ActionLink("Delete", "DeleteCountry", new { id = Model.Id }, new { @class = "btn btn-danger" })
+        <text> | </text>
+        @Html.ActionLink("Edit", "EditCountry", new { id = Model.Id }, new { @class = "btn btn-success" })
+    </div>
+    @Html.ActionLink("Go back", "Index", null, new { style = "margin-left: 15px" })
+</div>

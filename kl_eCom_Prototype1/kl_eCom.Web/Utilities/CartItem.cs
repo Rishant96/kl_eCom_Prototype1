@@ -16,8 +16,13 @@ namespace kl_eCom.Web.Utilities
         public int Qty { get; set; }
 
         [Required]
-        public int StockId { get; set; }
+        public bool IsEditable { get; set; }
+
+        public int? StockId { get; set; }
         public Stock Stock { get; set; }
+        
+        public int? DiscountConstraintId { get; set; }
+        public DiscountConstraint Constraint { get; set; }
 
         [Required]
         public int CartId { get; set; }

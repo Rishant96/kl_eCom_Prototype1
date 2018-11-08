@@ -1,0 +1,42 @@
+﻿@model kl_eCom.Web.Areas.KL_Admin.Models.AdminMarketsPlaces_MarketDetailsViewModel
+@{
+    ViewBag.Title = "Details - Market";
+}
+
+<h2>Details - Market</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.LabelFor(m => m.CityName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CityName)
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.MarketName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.MarketName)
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.Latitude)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Latitude)
+    </dd>
+    <dt>
+        @Html.LabelFor(m => m.Longitude)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Longitude)
+    </dd>
+</dl>
+
+<div class="row">
+    <div class="col-md-offset-1">
+        @Html.ActionLink("Delete", "DeleteMarket", new { id = Model.MarketId }, new { @class = "btn btn-danger" })
+        <text> | </text>
+        @Html.ActionLink("Edit", "EditMarket", new { id = Model.MarketId }, new { @class = "btn btn-success" })
+    </div>
+    @Html.ActionLink("Go back", "CityDetails", new { id = Model.CityId })
+</div>

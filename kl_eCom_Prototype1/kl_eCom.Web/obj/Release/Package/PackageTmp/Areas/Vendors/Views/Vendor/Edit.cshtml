@@ -1,0 +1,206 @@
+﻿@using kl_eCom.Web.Entities;
+@model kl_eCom.Web.Areas.Vendors.Models.VendorEditViewModel
+@{
+    ViewBag.Title = "Edit";
+    //char c = 'a';
+}
+
+<h2>Edit - Vendor</h2>
+
+<div class="row">
+    @using (Html.BeginForm("Edit", "Vendor", FormMethod.Post, new { @class = "row", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+
+    <div class="form-horizontal col-md-6">
+
+        @Html.HiddenFor(m => m.UserName)
+
+        @Html.HiddenFor(m => m.FirstName)
+        @Html.HiddenFor(m => m.LastName)
+
+        @Html.HiddenFor(m => m.Email)
+
+        @Html.HiddenFor(m => m.Mobile)
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.BusinessName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.BusinessName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            http://
+            @Html.LabelFor(m => m.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.WebsiteUrl, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.WebsiteUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Logo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" name="logo" id="logo" />
+                <img class="img-thumbnail" width="45" height="45"
+                     src="@Url.Action("GetLogo", "Vendor",
+                            new { id = Model.Id })" />
+            </div>
+        </div>
+
+        <h4>Address:</h4>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Line1, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Line1, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Line1, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Line2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Line2, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Line2, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Line3, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Line3, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Line3, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Zip, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Zip, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SelectedCountry, new SelectList(Model.Countries, "Value", "Text"), "Please select a country", new {
+                    @class = "form-control", id = "Country" })
+                @Html.ValidationMessageFor(m => m.SelectedCountry, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("State", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SelectedState, new SelectList(Model.States, "Value", "Text"), "Please select a state", new
+           {
+               @class = "form-control", id = "State" })
+                @Html.ValidationMessageFor(m => m.SelectedState, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("City", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SelectedCity, new SelectList(Model.Cities, "Value", "Text"), "Please select a city", new
+           {
+               @class = "form-control", id = "City" })
+                @Html.ValidationMessageFor(m => m.SelectedCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    </div>
+
+        <div class="col-md-6">
+            <h4>Specializations</h4>
+            <div id="specializationsDiv">
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-offset-5 col-md-7">
+                <input type="submit" value="Save Changes" class="btn btn-info" />
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    @Html.ActionLink("Back to Details", "Details")
+</div>
+
+@section scripts
+{
+<script>
+    $(document).ready(function () {
+        var dataString = "id=" + @Model.Id;
+        $.ajax({
+            url: '@HttpUtility.UrlDecode(@Url.Action("SpecialityPartialView", "Vendor"))',
+            data: dataString,
+            type: "GET",
+            dataType: "html",
+            success: function (data, textStatus, XMLHttpRequest) {
+                SetData(data);
+            }
+        });
+
+        function SetData(data) {
+            $("#specializationsDiv").append(data);
+        }
+
+        $('#Country').change(function () {
+            var selectedCountry = $('#Country').val();
+            var statesSelect = $('#State');
+            statesSelect.empty();
+            $("#City").empty();
+            if (selectedCountry != null && selectedCountry != "") {
+                $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
+                    if (states != null && !jQuery.isEmptyObject(states)) {
+                        statesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a state ---"
+                        }));
+                        $.each(states, function (index, state) {
+                            statesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+
+        $('#State').change(function () {
+            var selectedState = $('#State').val();
+            var citiesSelect = $('#City');
+            citiesSelect.empty();
+            if (selectedState != null && selectedState != "") {
+                $.getJSON('@Url.Action("GetCities")', { idStr: selectedState }, function (cities) {
+                    if (cities != null && !jQuery.isEmptyObject(cities)) {
+                        citiesSelect.append($('<option/>', {
+                            value: null,
+                            text: "--- Select a city ---"
+                        }));
+                        $.each(cities, function (index, state) {
+                            citiesSelect.append($('<option/>', {
+                                value: state.Value,
+                                text: state.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+    });
+    
+    function baseClick(id) {
+        
+    };
+</script>
+}

@@ -17,12 +17,15 @@ namespace kl_eCom.Web.Entities
         public string Name { get; set; }
 
         [Required]
+        public int StoreAddressId { get; set; }
         public StoreAddress Address { get; set; }
 
         public ICollection<Category> Categories { get; set; }
 
+        public string DefaultCurrencyType { get; set; }
+
         [Required]
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser Vendor { get; set; }
+        public int EcomUserId { get; set; }
+        public EcomUser Vendor { get; set; }
     }
 }

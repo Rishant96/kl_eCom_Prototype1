@@ -159,8 +159,8 @@
                                 </td>
                                 <td>
                                     @((Model.Stock.Product.Specifications.FirstOrDefault(m => m.Name
-                                                == Model.Stock.Product.Category.Attributes.ElementAt(i).Name) ??
-                                                    new kl_eCom.Web.Utilities.Specification { Value = "-" }).Value)
+                                                        == Model.Stock.Product.Category.Attributes.ElementAt(i).Name) ??
+                                                            new kl_eCom.Web.Utilities.Specification { Value = "-" }).Value)
                                 </td>
                             </tr>
                         }
@@ -305,13 +305,20 @@
 </div>
 
 @section scripts {
-    <script>
-    $(document).ready(function () {
-        $("#mainImg").attr("src", $("#Img0").attr("src"));
 
-        $(".thumb-images").mouseenter(function () {
-            $("#mainImg").attr("src", $(this).attr("src"));
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/blowup.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#mainImg").attr("src", $("#Img0").attr("src"));
+
+            $("#mainImg").blowup();
+
+            $(".thumb-images").mouseenter(function () {
+                $("#mainImg").attr("src", $(this).attr("src"));
+                $("#mainImg").blowup();
+            });
         });
-    });
     </script>
 }

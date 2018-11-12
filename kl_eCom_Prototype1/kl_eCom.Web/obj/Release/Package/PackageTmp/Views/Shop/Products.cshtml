@@ -101,15 +101,18 @@
                                     <div>
                                         <a href="@Url.Action("ProductDetails", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
                                             <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
-                                                 src="@stock.Product.ThumbnailPath" />
+                                                 src="@stock.Product.ThumbnailPath" alt="@stock.Product.Name" />
                                         </a>
                                     </div>
 
                                     <div>
-                                        @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(stock.Product.Name,
+                                        @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(
+                                        (stock.Product.Name.Count() > 15) ?
+                                            stock.Product.Name.Substring(0, 12) + "..."
+                                        : stock.Product.Name,
                                             "ProductDetails",
                                             new { id = stock.Id,
-                                            returnUrl = Request.Url.PathAndQuery })
+                                                returnUrl = Request.Url.PathAndQuery })
                                     </div>
 
                                     <div>

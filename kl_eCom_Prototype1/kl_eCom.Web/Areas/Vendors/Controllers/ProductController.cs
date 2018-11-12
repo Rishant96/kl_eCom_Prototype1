@@ -196,6 +196,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ProductEditViewModel model, IEnumerable<HttpPostedFileBase> files)
         {
+            if (Request.Files.Count > 0)
+            {
+                HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                if (hpf.ContentLength > 5000000)
+                {
+                    ModelState.AddModelError("thumbnail", "Thumbnail cannot be greater than 5mb.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 var specs = db.Specifications.Where(m => m.ProductId == model.Id).ToList();
@@ -831,6 +840,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ProductImageUpload(HttpPostedFileBase file, int prodId)
         {
+            if (file.ContentLength > 5000000)
+            {
+                ViewBag.Msg = "Image cannot be greater than 5mb";
+
+                return Json(new
+                {
+                    success = false,
+                    response = "Image cannot be greater than 5mb"
+                });
+            }
+
             if (file.ContentLength == 0) return View("Error");
 
             try

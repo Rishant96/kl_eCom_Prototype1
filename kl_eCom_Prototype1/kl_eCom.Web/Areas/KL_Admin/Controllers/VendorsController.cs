@@ -93,14 +93,13 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id)
         {
-            if (string.IsNullOrEmpty(id)) return View("Error");
+            if (id is null || id == 0) return View("Error");
             var model = db.EcomUsers
                             .Include(m => m.User)
-                            .Include(m => m.ApplicationUserId)
                             .Include(m => m.VendorDetails)
-                            .FirstOrDefault(m => m.ApplicationUserId == id);
+                            .FirstOrDefault(m => m.Id == id);
             if (model is null) return View("Error");
             return View(model);
         }
@@ -113,12 +112,50 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             var vendor = db.EcomUsers
                             .Include(m => m.User)
                             .Include(m => m.VendorDetails)
+                            .Include(m => m.VendorDetails.ActivePlan)
                             .FirstOrDefault(m => m.ApplicationUserId == model.ApplicationUserId);
-            db.Entry(vendor.VendorDetails).State = System.Data.Entity.EntityState.Deleted;
-            db.Users.Attach(vendor.User);
-            db.Entry(vendor.User).State = System.Data.Entity.EntityState.Deleted;
+
+            var stocks = db.Stocks
+                .Include(m => m.Store)
+                .Include(m => m.Store.Categories)
+                .Include(m => m.Product)
+                .Include(m => m.Product.Category)
+                .Include(m => m.Product.Category.Parent)
+                .Where(m => m.Store.EcomUserId == vendor.Id);
+
+            foreach (var stock in stocks)
+            {
+                db.Stocks.Attach(stock);
+                db.Products.Attach(stock.Product);
+                
+                try
+                {
+                    db.Categories.Attach(stock.Product.Category);
+                }
+                catch(Exception ex) { }
+
+                try
+                {
+                    db.Categories.Attach(stock.Product.Category.Parent);
+                }
+                catch(Exception ex) { }
+
+                db.Stores.Attach(stock.Store);
+
+                db.Stocks.Remove(stock);
+                db.Categories.Remove(stock.Product.Category);
+                db.Stores.Remove(stock.Store);
+
+                db.SaveChanges();
+            }            
+            
             db.EcomUsers.Attach(vendor);
-            db.Entry(vendor).State = System.Data.Entity.EntityState.Deleted;
+            db.VendorDetails.Attach(vendor.VendorDetails);
+            db.ActivePlans.Attach(vendor.VendorDetails.ActivePlan);
+            db.Users.Attach(vendor.User);
+
+            db.EcomUsers.Remove(vendor);
+
             db.SaveChanges();
 
             return RedirectToAction("Index");

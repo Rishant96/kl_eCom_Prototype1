@@ -55,8 +55,10 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         [Required]
         public int Stock { get; set; }
         public string CurrencyType { get; set; }
-        [Required]
+        [DataType(DataType.Currency)]
+        [Required(ErrorMessage = "This field can not be empty.")]
         public float Price { get; set; }
+        [Required]
         public float GST { get; set; }
         public Dictionary<string, int> Stores { get; set; }
         [Required]

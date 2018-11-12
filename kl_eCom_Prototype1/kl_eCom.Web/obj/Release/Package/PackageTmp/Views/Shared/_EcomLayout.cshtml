@@ -160,26 +160,28 @@
                     </div>
                 }
 
+                <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet" type="text/css" />
+                <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+                <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
                 <script type="text/javascript">
-                    $(document).ready(function () {
-                        $('#SearchQuery').autocomplete({
-                            source: function (request, response) {
-                                $.ajax({
-                                    url: "/Market/Autocomplete",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data: { Prefix: request.term },
-                                    success: function (data) {
-                                        response($.map(data, function (val, item) {
-                                            return { label: val.Name, value: val.Name };
-                                        }))
-                                    }
-                                })
-                            },
-                            messages: {
-                                noResults: "No results found", results: ""
-                            }
-                        });
+                    $('#SearchQuery').autocomplete({
+                        source: function (request, response) {
+                            $.ajax({
+                                url: "/Market/Autocomplete",
+                                type: "GET",
+                                dataType: "json",
+                                data: "{ prefix: request.term }",
+                                success: function (data) {
+                                    response($.map(data, function (val, item) {
+                                        return { label: val.Name, value: val.Name };
+                                    }))
+                                }
+                            })
+                        },
+                        messages: {
+                            noResults: "No results found", results: ""
+                        }
                     });
                 </script>
             </div>

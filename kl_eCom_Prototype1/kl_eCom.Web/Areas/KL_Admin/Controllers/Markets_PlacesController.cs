@@ -17,7 +17,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
         public ActionResult Index()
         {
             var model = new AdminMarketsPlaces_IndexViewModel {
-                Countries = db.Countries.ToList(),
+                Countries = db.Countries.OrderBy(m => m.Name).ToList(),
                 States = new Dictionary<Country, List<State>>(),
                 Places = new Dictionary<State, List<Place>>(),
                 Markets = new Dictionary<Place, List<Market>>()
@@ -27,18 +27,21 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             {
                 model.States[country] = db.States
                     .Where(m => m.CountryId == country.Id)
+                    .OrderBy(m => m.Name)
                     .ToList();
 
                 foreach (var state in model.States[country])
                 {
                     model.Places[state] = db.Places
                         .Where(m => m.StateId == state.Id)
+                        .OrderBy(m => m.Name)
                         .ToList();
 
                     foreach (var place in model.Places[state])
                     {
                         model.Markets[place] = db.Markets
                             .Where(m => m.PlaceId == place.Id)
+                            .OrderBy(m => m.Name)
                             .ToList();
                     }
                 }
@@ -117,8 +120,11 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                         }
                 }
 
-                var countries = model.Countries.Split(delimiter).Select(s => s.Trim()).ToArray();
-
+                var countries = model.Countries
+                    .Split(delimiter)
+                    .Select(s => s.Trim())
+                    .ToArray();
+                
                 foreach(var country in countries)
                 {
                     if (db.Countries.FirstOrDefault(m => m.Name == country) is null)
@@ -138,6 +144,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             var country = db.Countries
                 .Include(m => m.States)
                 .FirstOrDefault(m => m.Id == id);
+                
             if (country is null) return View("Error");
 
             var model = new AdminMarketPlaces_CountryDetailsViewModel {
@@ -146,7 +153,7 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                  States = new Dictionary<string, int>()
             };
 
-            foreach (var state in country.States)
+            foreach (var state in country.States.OrderBy(m => m.Name))
             {
                 model.States.Add(state.Name, state.Id);
             }

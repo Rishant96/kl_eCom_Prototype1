@@ -214,6 +214,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             string[] Type, string[] Default)
         {
             if (model == null) return View("Error");
+
+            if (Request.Files.Count > 0)
+            {
+                if (Request.Files.Count != 1) return View("Error");
+                HttpPostedFileBase hpf = Request.Files["thumbnail"];
+
+                if (hpf.ContentLength > 5000000)
+                {
+                    ModelState.AddModelError("thumbnail", "Thumbnail cannot be greater than 5mb.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 var atrbs = db.Attributes.Where(s => s.CategoryId == model.Id).ToList();

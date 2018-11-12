@@ -305,13 +305,18 @@
 </div>
 
 @section scripts {
-    <script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/blowup.js"></script>
+
+<script>
     $(document).ready(function () {
         $("#mainImg").attr("src", $("#Img0").attr("src"));
+        $("#mainImg").blowup();
 
         $(".thumb-images").mouseenter(function () {
             $("#mainImg").attr("src", $(this).attr("src"));
+            $("#mainImg").blowup();
         });
     });
-    </script>
+</script>
 }

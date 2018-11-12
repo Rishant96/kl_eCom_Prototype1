@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Stores</h2>
+<h2>Store Stocks</h2>
 
 @Html.ActionLink("+ Create Your Store", "Create")
 
@@ -13,7 +13,7 @@
 {
     <br /><br />
     <div>
-        <h4 style="display: inline">Store #@(i++): </h4>
+        <h4 style="display: inline">Store stock #@(i++): </h4>
         @Html.ActionLink(store.Name, "Details", new { id = store.Id },
         new { style = "position: relative; bottom: 2px; left: 5px;" })
     </div>

@@ -60,7 +60,7 @@
                         <label style="margin-right: 10px">Rating: </label>@Model.Stock.Product.Rating
                     </div>
                     <div>
-                        <label style="margin-right: 10px">Manufacturer: </label>@(Model.Stock.Product.Manufacturer ?? "-")
+                        <label style="margin-right: 10px">Manufacturer: </label>@Model.Stock.Product.Manufacturer
                     </div>
                     <div>
                         <p>@Model.Stock.Product.Description</p>
@@ -290,7 +290,6 @@
 </div>
 
 @section scripts {
-
 <script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/blowup.js"></script>
 
@@ -299,7 +298,7 @@
         $("#mainImg").attr("src", $("#Img0").attr("src"));
 
         $("#mainImg").blowup();
-        
+
         $(".thumb-images").mouseenter(function () {
             $("#mainImg").attr("src", $(this).attr("src"));
             $("#mainImg").blowup();

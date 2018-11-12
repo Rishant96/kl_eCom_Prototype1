@@ -420,14 +420,14 @@ namespace kl_eCom.Web.Controllers
             {
                 var stocks = db.Stocks
                              .Include(m => m.Product)
-                             .Where(m => m.Product.Name.Contains(searchQuery))
+                             .Where(m => m.Product.Name.ToUpper().Contains(searchQuery.ToUpper()))
                              .OrderBy(m => m.Product.Name)
                              .Select(m => m.Id)
                              .Distinct()
                              .ToArray();
 
                 var categories = db.Categories
-                                 .Where(m => m.Name.Contains(searchQuery))
+                                 .Where(m => m.Name.ToUpper().Contains(searchQuery.ToUpper()))
                                  .OrderBy(m => m.Name)
                                  .Select(m => m.Id)
                                  .Distinct()
@@ -466,7 +466,7 @@ namespace kl_eCom.Web.Controllers
                 SelectedOption = queryOptions.SortOption,
                 StoreId = storeId,
                 FilteringOptions = filteringOptions,
-                CurrencySymbol = store.DefaultCurrencyType
+                CurrencySymbol = (store != null) ? store.DefaultCurrencyType : "Rs."
             };
 
             if (search != null)
@@ -487,7 +487,7 @@ namespace kl_eCom.Web.Controllers
             
                 if (search.Stocks != null && search.Stocks.Count() > 0)
                 {
-                    model.Stocks.Concat(db.Stocks
+                    model.Stocks = model.Stocks.Concat(db.Stocks
                         .Include(m => m.Product)
                         .Where(m => search.Stocks.Contains(m.Id)
                             && m.Price >= filteringOptions.Price_MinValue
@@ -496,7 +496,7 @@ namespace kl_eCom.Web.Controllers
                             && m.Product.IsActive == true
                             && (filteringOptions.Availability || m.Status == StockStatus.InStock))
                         .OrderBy(queryOptions.Sort)
-                        .ToList());
+                        .ToList()).ToList();
                 }
             }
 

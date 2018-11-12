@@ -5,7 +5,7 @@
 
 <h2>Details - Vendor</h2>
 
-<div class="form-horizontal">
+@*<div class="form-horizontal">
     <div class="form-group">
         @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -67,7 +67,11 @@
         <div class="col-md-10">
             @Html.DisplayFor(m => m.ActivePackage.Balance, new { htmlAttributes = new { @class = "form-control" } })
         </div>
-    </div>
+    </div>*@
+
+    <dl class="dl-horizontal">
+        <dt></dt>    
+    </dl>
 
     @using (Html.BeginForm())
     {

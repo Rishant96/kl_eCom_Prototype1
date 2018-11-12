@@ -79,16 +79,16 @@ namespace kl_eCom.Web.Controllers
                         new PriceSelectionItem
                         {
                             Id = 1,
-                            DisplayName = "0 to 10,000",
+                            DisplayName = "0 to 1000",
                             MinPrice = 0,
-                            MaxPrice = 10000
+                            MaxPrice = 1000
                         },
                         new PriceSelectionItem
                         {
                             Id = 2,
-                            DisplayName = "10,000 to 20,000",
-                            MinPrice = 10000,
-                            MaxPrice = 20000
+                            DisplayName = "1000 to 2000",
+                            MinPrice = 1000,
+                            MaxPrice = 2000
                         },
                         new PriceSelectionItem
                         {
@@ -196,13 +196,13 @@ namespace kl_eCom.Web.Controllers
                 {
                     case "1":
                     {
-                        options.Price_MaxValue = 10000;
+                        options.Price_MaxValue = 1000;
                         break;
                     }
                     case "2":
                     {
-                        options.Price_MinValue = 10000;
-                        options.Price_MaxValue = 20000;
+                        options.Price_MinValue = 1000;
+                        options.Price_MaxValue = 2000;
                         break;
                     }
                     case "3":
@@ -420,14 +420,14 @@ namespace kl_eCom.Web.Controllers
             {
                 var stocks = db.Stocks
                              .Include(m => m.Product)
-                             .Where(m => m.Product.Name.Contains(searchQuery))
+                             .Where(m => m.Product.Name.ToUpper().Contains(searchQuery.ToUpper()))
                              .OrderBy(m => m.Product.Name)
                              .Select(m => m.Id)
                              .Distinct()
                              .ToArray();
 
                 var categories = db.Categories
-                                 .Where(m => m.Name.Contains(searchQuery))
+                                 .Where(m => m.Name.ToUpper().Contains(searchQuery.ToUpper()))
                                  .OrderBy(m => m.Name)
                                  .Select(m => m.Id)
                                  .Distinct()
@@ -466,7 +466,7 @@ namespace kl_eCom.Web.Controllers
                 SelectedOption = queryOptions.SortOption,
                 StoreId = storeId,
                 FilteringOptions = filteringOptions,
-                CurrencySymbol = store.DefaultCurrencyType
+                CurrencySymbol = (store != null) ? store.DefaultCurrencyType : "Rs."
             };
 
             if (search != null)
@@ -487,7 +487,7 @@ namespace kl_eCom.Web.Controllers
             
                 if (search.Stocks != null && search.Stocks.Count() > 0)
                 {
-                    model.Stocks.Concat(db.Stocks
+                    model.Stocks = model.Stocks.Concat(db.Stocks
                         .Include(m => m.Product)
                         .Where(m => search.Stocks.Contains(m.Id)
                             && m.Price >= filteringOptions.Price_MinValue
@@ -496,7 +496,7 @@ namespace kl_eCom.Web.Controllers
                             && m.Product.IsActive == true
                             && (filteringOptions.Availability || m.Status == StockStatus.InStock))
                         .OrderBy(queryOptions.Sort)
-                        .ToList());
+                        .ToList()).ToList();
                 }
             }
 

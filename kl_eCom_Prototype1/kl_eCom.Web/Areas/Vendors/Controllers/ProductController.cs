@@ -196,6 +196,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ProductEditViewModel model, IEnumerable<HttpPostedFileBase> files)
         {
+            if (Request.Files.Count > 0)
+            {
+                HttpPostedFileBase hpf = Request.Files["thumbnail"];
+                if (hpf.ContentLength > 5000000)
+                {
+                    ModelState.AddModelError("thumbnail", "Thumbnail cannot be greater than 5mb.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 var specs = db.Specifications.Where(m => m.ProductId == model.Id).ToList();
@@ -445,6 +454,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Stock(int? prodId, int? storeId)
         {
             if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Store");
+      
 
             TempData["prodId"] = prodId;
             TempData["storeId"] = storeId;
@@ -479,12 +489,22 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             int? prodId = TempData["prodId"] as int?;
             int? storeId = TempData["storeId"] as int?;
+            
             if (prodId == null || storeId == null) return RedirectToAction("Index", controllerName: "Store");
-            var oldStock = db.Stocks.FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
+            var oldStock = db.Stocks
+                .FirstOrDefault(m => m.ProductId == prodId && m.StoreId == storeId);
+
+            if (model.Price <= 0 || Convert.ToString(model.Price) == string.Empty)
+            {
+                ModelState.AddModelError("Price", "Price can't be empty or less than 0");
+            }
+
             if (ModelState.IsValid)
             {
                 if (model.Stock <= 0) model.Status = StockStatus.OutOfStock;
                 else model.Status = StockStatus.InStock;
+
+               
                 if (oldStock is null)
                 {
                     var stock = db.Stocks.Add(
@@ -519,12 +539,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             TempData["storeId"] = storeId;
             var stock_2 = db.Stocks
                 .Include(m => m.Product)
+                .Include(m => m.Store)
                 .FirstOrDefault(m => m.Id == model.Stock);
+
             model = new ProductStockViewModel {
                 Stock = stock_2.Id,
                 Price = stock_2.Price,
                 MaxPerUser = stock_2.MaxAmtPerUser,
-                Product = stock_2.Product
+                Product = stock_2.Product,
+                CurrencyType = stock_2.Store.DefaultCurrencyType
             };
             return View(model);
         }
@@ -831,6 +854,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ProductImageUpload(HttpPostedFileBase file, int prodId)
         {
+            if (file.ContentLength > 5000000)
+            {
+                ViewBag.Msg = "Image cannot be greater than 5mb";
+
+                return Json(new
+                {
+                    success = false,
+                    response = "Image cannot be greater than 5mb"
+                });
+            }
+
             if (file.ContentLength == 0) return View("Error");
 
             try

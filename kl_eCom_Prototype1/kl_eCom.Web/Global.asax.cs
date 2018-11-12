@@ -23,6 +23,12 @@ namespace kl_eCom.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
+	protected void Application_PreSendRequestHeaders()
+        {
+            Response.Headers.Remove("X-Frame-Options");
+            Response.AddHeader("X-Frame-Options", "AllowAll");
+        }
+
         protected void Application_BeginRequest()
         {
         }

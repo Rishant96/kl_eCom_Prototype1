@@ -327,6 +327,10 @@
     <Compile Include="Migrations\201811020650564_Payment_models_changed_2.Designer.cs">
       <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811080546595_new_changes.cs" />
+    <Compile Include="Migrations\201811080546595_new_changes.Designer.cs">
+      <DependentUpon>201811080546595_new_changes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -479,6 +483,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\blowup.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -768,6 +773,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811020650564_Payment_models_changed_2.resx">
       <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811080546595_new_changes.resx">
+      <DependentUpon>201811080546595_new_changes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

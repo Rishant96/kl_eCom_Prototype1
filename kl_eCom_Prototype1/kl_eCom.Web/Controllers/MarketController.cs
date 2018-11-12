@@ -22,11 +22,13 @@ namespace kl_eCom.Web.Controllers
             var model = new MarketIndexViewModel { Vendors = new Dictionary<string, string>() };
             foreach (var vendor in vendors)
             {
+                if (vendor is null) continue;
                 var v = db.EcomUsers
                     .Include(m => m.Stores)
                     .Include(m => m.VendorDetails)
                     .FirstOrDefault(m => m.ApplicationUserId == vendor.UserId);
-                if(v.Stores.Count > 0) 
+
+                if (v != null && v.Stores != null && v.Stores.Count > 0) 
                     model.Vendors.Add(v.ApplicationUserId, 
                         v.VendorDetails.BusinessName);
             }
@@ -62,22 +64,22 @@ namespace kl_eCom.Web.Controllers
             var searchQuery = Request.Form["SearchQuery"];
             
             return RedirectToAction("Products", "Shop", new {
-                searchQuery
+                searchQuery = searchQuery.Trim()
             });
         }
         
-        [HttpPost]
-        public JsonResult Autocomplete(string prefix)
+        [AllowAnonymous]
+        public ActionResult Autocomplete(string prefix)
         {
             var prodList = db.Products
-                             .Where(m => m.Name.Contains(prefix))
+                             .Where(m => m.Name.ToUpper().Contains(prefix.ToUpper()))
                              .OrderBy(m => m.Name)
                              .Select(m => new { m.Name, ID = m.Name })
                              .Distinct()
                              .ToList();
 
             var catList = db.Categories
-                             .Where(m => m.Name.Contains(prefix))
+                             .Where(m => m.Name.ToUpper().Contains(prefix.ToUpper()))
                              .OrderBy(m => m.Name)
                              .Select(m => new { m.Name, ID = m.Name })
                              .Distinct()

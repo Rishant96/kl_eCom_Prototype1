@@ -19,12 +19,12 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string BusinessName { get; set; }
 
         [Required]
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
+        [Display(Name = "Business Owner First Name")]
+        public string BusinessOwnerFirstName { get; set; }
 
         [Required]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        [Display(Name = "Business Owner Last Name")]
+        public string BusinessOwnerLastName { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress, ErrorMessage = "Please enter a valid email address")]

@@ -209,8 +209,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var vendor = new ApplicationUser {
                     UserName = model.UserName,
                     Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
+                    FirstName = model.BusinessOwnerFirstName,
+                    LastName = model.BusinessOwnerLastName,
                     PhoneNumber = model.Mobile,
                     //PrimaryRole = "Vendor",
                     //VendorDetails = new Utilities.VendorDetails

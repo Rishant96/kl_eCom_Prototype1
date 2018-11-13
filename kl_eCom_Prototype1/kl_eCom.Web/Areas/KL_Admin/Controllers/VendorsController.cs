@@ -161,6 +161,28 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult EditVendorDetails(int? id)
+        {
+            if (id is null) return View("Error");
+
+            var vendor = db.EcomUsers
+                .Include(m => m.User)
+                .Include(m => m.VendorDetails)
+                .FirstOrDefault(m => m.Id == id);
+            if (vendor is null) return View("Error");
+
+            var model = new AdminVendorsEditDetailsViewModel {
+                Id = vendor.Id,
+                AppUserId = vendor.ApplicationUserId,
+                BusinessName = vendor.VendorDetails.BusinessName,
+                FirstName = vendor.User.FirstName,
+                LastName = vendor.User.LastName,
+                Email = vendor.User.Email
+            };
+
+            return View(model);
+        }
+
         public ActionResult EditDomain(string id)
         {
             var vendor = db.EcomUsers

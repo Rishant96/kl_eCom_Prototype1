@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:klecom.database.windows.net,1433;Initial Catalog=KhushlifeEcomDB;Persist Security Info=False;User ID=KLAdmin;Password=KhushLife@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\Rishant\\Source\\Repos\\kl_eCom_Prototype1\\kl_eCom_Prototype1\\kl_eCom\.Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="E:\\ECom12-11-2018\\kl_eCom_Prototype1\\kl_eCom_Prototype1\\kl_eCom\.Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
   </parameter>
   <parameter name="StorageConnection-Web.config Connection String" description="StorageConnection Connection String used in web.config by the application to access the database." defaultValue="DefaultEndpointsProtocol=https;AccountName=klecomstorage;AccountKey=MRyNJnl6MJrYBcZxmnGestjcUQ7jxKaF3FEkqXgyMiKzHOY0fhEc9QsOBwD24pBO+wLaypDsDDBGyASplyHWgg==;EndpointSuffix=core.windows.net" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\Rishant\\Source\\Repos\\kl_eCom_Prototype1\\kl_eCom_Prototype1\\kl_eCom\.Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StorageConnection']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="E:\\ECom12-11-2018\\kl_eCom_Prototype1\\kl_eCom_Prototype1\\kl_eCom\.Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StorageConnection']/@connectionString" />
   </parameter>
 </parameters>

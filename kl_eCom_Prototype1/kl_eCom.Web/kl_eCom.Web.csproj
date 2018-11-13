@@ -624,8 +624,10 @@
     <Content Include="Areas\KL_Admin\Views\Vendors\EditVendorDetails.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - FTP2.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy2.pubxml" />
     <None Include="Properties\PublishProfiles\KhushLifeTrial1 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\KhushLifeTrial1 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />

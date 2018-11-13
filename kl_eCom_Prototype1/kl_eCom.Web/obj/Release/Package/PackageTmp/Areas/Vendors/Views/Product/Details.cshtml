@@ -1,4 +1,4 @@
-﻿@model kl_eCom.Web.Entities.Product
+﻿    @model kl_eCom.Web.Entities.Product
 
 @{
     ViewBag.Title = "Details";
@@ -120,8 +120,8 @@
     </div>
     <div style="margin-left: 20px; margin-top: 25px">
         <p style="margin-left: 30px">
-            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" }) |
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) | 
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) |
+             @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" }) |
             @Html.ActionLink("Add Stock", "Stock", new { prodId = Model.Id, storeId = Model.Category.StoreId },
                 new { style = "text-decoration: underline" })
         </p>

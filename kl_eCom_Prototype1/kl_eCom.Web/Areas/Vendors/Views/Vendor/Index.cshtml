@@ -26,11 +26,13 @@
         </div>
     }
 
-    @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" })
-    
+    @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" }, new { style = "display: block" })
+
     <br />
     <br />
-    
+
+    @Html.ActionLink("View Catalog", "Index", "Category", new { id = Model.Id }, null)
+    <text> | </text>
     @Html.ActionLink("Go to Stores", "Index", "Store")
     <text> | </text>
     @Html.ActionLink("All Products", "AllProducts", controllerName: "Product")
@@ -49,8 +51,8 @@
     <br />
     <br />
     <br />
-    
+
     @*@Html.ActionLink("Refferals", "Refferals")
-    <text> | </text>*@
+        <text> | </text>*@
     @Html.ActionLink("Generate Exclusive Link", "ExclusiveLink")
 </div>

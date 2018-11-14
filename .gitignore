@@ -9,3 +9,5 @@
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-shm
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-wal
 
+/kl_eCom_Prototype1/kl_eCom.Web/Migrations/201811140552534_Payment_Model_Changed.cs
+/kl_eCom_Prototype1/kl_eCom.Web/Migrations

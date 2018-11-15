@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity;
+@using kl_eCom.Web.Models;
+@using System.Data.Entity;
+
 <!DOCTYPE html>
 
 <html>
@@ -124,9 +127,17 @@
 
         var routeData = (RouteData)Url.RequestContext.RouteData;
 
-        string vendorId = (string)routeData.DataTokens["vendorId"];
+        var vendorIdStr = routeData.Values["vendorId"] as string;
+        if (!string.IsNullOrEmpty(vendorIdStr))
+        {
+            int vendorId = int.Parse(vendorIdStr);
+            navbarImgPath = Url.Action("GetLogo", "Vendor", new { area = "Vendors", id = vendorId });
+            var db = new ApplicationDbContext();
+            ViewBag.EcomUser = db.EcomUsers
+                .Include(m => m.VendorDetails)
+                .FirstOrDefault(m => m.Id == vendorId);
+        }
     }
-
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="192x192" href="@navbarImgPath">
 </head>
@@ -136,14 +147,22 @@
             <div class="navbar-header" style="margin-right: 75px">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar6" style="background-color:#343D88;margin-top: 35px; margin-right:1px; margin-left:5px;">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>		routeData	null	System.Web.Routing.RouteData
+
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 @*@Url.Action("Index", "Products", new { vendorId = int.Parse(Request.Params["vendorId"]) })*@
-                <a class="navbar-brand text-hide" href="#">
-                    <p class="img-fluid"><img class="logo" src="@navbarImgPath" height="100" width="100" title="KhushLIFE - Lets Celebrate Life"><img style="padding-left:5px; padding-right:5px;  " src="~/assets/images/logo/KL_E-Commerce_Top_Tri-Color.jpg" title="KhushLIFE E-Commerce - Lets Do Commerce"></p>
-                </a>
+                <div class="navbar-brand text-hide">
+                    <div style="display: flex">
+                        <img class="logo" src="@navbarImgPath" height="100" width="100" style="margin: 5px 10px 0">
+                        <p class="p-nav" style="font-size: 3.0rem; color: #000"
+                           onmouseover="this.style.color='#777'"
+                           onmouseout="this.style.color='#000'">
+                            @(((EcomUser)ViewBag.EcomUser).VendorDetails.BusinessName)
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="nav navbar-nav" style="height: 50px; margin-left: 100px; margin-top: 18px">
                 <script src="https://code.jquery.com/jquery-3.3.1.js"
@@ -216,57 +235,6 @@
     </div>
 
     <br>
-    @*<section id="footer" style=" line-height:1px; padding-top: 20px;">
-
-        <div class="container" style=" background-color: #FAA309; ">
-
-            <div class="row text-left">
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                    <ul class="list-unstyled quick-links ">
-                        <li><a style="font-size: 11px; font-weight: 800;" class="text-dark"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Philosophy</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>About KHUSHLIFE</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>Contact KHUSHLIFE</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>Careers at KHUSHLIFE</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Quotes</b></a></li>
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i><b>KHUSHLIFE Stories</b></a></li>
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                    <ul class="list-unstyled quick-links ">
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i>KHUSHLIFE HELP</a></li>
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                    <ul class="list-unstyled quick-links ">
-                        <li><a style="font-size: 11px" href="javascript:void();"><i class="fa fa-angle-double-right"></i>KHUSHLIFE POLICY</a></li>
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3 ">
-                    <ul class="list-unstyled quick-links ">
-                        <li><a style="font-size: 11px" href="@Url.Action("Index", "Home", new { area = "Vendors" })"><i class="fa fa-angle-double-right"></i>VENDORS SECTION</a></li>
-
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-1">
-                    <ul class="list-unstyled list-inline social text-center">
-                        <li class="list-inline-item fa1"><a href="https://www.facebook.com/khushlifeindia"><i class="fa fa-facebook"></i></a></li>
-                        <li class="list-inline-item fa1"><a href="https://twitter.com/khushlife"><i class="fa fa-twitter"></i></a></li>
-
-                        <li class="list-inline-item fa1"><a href="javascript:void();"><i class="fa fa-google"></i></a></li>
-                        <li class="list-inline-item fa1"><a href="javascript:void();" target="_blank"><i class="fa fa-youtube"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
-                    <p class="h6">©2018 <span><a style="color:#343D88;font-weight: 700">Khush<a style="color:#ED4004; font-weight: 700"> LIFE</a></a></span>. All Rights Reserved.</p>
-                </div>
-            </div>
-        </div>
-    </section>*@
     <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
         <p class="h6"> Copyright The Prakaash Collection Powered By <span><a style="color:#343D88;font-weight: 700">Khush<a style="color:#ED4004; font-weight: 700"> LIFE</a></a></span>. All Rights Reserved.</p>
     </div>

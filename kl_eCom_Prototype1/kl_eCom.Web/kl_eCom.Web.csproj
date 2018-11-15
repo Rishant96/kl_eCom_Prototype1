@@ -335,6 +335,18 @@
     <Compile Include="Migrations\201811150435379_inti_15_Nov_18.Designer.cs">
       <DependentUpon>201811150435379_inti_15_Nov_18.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811150629470_Migration2_15_Nov_18.cs" />
+    <Compile Include="Migrations\201811150629470_Migration2_15_Nov_18.Designer.cs">
+      <DependentUpon>201811150629470_Migration2_15_Nov_18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811150638226_Migration3_15_Nov_18.cs" />
+    <Compile Include="Migrations\201811150638226_Migration3_15_Nov_18.Designer.cs">
+      <DependentUpon>201811150638226_Migration3_15_Nov_18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201811150658488_Migration4_15_Nov_18.cs" />
+    <Compile Include="Migrations\201811150658488_Migration4_15_Nov_18.Designer.cs">
+      <DependentUpon>201811150658488_Migration4_15_Nov_18.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -786,6 +798,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811150435379_inti_15_Nov_18.resx">
       <DependentUpon>201811150435379_inti_15_Nov_18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811150629470_Migration2_15_Nov_18.resx">
+      <DependentUpon>201811150629470_Migration2_15_Nov_18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811150638226_Migration3_15_Nov_18.resx">
+      <DependentUpon>201811150638226_Migration3_15_Nov_18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811150658488_Migration4_15_Nov_18.resx">
+      <DependentUpon>201811150658488_Migration4_15_Nov_18.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

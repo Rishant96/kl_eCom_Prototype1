@@ -272,7 +272,6 @@ namespace kl_eCom.Web.Controllers
 
             var states = db.States
                 .OrderBy(m => m.Name)
-                .Where(m => m.CountryId == addr.CountryId)
                 .Select(m => new SelectListItem
                 {
                     Value = m.Id.ToString(),
@@ -281,7 +280,6 @@ namespace kl_eCom.Web.Controllers
 
             var cities = db.Places
                 .OrderBy(m => m.Name)
-                .Where(m => m.StateId == addr.StateId)
                 .Select(m => new SelectListItem
                 {
                     Value = m.Id.ToString(),
@@ -298,7 +296,10 @@ namespace kl_eCom.Web.Controllers
                 SelectedState = addr.StateId,
                 Landmark = addr.Landmark,
                 Zip = addr.Zip,
-                SelectedCountry = addr.CountryId
+                SelectedCountry = addr.CountryId,
+                Countries = countries,
+                States = states,
+                Cities = cities
             });
         }
 

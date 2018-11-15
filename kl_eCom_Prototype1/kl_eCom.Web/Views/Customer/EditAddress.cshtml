@@ -115,20 +115,35 @@
             var selectedCountry = $('#Country').val();
             var statesSelect = $('#State');
             statesSelect.empty();
+            $("#City").empty();
             if (selectedCountry != null && selectedCountry != "") {
+                alert("here");
                 $.getJSON('@Url.Action("GetStates")', { idStr: selectedCountry }, function (states) {
                     if (states != null && !jQuery.isEmptyObject(states)) {
+                        alert("default");
                         statesSelect.append($('<option/>', {
-                            value: null,
+                            value: 0,
                             text: "--- Select a state ---"
                         }));
                         $.each(states, function (index, state) {
+                            alert(state.Text);
                             statesSelect.append($('<option/>', {
                                 value: state.Value,
                                 text: state.Text
                             }));
                         });
-                    };
+                    }
+                    else {
+                        statesSelect.append($('<option/>', {
+                            value: 0,
+                            text: "--- No states available ---"
+                        }));
+
+                        $("#City").append($('<option/>', {
+                            value: 0,
+                            text: "--- No cities available ---"
+                        }));
+                    }
                 });
             }
         });
@@ -141,7 +156,7 @@
                 $.getJSON('@Url.Action("GetCities")', { idStr: selectedState }, function (cities) {
                     if (cities != null && !jQuery.isEmptyObject(cities)) {
                         citiesSelect.append($('<option/>', {
-                            value: null,
+                            value: 0,
                             text: "--- Select a city ---"
                         }));
                         $.each(cities, function (index, state) {
@@ -150,7 +165,13 @@
                                 text: state.Text
                             }));
                         });
-                    };
+                    }
+                    else {
+                        citiesSelect.append($('<option/>', {
+                            value: 0,
+                            text: "--- No cities available ---"
+                        }));
+                    }
                 });
             }
         });

@@ -31,10 +31,7 @@ namespace kl_eCom.Web.Utilities
         [Required]
         public int EcomUserId { get; set; }
         public EcomUser Vendor { get; set; }
-        
-        public int? OldVendorPlanId { get; set; }
-        public VendorPlan OldPlan { get; set; }
-        
+                
         public int? NewVendorPlanId { get; set; }
         public VendorPlan NewPlan { get; set; }
         

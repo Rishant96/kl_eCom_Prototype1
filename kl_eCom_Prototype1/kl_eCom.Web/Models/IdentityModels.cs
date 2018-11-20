@@ -115,11 +115,11 @@ namespace kl_eCom.Web.Models
                 .HasForeignKey(u => u.NewVendorPlanId)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<VendorPlanChangeRecord>()
-                .HasOptional(u => u.OldPlan) // <--
-                .WithMany(t => t.OldPlanChanges) // <--
-                .HasForeignKey(u => u.OldVendorPlanId)
-                .WillCascadeOnDelete(false);
+            //modelBuilder.Entity<VendorPlanChangeRecord>()
+            //    .HasOptional(u => u.OldPlan) // <--
+            //    .WithMany(t => t.OldPlanChanges) // <--
+            //    .HasForeignKey(u => u.OldVendorPlanId)
+            //    .WillCascadeOnDelete(false);
         }
 
         public DbSet<EcomUser> EcomUsers { get; set; }

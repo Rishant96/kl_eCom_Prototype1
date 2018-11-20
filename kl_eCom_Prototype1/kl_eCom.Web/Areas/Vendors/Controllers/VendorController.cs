@@ -520,7 +520,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             EcomUserId = ecomUser.Id,
                             OldStartDate = activePlan.StartDate,
                             TimeStamp = DateTime.Now,
-                            OldVendorPlanId = currPlan.Id,
+                            //OldVendorPlanId = currPlan.Id,
                             OldPlanName = currPlan.Name,
                             NewVendorPlanId = nextPlan.Id,
                             VendorPlanPaymentDetailId = activePlan.VendorPlanPaymentDetailId,

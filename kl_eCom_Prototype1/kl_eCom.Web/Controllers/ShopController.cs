@@ -631,13 +631,15 @@ namespace kl_eCom.Web.Controllers
             var cartItms = cart.CartItems
                         .FirstOrDefault(m => m.StockId == id && m.IsEditable);
             var count = (cartItms != null) ? cartItms.Qty : 0;
-
+            
             var discountIds = db.DiscountedItems
                                 .Include(m => m.Discount)
-                                .Where(m => m.StockId == id && m.Discount.IsActive
-                                    && m.Discount.StartDate < DateTime.Now 
+                                .Where(m => m.StockId == id 
+                                    && m.Discount.IsActive
+                                    && DateTime.Compare(m.Discount.StartDate, DateTime.Now) > 0
                                     && (!m.Discount.IsExpirable 
-                                        || m.Discount.EndDate > DateTime.Now))
+                                        || DateTime.Compare(m.Discount.EndDate ?? 
+                                        m.Discount.StartDate, DateTime.Now) < 0))
                                 .Select(m => m.DiscountId)
                                 .ToList();
 
@@ -649,6 +651,8 @@ namespace kl_eCom.Web.Controllers
                                             .Contains(m.DiscountId)
                                             && m.Discount.IsActive)
                                         .ToList();
+
+            var discountedPrice = stock.GetPrice();
 
             var model = new ShopProductDetailsViewModel
             {
@@ -664,25 +668,26 @@ namespace kl_eCom.Web.Controllers
                 MinOrderDiscounts = new List<DiscountConstraint>(),
                 MinQtyDiscounts = new List<DiscountConstraint>(),
                 CurrencySymbol = stock.Store.DefaultCurrencyType,
-                NewPrice = null
+                NewPrice = (stock.Price != discountedPrice) ? discountedPrice : null as float?
             };
 
             foreach (var constraint in discountConstraints)
             {
-                if (constraint.Type == DiscountConstraintType.Simple)
-                {
-                    if (constraint.Discount.IsPercent)
-                    {
-                        model.NewPrice = model.Stock.Price * 
-                                    ((100 - constraint.Discount.Value)/100);
-                    }
-                    else
-                    {
-                        model.NewPrice = model.Stock.Price -
-                                    constraint.Discount.Value;
-                    }
-                }
-                else if (constraint.Type == DiscountConstraintType.MinOrder)
+                //if (constraint.Type == DiscountConstraintType.Simple)
+                //{
+                //    if (constraint.Discount.IsPercent)
+                //    {
+                //        model.NewPrice = model.Stock.Price * 
+                //                    ((100 - constraint.Discount.Value)/100);
+                //    }
+                //    else
+                //    {
+                //        model.NewPrice = model.Stock.Price -
+                //                    constraint.Discount.Value;
+                //    }
+                //}
+                //else 
+                if (constraint.Type == DiscountConstraintType.MinOrder)
                 {
                     model.MinOrderDiscounts.Add(constraint);
                 }

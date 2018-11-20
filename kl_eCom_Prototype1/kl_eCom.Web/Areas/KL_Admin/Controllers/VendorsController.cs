@@ -116,12 +116,12 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                             .FirstOrDefault(m => m.ApplicationUserId == model.ApplicationUserId);
 
             var stocks = db.Stocks
-                .Include(m => m.Store)
-                .Include(m => m.Store.Categories)
-                .Include(m => m.Product)
-                .Include(m => m.Product.Category)
-                .Include(m => m.Product.Category.Parent)
-                .Where(m => m.Store.EcomUserId == vendor.Id);
+                            .Include(m => m.Store)
+                            .Include(m => m.Store.Categories)
+                            .Include(m => m.Product)
+                            .Include(m => m.Product.Category)
+                            .Include(m => m.Product.Category.Parent)
+                            .Where(m => m.Store.EcomUserId == vendor.Id);
 
             foreach (var stock in stocks)
             {
@@ -147,8 +147,10 @@ namespace kl_eCom.Web.Areas.KL_Admin.Controllers
                 db.Stores.Remove(stock.Store);
 
                 db.SaveChanges();
-            }            
-            
+            }
+
+            db.Users.Remove(vendor.User);
+
             db.EcomUsers.Attach(vendor);
             db.VendorDetails.Attach(vendor.VendorDetails);
             db.ActivePlans.Attach(vendor.VendorDetails.ActivePlan);

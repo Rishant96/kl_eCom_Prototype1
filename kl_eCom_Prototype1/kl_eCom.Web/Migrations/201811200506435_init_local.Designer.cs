@@ -7,13 +7,13 @@ namespace kl_eCom.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class Migration5_15_Nov_18 : IMigrationMetadata
+    public sealed partial class init_local : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Migration5_15_Nov_18));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init_local));
         
         string IMigrationMetadata.Id
         {
-            get { return "201811150739324_Migration5_15_Nov_18"; }
+            get { return "201811200506435_init_local"; }
         }
         
         string IMigrationMetadata.Source

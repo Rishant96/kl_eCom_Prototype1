@@ -3,7 +3,7 @@ namespace kl_eCom.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Init : DbMigration
+    public partial class init_local : DbMigration
     {
         public override void Up()
         {
@@ -55,6 +55,31 @@ namespace kl_eCom.Web.Migrations
                         ValidityPeriod = c.Int(),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.VendorPlanChangeRecords",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        OldStartDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
+                        TimeStamp = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
+                        OldPlanName = c.String(nullable: false),
+                        NewPlanName = c.String(nullable: false),
+                        OldBalance = c.Single(nullable: false),
+                        EcomUserId = c.Int(nullable: false),
+                        NewVendorPlanId = c.Int(),
+                        VendorPlanPaymentDetailId = c.Int(),
+                        VendorPlan_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.VendorPlans", t => t.NewVendorPlanId)
+                .ForeignKey("dbo.VendorPlanPaymentDetails", t => t.VendorPlanPaymentDetailId)
+                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
+                .ForeignKey("dbo.VendorPlans", t => t.VendorPlan_Id)
+                .Index(t => t.EcomUserId)
+                .Index(t => t.NewVendorPlanId)
+                .Index(t => t.VendorPlanPaymentDetailId)
+                .Index(t => t.VendorPlan_Id);
             
             CreateTable(
                 "dbo.EcomUsers",
@@ -386,6 +411,8 @@ namespace kl_eCom.Web.Migrations
                         ActivePlanId = c.Int(),
                         RegistrationDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
                         DomainRegistrationDate = c.DateTime(precision: 7, storeType: "datetime2"),
+                        Logo_Img_Data = c.Binary(),
+                        Logo_Mime_Type = c.String(),
                         AddressId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
@@ -685,49 +712,22 @@ namespace kl_eCom.Web.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        IsPending = c.Boolean(nullable: false),
                         EcomUserId = c.Int(nullable: false),
-                        ActivePlanId = c.Int(nullable: false),
                         VendorPlanId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ActivePlans", t => t.ActivePlanId, cascadeDelete: true)
-                .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: false)
-                .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: false)
-                .Index(t => t.EcomUserId)
-                .Index(t => t.ActivePlanId)
-                .Index(t => t.VendorPlanId);
-            
-            CreateTable(
-                "dbo.VendorPlanChangeRecords",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        StartDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
-                        TimeStamp = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
-                        PlanName = c.String(),
-                        Balance = c.Single(nullable: false),
-                        EcomUserId = c.Int(nullable: false),
-                        VendorPlanId = c.Int(nullable: false),
-                        VendorPlanPaymentDetailId = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.VendorPlanPaymentDetails", t => t.VendorPlanPaymentDetailId)
                 .ForeignKey("dbo.VendorPlans", t => t.VendorPlanId, cascadeDelete: true)
                 .ForeignKey("dbo.EcomUsers", t => t.EcomUserId, cascadeDelete: true)
                 .Index(t => t.EcomUserId)
-                .Index(t => t.VendorPlanId)
-                .Index(t => t.VendorPlanPaymentDetailId);
+                .Index(t => t.VendorPlanId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.VendorPlanChangeRecords", "EcomUserId", "dbo.EcomUsers");
-            DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlanId", "dbo.VendorPlans");
-            DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlanPaymentDetailId", "dbo.VendorPlanPaymentDetails");
             DropForeignKey("dbo.VendorPlanDowngradeRecords", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.VendorPlanDowngradeRecords", "VendorPlanId", "dbo.VendorPlans");
-            DropForeignKey("dbo.VendorPlanDowngradeRecords", "ActivePlanId", "dbo.ActivePlans");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.RedeemedVouchers", "VoucherId", "dbo.Vouchers");
             DropForeignKey("dbo.VoucherItems", "VoucherId", "dbo.Vouchers");
@@ -757,6 +757,9 @@ namespace kl_eCom.Web.Migrations
             DropForeignKey("dbo.DiscountedItems", "DiscountId", "dbo.Discounts");
             DropForeignKey("dbo.BundledItems", "DiscountConstraintId", "dbo.DiscountConstraints");
             DropForeignKey("dbo.ActivePlans", "EcomUserId", "dbo.EcomUsers");
+            DropForeignKey("dbo.ActivePlans", "VendorPlanId", "dbo.VendorPlans");
+            DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlan_Id", "dbo.VendorPlans");
+            DropForeignKey("dbo.VendorPlanChangeRecords", "EcomUserId", "dbo.EcomUsers");
             DropForeignKey("dbo.EcomUsers", "VendorDetailsId", "dbo.VendorDetails");
             DropForeignKey("dbo.VendorSpecializations", "VendorDetailsId", "dbo.VendorDetails");
             DropForeignKey("dbo.Specializations", "SpecializationId", "dbo.Specializations");
@@ -793,13 +796,10 @@ namespace kl_eCom.Web.Migrations
             DropForeignKey("dbo.Places", "StateId", "dbo.States");
             DropForeignKey("dbo.Markets", "PlaceId", "dbo.Places");
             DropForeignKey("dbo.States", "CountryId", "dbo.Countries");
-            DropForeignKey("dbo.ActivePlans", "VendorPlanId", "dbo.VendorPlans");
+            DropForeignKey("dbo.VendorPlanChangeRecords", "VendorPlanPaymentDetailId", "dbo.VendorPlanPaymentDetails");
+            DropForeignKey("dbo.VendorPlanChangeRecords", "NewVendorPlanId", "dbo.VendorPlans");
             DropForeignKey("dbo.ActivePlans", "VendorPlanPaymentDetailId", "dbo.VendorPlanPaymentDetails");
-            DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlanPaymentDetailId" });
-            DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlanId" });
-            DropIndex("dbo.VendorPlanChangeRecords", new[] { "EcomUserId" });
             DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "VendorPlanId" });
-            DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "ActivePlanId" });
             DropIndex("dbo.VendorPlanDowngradeRecords", new[] { "EcomUserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.VoucherItems", new[] { "StockId" });
@@ -868,10 +868,13 @@ namespace kl_eCom.Web.Migrations
             DropIndex("dbo.Addresses", new[] { "MarketId" });
             DropIndex("dbo.EcomUsers", new[] { "VendorDetailsId" });
             DropIndex("dbo.EcomUsers", new[] { "ApplicationUserId" });
+            DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlan_Id" });
+            DropIndex("dbo.VendorPlanChangeRecords", new[] { "VendorPlanPaymentDetailId" });
+            DropIndex("dbo.VendorPlanChangeRecords", new[] { "NewVendorPlanId" });
+            DropIndex("dbo.VendorPlanChangeRecords", new[] { "EcomUserId" });
             DropIndex("dbo.ActivePlans", new[] { "VendorPlanPaymentDetailId" });
             DropIndex("dbo.ActivePlans", new[] { "EcomUserId" });
             DropIndex("dbo.ActivePlans", new[] { "VendorPlanId" });
-            DropTable("dbo.VendorPlanChangeRecords");
             DropTable("dbo.VendorPlanDowngradeRecords");
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.VoucherItems");
@@ -910,6 +913,7 @@ namespace kl_eCom.Web.Migrations
             DropTable("dbo.Countries");
             DropTable("dbo.Addresses");
             DropTable("dbo.EcomUsers");
+            DropTable("dbo.VendorPlanChangeRecords");
             DropTable("dbo.VendorPlans");
             DropTable("dbo.VendorPlanPaymentDetails");
             DropTable("dbo.ActivePlans");

@@ -27,6 +27,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string BusinessOwnerLastName { get; set; }
 
         [Required]
+        [Display(Name = "Date of Birth")]
+        [DataType(DataType.Date)]
+        public DateTime DOB { get; set; }
+
+        [Required]
         [DataType(DataType.EmailAddress, ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
 
@@ -75,8 +80,6 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public int SelectedState { get; set; }
         
         public int? SelectedCity { get; set; }
-        
-        public bool IsNewAddress { get; set; }
 
         public string CountryName { get; set; }
 

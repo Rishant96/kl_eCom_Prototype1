@@ -585,6 +585,7 @@
     <Content Include="Areas\VendorStore\Views\Cart\Index.cshtml" />
     <Content Include="Areas\VendorStore\Views\Cart\VoucherPartial.cshtml" />
     <Content Include="Areas\KL_Admin\Views\Vendors\EditVendorDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Home\ChooseType.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP2.pubxml" />

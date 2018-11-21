@@ -32,9 +32,12 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register as a Vendor", "Register", "Home",
-           routeValues: new { area = "Vendors" }, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Register as a Vendor", "ChooseType", "Home",
+                routeValues: new { area = "Vendors" }, htmlAttributes: new { id = "registerLink" })
+        </li>
         <li>@Html.ActionLink("Log in", "Login", "Account",
-           routeValues: new { area = "", returnUrl = Request.Url.PathAndQuery }, htmlAttributes: new { id = "loginLink" })</li>
+                routeValues: new { area = "", returnUrl = Request.Url.PathAndQuery }, 
+                htmlAttributes: new { id = "loginLink" })
+        </li>
     </ul>
 }

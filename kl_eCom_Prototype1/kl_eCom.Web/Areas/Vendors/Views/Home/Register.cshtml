@@ -1,4 +1,5 @@
 ﻿@model kl_eCom.Web.Areas.Vendors.Models.HomeRegisterViewModel
+
 @{
     ViewBag.Title = "Register";
 }
@@ -11,52 +12,11 @@
     @Html.ValidationSummary()
     
 <div class="form-horizontal">
-
-    <div class="form-group">
+    <div class="form-group" style="margin-top: 35px">
         @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(m => m.UserName, "", new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.BusinessOwnerFirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.BusinessOwnerFirstName, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.BusinessOwnerFirstName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.BusinessOwnerLastName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.BusinessOwnerLastName, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.BusinessOwnerLastName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.BusinessName, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.BusinessName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(m => m.Email, "", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Mobile, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Mobile, "", new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -70,6 +30,57 @@
         </div>
     </div>
 
+    <label style="font-weight: bold">Owner's Details</label>
+    <div style="border: 2px solid grey; padding: 15px 10px 0; margin-bottom: 20px">
+        <div class="form-group">
+            @Html.LabelFor(m => m.BusinessOwnerFirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.BusinessOwnerFirstName, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.BusinessOwnerFirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.BusinessOwnerLastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.BusinessOwnerLastName, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.BusinessOwnerLastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.DOB, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.BusinessName, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.BusinessName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Email, "", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Mobile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Mobile, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
     <div class="form-group">
         @Html.LabelFor(m => m.WebsiteUrl, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -80,6 +91,7 @@
     </div>
 
     <h4>Address:</h4>
+    <hr />
 
     <div class="form-group">
         @Html.LabelFor(m => m.Line1, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -114,10 +126,6 @@
     </div>
 
     <div>
-        <div class="col-md-offset-2" style="position: relative; left: 5px">
-            @Html.EditorFor(m => m.IsNewAddress, new { htmlAttributes = new { id = "newAddrCheck" } })
-            <label>Country, state, or city not present</label>
-        </div>
         <div id="dropdownAddr">
             <div class="form-group">
                 @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -146,32 +154,6 @@
                 </div>
             </div>
         </div>
-        <div id="textboxAddr">
-            <div class="form-group">
-                @Html.Label("Country", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m.CountryName, new { htmlAttributes = new { @class = "form-control",
-                id = "CountryTxt" } })
-                    @Html.ValidationMessageFor(m => m.CountryName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("State", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m.StateName, new { htmlAttributes = new { @class = "form-control",
-                id = "StateTxt" } })
-                    @Html.ValidationMessageFor(m => m.StateName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("City", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m.CityName, new { htmlAttributes = new { @class = "form-control",
-                id = "CityTxt" } })
-                    @Html.ValidationMessageFor(m => m.CityName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
     </div>
 
     <input type="submit" class="col-md-offset-2 btn btn-primary" value="Register" />
@@ -180,11 +162,13 @@
 
 @section scripts {
 <script>
+
     $(document).ready(function () {
         $("#textboxAddr").hide();
 
         $('#showPswrd').click(function () {
             var checked = $(this).is(":checked");
+            
             if (checked) {
                 $("#password").attr("type", "text");
             } else {
@@ -234,17 +218,6 @@
                         });
                     };
                 });
-            }
-        });
-
-        $("#newAddrCheck").click(function () {
-            if ($("#newAddrCheck").prop("checked") == true) {
-                $('#dropdownAddr').hide();
-                $('#textboxAddr').show();
-            }
-            else {
-                $('#dropdownAddr').show();
-                $('#textboxAddr').hide();
             }
         });
     });

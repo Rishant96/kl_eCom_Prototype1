@@ -26,6 +26,29 @@
         </div>
     }
 
+    <div>
+        @if (!ViewBag.IsPhoneVerified)
+        {
+            <text>To verify your mobile number, please click </text>
+            @Html.ActionLink("here", "VerifyMobile")
+            <text>.</text>
+            <br />
+        }
+    </div>
+
+    <div>
+        @if (!ViewBag.IsEmailVerified)
+        {
+            <text>To verify your email address, please click </text>
+            @Html.ActionLink("here", "VerifyEmail")
+            <text>.</text>
+            <br />
+        }
+    </div>
+
+    <br />
+    <br />
+    
     @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" }, new { style = "display: block" })
 
     <br />

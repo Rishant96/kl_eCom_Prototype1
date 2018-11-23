@@ -132,10 +132,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         public ActionResult Register(string id = "", 
                 string datetimestr = "", bool? isGST = null)
         {
+            if (isGST is null) return View("Error");
+
             // External Urls
             var datetimeparts = datetimestr.Split('_');
-            var b = 1;
             DateTime? datetime = null;
+            
             try
             {
                 datetime = new DateTime(int.Parse(datetimeparts[2]),
@@ -181,7 +183,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 TimeStamp = datetime,
                 Countries = countries,
                 States = states,
-                Cities = cities
+                Cities = cities,
+                IsGST = (bool) isGST
             });
         }
 
@@ -212,6 +215,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     LastName = model.BusinessOwnerLastName,
                     PhoneNumber = model.Mobile,
                     DOB = model.DOB,
+                    IsActive = false
                     //PrimaryRole = "Vendor",
                     //VendorDetails = new Utilities.VendorDetails
                     //{
@@ -228,7 +232,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     var ecomUser = db.EcomUsers.Add(new EcomUser {
                         ApplicationUserId = vendor.Id,
                         PrimaryRole = "Vendor",
-                        IsActive = true,    
+                        IsActive = false,    
                         VendorDetails = new Utilities.VendorDetails
                         {
                             BusinessName = model.BusinessName,

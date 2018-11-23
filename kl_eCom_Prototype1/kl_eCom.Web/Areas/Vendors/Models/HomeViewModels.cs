@@ -36,6 +36,11 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string Email { get; set; }
 
         [Required]
+        public bool IsGST { get; set; }
+
+        public string GST_Number { get; set; }
+        
+        [Required]
         [Display(Name = "Mobile No.")]
         [DataType(DataType.PhoneNumber, ErrorMessage = "Please enter a valid mobile number")]
         [MaxLength(10, ErrorMessage = "Please enter a 10 digit mobile number")]

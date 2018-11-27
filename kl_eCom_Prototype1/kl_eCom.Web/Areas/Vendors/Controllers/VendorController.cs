@@ -13,6 +13,7 @@ using kl_eCom.Web.Utilities;
 using System.Web.ModelBinding;
 using System.Net.Mail;
 using System.Net;
+using System.Threading;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 { 
@@ -124,14 +125,17 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             // All possible characters of my OTP 
             string str = "abcdefghijklmnopqrstuvwxyzABCD"
-               + "EFGHIJKLMNOPQRSTUVWXYZ0123456789";
+               + "EFGHIJKLMNOPQRSTUVWXYZ";
             int n = str.Length;
 
             // String to hold my OTP 
             string OTP = "";
 
             for (int i = 1; i <= len; i++)
-                OTP += (str[(new Random()).Next(26)]);
+            {
+                OTP += (str[(new Random()).Next(n)]);
+                Thread.Sleep(100);
+            }
 
             return (OTP);
         }
@@ -146,7 +150,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             string OTP = "";
 
             for (int i = 1; i <= len; i++)
-                OTP += (str[(new Random()).Next(10)]);
+                OTP += (str[(new Random()).Next(n)]);
 
             return (OTP);
         }
@@ -168,9 +172,10 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
 
             FireEmail(ecomUser.User.Email,
                 "Email Verification Mail", "Please click the link below in order to verify your email,\n\n"
-                + "http://khushlifeecom.azurewebsites.net" + Url.Action("VerifyEmailConfirm", 
+                + /*"http://khushlifeecom.azurewebsites.net"*/ "http://localhost:50208"
+                + Url.Action("VerifyEmailConfirm", 
                 new { userId = ecomUser.ApplicationUserId, secret = ecomUser.User.EmailCode }));
-
+            
             db.Entry(ecomUser).State = EntityState.Modified;
             db.SaveChanges();
 

@@ -697,6 +697,10 @@
     <Content Include="Views\Shop\ByProducts.cshtml" />
     <Content Include="Views\Shop\KL_Categories_Partial.cshtml" />
     <Content Include="Views\Blobs\Index.cshtml" />
+    <Content Include="Views\Customer\CustomerProfile.cshtml" />
+    <Content Include="Views\Customer\EditProfile.cshtml" />
+    <Content Include="Views\Customer\VerifyEmail.cshtml" />
+    <Content Include="Views\Customer\VerifyEmailConfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />

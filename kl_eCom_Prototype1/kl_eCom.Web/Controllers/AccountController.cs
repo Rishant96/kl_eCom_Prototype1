@@ -188,7 +188,8 @@ namespace kl_eCom.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email,
-                EmailCode = "000000", OtpCode = "0000"};
+                EmailCode = "000000", OtpCode = "0000", DateCreated = DateTime.Now };
+
                 user.FirstName = "No";
                 user.LastName = "Name";
 

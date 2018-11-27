@@ -215,7 +215,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     LastName = model.BusinessOwnerLastName,
                     PhoneNumber = model.Mobile,
                     DOB = model.DOB,
-                    IsActive = false
+                    IsActive = false,
+                    DateCreated = DateTime.Now,
                     //PrimaryRole = "Vendor",
                     //VendorDetails = new Utilities.VendorDetails
                     //{

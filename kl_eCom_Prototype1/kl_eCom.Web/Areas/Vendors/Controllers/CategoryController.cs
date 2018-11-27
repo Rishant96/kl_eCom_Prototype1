@@ -26,7 +26,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             if (id == null) return RedirectToAction("Index", controllerName: "Store");
             ViewBag.storeId = (int)id;
-            var model = db.Categories.Where(m => m.StoreId == (int)id).Include(m => m.Attributes).ToList();
+            var model = db.Categories.Include(m => m.Attributes).Where(m => m.StoreId == (int)id).ToList();
             return View(model);
         }
         

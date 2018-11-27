@@ -327,6 +327,10 @@
     <Compile Include="Migrations\201811020650564_Payment_models_changed_2.Designer.cs">
       <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811270919050_new_migration.cs" />
+    <Compile Include="Migrations\201811270919050_new_migration.Designer.cs">
+      <DependentUpon>201811270919050_new_migration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
@@ -769,6 +773,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811020650564_Payment_models_changed_2.resx">
       <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811270919050_new_migration.resx">
+      <DependentUpon>201811270919050_new_migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

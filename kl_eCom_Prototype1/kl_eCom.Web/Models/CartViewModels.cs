@@ -26,7 +26,7 @@ namespace kl_eCom.Web.Models
     public class CartVoucherViewModel
     {
         [Required]
-        public string VoucherName { get; set; }
+        public string VoucherName { get; set; } 
     }
 
     public class CheckoutViewModel

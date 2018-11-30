@@ -195,10 +195,18 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (ecomUser is null) return View("Error");
 
 
-            if (string.IsNullOrEmpty(secret) || secret != ecomUser.User.EmailCode)
+            if (string.IsNullOrEmpty(secret))
+                return View("Error");
+            else if (ecomUser.User.EmailConfirmed && secret == ecomUser.User.EmailCode)
+            {
+                // flag
+                return View("Error");
+            }
+            else if (secret != ecomUser.User.EmailCode)
                 return View("Error");
 
             ecomUser.User.EmailConfirmed = true;
+            ecomUser.User.EmailCode = generateStringOTP(6);
             db.Entry(ecomUser).State = EntityState.Modified;
 
             db.SaveChanges();

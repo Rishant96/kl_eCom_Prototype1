@@ -13,8 +13,8 @@
             <div class="alert alert-danger alert-dismissible" style="width: 800px;">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong>Cart Updated!</strong> @Html.ActionLink((string)ViewBag.ProdName,
-                    "ProductDetails", "Shop", new { id = (int)ViewBag.StockId },
-                    null) was deleted successfully.
+"ProductDetails", "Shop", new { id = (int)ViewBag.StockId },
+null) was deleted successfully.
             </div>
         </text>
     }
@@ -33,73 +33,80 @@
     {
         @Html.AntiForgeryToken()
 
-    <table class="table">
-        <tr>
-            <th>
-
-            </th>
-            <th>
-                @Html.Label("Name")
-            </th>
-            <th>
-                @Html.Label("Qty")
-            </th>
-            <th>
-                @Html.Label("Cost")
-            </th>
-            <th>
-
-            </th>
-        </tr>
-
-        @if (Model.Cart.CartItems == null)
-        {
-            Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
-        }
-
-        @foreach (var itm in Model.Cart.CartItems)
-        {
+        <table class="table">
             <tr>
-                <td>
-                    @*<img class="img-thumbnail" width="45" height="45"
-                        src="@Url.Action("GetThumbnail", "Product",
-                           new { id = itm.Stock.ProductId  })" />*@
-                </td>
-                <td>
-                    @Html.ActionLink(Model.ProductNames[itm], "ProductDetails",
-                     "Shop", new { id = itm.StockId }, null)
-                </td>
-                <td>
-                    <select name="Stock_Qtys" style="min-width: 38px">
-                        @for (int i=1; i<=Model.Product_MaxAllowed[itm]; i++)
-                        {
-                            <text><option value="@i" 
-                                  @if (itm.Qty == i) { <text>selected</text> }
-                            >@i</option> 
-                            </text>
-                        }
-                    </select>
-                </td>
-                <td>
-                    <text>@Model.Prices[itm]</text>
-                </td>
-                <td>
-                    @Html.ActionLink("Remove", "Delete", new { id = itm.StockId, return_Url = ViewBag.ReturnUrl })
-                </td>
+                <th>
+
+                </th>
+                <th>
+                    @Html.Label("Name")
+                </th>
+                <th>
+                    @Html.Label("Qty")
+                </th>
+                <th>
+                    @Html.Label("Cost")
+                </th>
+                <th>
+
+                </th>
             </tr>
-        }
-    </table>
 
-    <div class="col-md-offset-10">
-        <input type="submit" class="btn btn-link" value="Update Cart" />   
-    </div>
-    }
+            @if (Model.Cart.CartItems == null)
+            {
+                Model.Cart.CartItems = new List<kl_eCom.Web.Utilities.CartItem>();
+            }
+
+            @foreach (var itm in Model.Cart.CartItems)
+            {
+                <tr>
+                    <td>
+                        @*<img class="img-thumbnail" width="45" height="45"
+                            src="@Url.Action("GetThumbnail", "Product",
+                               new { id = itm.Stock.ProductId  })" />*@
+                    </td>
+                    <td>
+                        @Html.ActionLink(Model.ProductNames[itm], "ProductDetails",
+                  "Shop", new { id = itm.StockId }, null)
+                    </td>
+                    <td>
+                        <select name="Stock_Qtys" style="min-width: 38px">
+                            @for (int i = 1; i <= Model.Product_MaxAllowed[itm]; i++)
+                            {
+                                <text>
+                                    <option value="@i"
+                                            @if (itm.Qty == i)
+                                            { <text> selected</text> }>
+                                        @i
+                                        </option>
+                                </text>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <text>@Model.Prices[itm]</text>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Remove", "Delete", new { id = itm.StockId, return_Url = ViewBag.ReturnUrl })
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="col-md-offset-10">
+            <input type="submit" class="btn btn-link" value="Update Cart" />
+        </div>
+     }
+
     <div>
-        @Html.Partial("VoucherPartial", new kl_eCom.Web.Models.CartVoucherViewModel())
-        <text style="text-decoration: underline">Applied Vouchers</text> : @ViewBag.Vouchers<br />
+        <div>
+            @Html.Partial("VoucherPartial", new kl_eCom.Web.Models.CartVoucherViewModel())
+            <text style="text-decoration: underline">Applied Vouchers</text> : @ViewBag.Vouchers<br />
+        </div>
     </div>
+    
 
-    <div class="row">
+    <div class="row" style="margin-top: 15px">
         <div class="col-md-3 text-right">
             @*<input type="submit" value="Save Cart" class="btn btn-success" />*@
         </div>

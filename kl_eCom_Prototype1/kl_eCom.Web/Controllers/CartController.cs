@@ -27,6 +27,7 @@ namespace kl_eCom.Web.Controllers
 
             var prices = new Dictionary<CartItem, string>();
             var names = new Dictionary<CartItem, string>();
+            var max_amounts = new Dictionary<CartItem, int>();
 
             ViewBag.Flag = flag;
             if (flag)
@@ -41,12 +42,15 @@ namespace kl_eCom.Web.Controllers
             {
                 if (itm.StockId != null)
                 {
-                    var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId);
-                    var cost = itm.Qty * stock.Price;
-                    var prod = db.Products.FirstOrDefault(m => m.Id == stock.ProductId);
-                    names.Add(itm, prod.Name);
+                    var stock = db.Stocks.FirstOrDefault(m => m.Id == itm.StockId); 
+                    var cost = itm.Qty * stock.GetPrice(); 
+                    var prod = db.Products.FirstOrDefault(m => m.Id == stock.ProductId); 
+                    
+                    names.Add(itm, prod.Name); 
                     prices.Add(itm, cost.ToString());
-                    total += cost;
+                    max_amounts.Add(itm, (stock.CurrentStock > stock.MaxAmtPerUser) ? stock.MaxAmtPerUser
+                        : stock.CurrentStock);
+                    total += cost; 
                 }
                 else
                 {
@@ -154,8 +158,45 @@ namespace kl_eCom.Web.Controllers
                 Cart = cart,
                 TotalCost = total,
                 Prices = prices,
-                ProductNames = names
+                ProductNames = names,
+                Product_MaxAllowed = max_amounts
             });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(CartIndexViewModel model)
+        {
+            var qtys = Request.Form["Stock_Qtys"];
+            var qty_arr = qtys.Split(',').Select(sValue => int.Parse(sValue.Trim())).ToArray() as int[];
+            if (qty_arr is null) qty_arr = new int[] { };
+
+            var cart = GetCart();
+
+            if (cart.CartItems is null || cart.CartItems.Count != qty_arr.Count())
+            {
+                return View("Error");
+            }
+
+            for (int i = 0; i < qty_arr.Count(); i++)
+            {
+                cart.CartItems.ElementAt(i).Qty = qty_arr[i];
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                db.Entry(cart).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            else if (HttpContext.Request.Cookies["guestCart"] is HttpCookie cookie)
+            {
+                var cartCookie = JsonConvert.SerializeObject(cart);
+                cookie.Value = cartCookie;
+                cookie.Expires = DateTime.Now.AddMinutes(60);
+                Response.Cookies.Add(cookie);
+            }
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult Delete(int? id, string return_Url)

@@ -508,6 +508,12 @@ namespace kl_eCom.Web.Controllers
                     model.Stocks.Remove(stock);
                 }
             }
+
+            if (queryOptions.Sort == "Id ASC")
+            {
+                model.Stocks.Sort();
+            }
+
             if (model.Breadcrum != null)
             {
                 model.Breadcrum.Add(store.Name, store.Id);

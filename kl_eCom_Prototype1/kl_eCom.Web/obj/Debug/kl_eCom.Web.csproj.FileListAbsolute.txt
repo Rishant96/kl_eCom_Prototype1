@@ -431,7 +431,6 @@ C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\Microsoft.VisualBasic.Core.targets
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\Microsoft.Win32.Primitives.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.AppContext.dll
-C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Collections.Immutable.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Console.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Diagnostics.Process.dll
@@ -652,4 +651,6 @@ C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.pdb
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.IO.FileSystem.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.IO.FileSystem.Primitives.dll
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Collections.Immutable.dll
 C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\Rishant\Source\Repos\kl_eCom_Prototype1\kl_eCom_Prototype1\kl_eCom.Web\obj\Debug\kl_eCom.Web.csprojAssemblyReference.cache

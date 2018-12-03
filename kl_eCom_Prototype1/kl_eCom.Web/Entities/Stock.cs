@@ -10,7 +10,7 @@ using kl_eCom.Web.Utilities;
 
 namespace kl_eCom.Web.Entities
 {
-    public class Stock
+    public class Stock : IComparable<Stock>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -40,7 +40,28 @@ namespace kl_eCom.Web.Entities
         public int MaxAmtPerUser { get; set; }
 
         public StockStatus Status { get; set; }
-        
+
+        public int CompareTo(Stock other)
+        {
+            if (other is null)
+                return 1;
+            else
+            {
+                if (this.Product == null || other.Product == null)
+                {
+                    ApplicationDbContext db = new ApplicationDbContext();
+
+                    if (this.Product is null)
+                        this.Product = db.Products.FirstOrDefault(m => m.Id == this.ProductId);
+                    
+                    if (other.Product is null)
+                        other.Product = db.Products.FirstOrDefault(m => m.Id == other.ProductId);
+                }
+                
+                return this.Product.Name.CompareTo(other.Product.Name);
+            }
+        }
+
         public float GetPrice()
         {
             float price = this.Price;

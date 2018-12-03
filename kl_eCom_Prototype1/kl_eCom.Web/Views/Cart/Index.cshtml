@@ -70,7 +70,7 @@
                      "Shop", new { id = itm.StockId }, null)
                 </td>
                 <td>
-                    <select name="Stock_Qtys">
+                    <select name="Stock_Qtys" style="min-width: 38px">
                         @for (int i=1; i<=Model.Product_MaxAllowed[itm]; i++)
                         {
                             <text><option value="@i" 

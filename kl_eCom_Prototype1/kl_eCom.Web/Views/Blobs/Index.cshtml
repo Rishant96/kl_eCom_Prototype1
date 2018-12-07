@@ -9,3 +9,61 @@
 Creation of @ViewBag.BlobContainerName @(ViewBag.Success == true ? "succeeded" : "failed")
 
 <li>@Html.ActionLink("Create blob container", "CreateBlobContainer", "Blobs")</li>
+
+<!--
+    
+Java -
+
+class Animal {
+    public string eat() {
+        return "Animal eating";
+    }
+
+    public string makeNoise() {
+        return "Animal sound";
+    }
+}
+
+class Canine inherits Animal {
+    public string species;
+}
+
+class Dog inherits Canine {
+    public override string eat() {
+        return "Dog eating";
+    }     
+
+    public void Bark() {
+    }
+}
+
+class Driver {
+    public static void Main(String[] args) {
+        Animal a = new Animal();
+        a.eat();
+
+        // Animal eating
+
+        Dog d = new Dog();
+        d.eat();
+        
+        // Dog eating
+
+        a = d;
+
+        a.eat();
+
+        // Dog eating
+
+        a.makeNoise();
+
+        // Animal Noise
+
+        a = new Animal();
+        
+        a.eat();
+
+        // Animal eating
+    }    
+}
+-->

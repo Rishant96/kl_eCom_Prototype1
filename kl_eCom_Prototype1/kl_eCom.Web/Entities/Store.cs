@@ -25,6 +25,9 @@ namespace kl_eCom.Web.Entities
         public string DefaultCurrencyType { get; set; }
 
         [Required]
+        public bool IsPurchasable { get; set; }
+
+        [Required]
         public int EcomUserId { get; set; }
         public EcomUser Vendor { get; set; }
     }

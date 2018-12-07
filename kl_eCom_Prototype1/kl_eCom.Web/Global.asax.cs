@@ -1,4 +1,6 @@
 ﻿using kl_eCom.Web.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +25,7 @@ namespace kl_eCom.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-	protected void Application_PreSendRequestHeaders()
+        protected void Application_PreSendRequestHeaders()
         {
             Response.Headers.Remove("X-Frame-Options");
             Response.AddHeader("X-Frame-Options", "AllowAll");
@@ -31,6 +33,13 @@ namespace kl_eCom.Web
 
         protected void Application_BeginRequest()
         {
+            if (Request.Url.Segments.Count() > 1
+                    && Request.Url.Segments[1] == "VendorStore/")
+            {
+                //var ApplicationUserManager = this.Context.GetOwinContext().Authentication;
+                //ApplicationUserManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            }
         }
     }
 }

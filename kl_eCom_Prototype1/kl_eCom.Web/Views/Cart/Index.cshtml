@@ -69,21 +69,20 @@ null) was deleted successfully.
                         @Html.ActionLink(Model.ProductNames[itm], "ProductDetails",
                   "Shop", new { id = itm.StockId }, null)
                     </td>
-                    <td>
-                        <select name="Stock_Qtys" style="min-width: 38px">
+                    <td style="min-width: 100px; max-width: 100px">
+                        <select name="Stock_Qtys" class="Stock_Qtys" style="min-width: 38px">
                             @for (int i = 1; i <= Model.Product_MaxAllowed[itm]; i++)
                             {
                                 <text>
                                     <option value="@i"
-                                            @if (itm.Qty == i)
-                                            { <text> selected</text> }>
+                                            @if (itm.Qty == i) { <text> selected</text> }>
                                         @i
-                                        </option>
+                                    </option>
                                 </text>
                             }
                         </select>
                     </td>
-                    <td>
+                    <td style="max-width: 100px; min-width: 100px">
                         <text>@Model.Prices[itm]</text>
                     </td>
                     <td>
@@ -96,7 +95,7 @@ null) was deleted successfully.
         <div class="col-md-offset-10">
             <input type="submit" class="btn btn-link" value="Update Cart" />
         </div>
-     }
+    }
 
     <div>
         <div>
@@ -104,7 +103,7 @@ null) was deleted successfully.
             <text style="text-decoration: underline">Applied Vouchers</text> : @ViewBag.Vouchers<br />
         </div>
     </div>
-    
+
 
     <div class="row" style="margin-top: 15px">
         <div class="col-md-3 text-right">
@@ -112,7 +111,7 @@ null) was deleted successfully.
         </div>
         <div class="col-md-3 text-center">
             @Html.Label("Total Cost: ")
-            @Html.DisplayFor(m => m.TotalCost)
+            @Html.DisplayFor(m => m.TotalCost, new { htmlAttributes = new { id = "total_cost" } })
         </div>
         <div class="col-md-6 text-center">
             @Html.ActionLink("Checkout", "Checkout", null, new { @class = "btn btn-primary" })
@@ -121,3 +120,18 @@ null) was deleted successfully.
 
     @Html.ActionLink("Continue Shopping", "ContinueShopping", new { returnUrl = ViewBag.ReturnUrl })
 </div>
+
+@section scripts {
+  <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+  <script src="~/Scripts/jquery-3.3.1.js"></script>
+
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $("select.Stock_Qtys").change(function () {
+              // alert("changed");
+              // var selectedQty = parseInt($(this).children("option:selected").val());
+              // alert(('#total_cost').val() * selectedQty);
+          });
+      });
+  </script>
+}

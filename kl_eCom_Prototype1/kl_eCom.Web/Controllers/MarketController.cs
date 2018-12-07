@@ -18,7 +18,8 @@ namespace kl_eCom.Web.Controllers
         // GET: Market
         public ActionResult Index()
         {
-            var vendors = (db.Roles.FirstOrDefault(m => m.Name == "Vendor")).Users;
+            var vendors = (db.Roles.OrderBy(m => m.Name)
+                .FirstOrDefault(m => m.Name == "Vendor")).Users;
             var model = new MarketIndexViewModel { Vendors = new Dictionary<string, string>() };
             foreach (var vendor in vendors)
             {
@@ -48,7 +49,8 @@ namespace kl_eCom.Web.Controllers
             }
             if (string.IsNullOrEmpty(vendorId))
                 return View("Index");
-            var user = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == vendorId);
+            var user = db.EcomUsers
+                .FirstOrDefault(m => m.ApplicationUserId == vendorId);
             if (user is null) return View("Error");
             var shops = db.Stores.Where(m => m.EcomUserId == user.Id).ToList();
             if (shops.Count == 1) return RedirectToAction("Index", "Shop", new { id = shops.First().Id });

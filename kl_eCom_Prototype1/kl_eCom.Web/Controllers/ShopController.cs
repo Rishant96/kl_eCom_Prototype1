@@ -37,14 +37,16 @@ namespace kl_eCom.Web.Controllers
             model.Breadcrum.Add(store.Name, store.Id);
             if (catId == null)
             {
-                model.Categories = db.Categories.Where(m => m.StoreId == id && m.IsBase == true).ToList();
+                model.Categories = db.Categories.OrderBy("Name")
+                    .Where(m => m.StoreId == id && m.IsBase == true).ToList();
             }
             else
             {
                 var parentCat = db.Categories.FirstOrDefault(m => m.Id == catId);
                 if (parentCat == null) return View("Error");
                 model.Breadcrum.Add(parentCat.Name, parentCat.Id);
-                model.Categories = db.Categories.Where(m => m.CategoryId == catId).ToList();
+                model.Categories = db.Categories.OrderBy("Name")
+                    .Where(m => m.CategoryId == catId).ToList();
             }
             foreach (var cat in model.Categories)
             {

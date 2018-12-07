@@ -37,6 +37,9 @@ namespace kl_eCom.Web.Models
         public bool IsActive { get; set; }
 
         [Required]
+        public bool IsPurchasable { get; set; }
+
+        [Required]
         public string EmailCode { get; set; }
 
         [Required]

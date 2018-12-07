@@ -26,6 +26,9 @@ namespace kl_eCom.Web.Entities
         public byte[] ThumbnailData { get; set; }
         public string ThumbnailMimeType { get; set; }
         
+        [Required]
+        public bool IsPurchasable { get; set; }
+
         public int? CategoryId { get; set; }
         public virtual Category Parent { get; set; }
 

@@ -31,7 +31,7 @@
                         else
                         {
                             <img id="@string.Format("Img{0}", j++)" class="img-thumbnail thumb-images"
-                                 style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
+                                 style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;border-color: #e77600"
                                  src="@Model.Stock.Product.ThumbnailPath" />
                         }
                     </div>
@@ -56,9 +56,9 @@
                     <div>
                         <h2>@Model.Stock.Product.Name</h2>
                     </div>
-                    <div>
+                    @*<div>
                         <label style="margin-right: 10px">Rating: </label>@Model.Stock.Product.Rating
-                    </div>
+                    </div>*@
                     <div>
                         <label style="margin-right: 10px">Manufacturer: </label>@Model.Stock.Product.Manufacturer
                     </div>
@@ -128,161 +128,172 @@
         </div>
         <div class="row">
             <div class="col-md-6" style="margin-top: 25px">
-                @Html.Label("Product Specifications:") <br />
+             
+                    @Html.Label("Product Specifications:") <br />
                 <table class="table" style="width: 85%; text-align: center">
-                        @if (Model.Stock.Product.Category
-                                .Attributes == null 
-                            ||
-                            Model.Stock.Product.Category
-                            .Attributes.Count == 0)
+                    @if (Model.Stock.Product.Category
+                            .Attributes == null
+                        ||
+                        Model.Stock.Product.Category
+                        .Attributes.Count == 0)
+                    {
+                        <text>Not Available</text>
+                    }
+                    else
+                    {
+                        for (int i = 0; i < (Model.Stock
+                                .Product.Category
+                                .Attributes.Count); i++)
                         {
-                            <text>Empty</text>
-                        }
-                        else
-                        {
-                            for (int i = 0; i < (Model.Stock
-                                    .Product.Category
-                                    .Attributes.Count); i++)
-                            {
                             <tr>
                                 <td style="font-weight: bold;">
                                     @Model.Stock.Product.Category.Attributes.ElementAt(i).Name
                                 </td>
                                 <td>
                                     @((Model.Stock.Product.Specifications.FirstOrDefault(m => m.Name
-                                        == Model.Stock.Product.Category.Attributes.ElementAt(i).Name) ?? 
-                                            new kl_eCom.Web.Utilities.Specification { Value = "-" }).Value)
+                                                == Model.Stock.Product.Category.Attributes.ElementAt(i).Name) ??
+                                                    new kl_eCom.Web.Utilities.Specification { Value = "-" }).Value)
                                 </td>
                             </tr>
-                            }
                         }
+                    }
                 </table>
             </div>
             <div class="col-md-6" style="margin-top: 25px">
-                @Html.Label("Discounts:")
+                @Html.Label("Discounts:")<br />
+                @if ( Model.BundleDiscounts.Count== 0)
+                {
+                    <text>Not Available</text>
+                }
                 @if (Model.BundleDiscounts.Count > 0)
                 {
-                <div>
                     <div>
-                        <label>Bundles</label>
-                    </div>
-                    @foreach (var bundle in Model.BundleDiscounts)
-                    {
-                        int i = 0;
-                        foreach (var stock in Model.BundleStocks[bundle])
+                        <div>
+                            <label>Bundles</label>
+                        </div>
+                        @foreach (var bundle in Model.BundleDiscounts)
                         {
-                            <text>@stock.Product.Name</text>
-                            if (Model.BundleStocks[bundle].Count != ++i)
+                            int i = 0;
+                            foreach (var stock in Model.BundleStocks[bundle])
                             {
-                                <text> + </text>
+                                <text>@stock.Product.Name</text>
+                                if (Model.BundleStocks[bundle].Count != ++i)
+                                {
+                                    <text> + </text>
+                                }
                             }
-                        }
-                        <text> = </text>
-                        <text>
-                            <text style="text-decoration: line-through">
-                                @Model.BundleOldPrices[bundle]    
+                            <text> = </text>
+                            <text>
+                                <text style="text-decoration: line-through">
+                                    @Model.BundleOldPrices[bundle]
+                                </text>
                             </text>
-                        </text>
-                        <text><text style="margin-left: 5px">@Model.BundleNewPrices[bundle]</text></text>
-                        using (Html.BeginForm("BundleOrder", "Shop", new { id = bundle.Id,
-                                returnUrl = Request.Url.PathAndQuery },
-                            FormMethod.Post, null))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="submit" class="btn btn-default"
-                                   style="display: inline-block" value="Add to cart" />
+                            <text><text style="margin-left: 5px">@Model.BundleNewPrices[bundle]</text></text>
+                            using (Html.BeginForm("BundleOrder", "Shop", new
+                            {
+                                id = bundle.Id,
+                                returnUrl = Request.Url.PathAndQuery
+                            },
+                                FormMethod.Post, null))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="submit" class="btn btn-default"
+                                       style="display: inline-block" value="Add to cart" />
+                            }
+                            <br />
                         }
-                        <br />
-                    }
-                </div>
+                    </div>
                 }
                 @if (Model.MinOrderDiscounts.Count > 0)
                 {
-                <div>
                     <div>
-                        <label>Minimum Orders</label>
-                    </div>
-                    <table class="table">
-                        <tr>
-                            <th>Description</th>
-                            <th>Discount</th>
-                        </tr>
-                        @foreach (var minOrder in Model.MinOrderDiscounts)
-                        {
-                            <tr>
-                                <td>
-                                    @minOrder.Discount.Description
-                                </td>
-                                <td>
-                                    @if (minOrder.Discount.IsPercent)
-                                    {
-                                        <text>@minOrder.Discount.Value</text>
-                                        <text>% Off</text>
-                                    }
-                                    else
-                                    {
-                                        <text>@minOrder.Discount.Store.DefaultCurrencyType </text>
-                                        <text>@minOrder.Discount.Value</text>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                        </table>
-                </div>
-                }
-                @if (Model.MinQtyDiscounts.Count > 0)
-                {
-                <div>
-                    <div>
-                        <label>Bulk Orders</label>
-                    </div>
-                    <div>
+                        <div>
+                            <label>Minimum Orders</label>
+                        </div>
                         <table class="table">
                             <tr>
-                                <th>
-                                    Quantity
-                                </th>
-                                <th>
-                                    Discount
-                                </th>
-                                <th>
-
-                                </th>
+                                <th>Description</th>
+                                <th>Discount</th>
                             </tr>
-                            @foreach (var minQty in Model.MinQtyDiscounts)
+                            @foreach (var minOrder in Model.MinOrderDiscounts)
                             {
                                 <tr>
                                     <td>
-                                        <text>@minQty.MinQty Items</text>
+                                        @minOrder.Discount.Description
                                     </td>
                                     <td>
-                                        @if (minQty.Discount.IsPercent)
+                                        @if (minOrder.Discount.IsPercent)
                                         {
-                                            <text>@minQty.Discount.Value</text>
+                                            <text>@minOrder.Discount.Value</text>
                                             <text>% Off</text>
                                         }
                                         else
                                         {
-                                            <text>@minQty.Discount.Store.DefaultCurrencyType </text>
-                                            <text>@minQty.Discount.Value</text>
-                                        }
-                                    </td>
-                                    <td>
-                                        @using (Html.BeginForm("BulkOrder", "Shop", new { id = minQty.Id,
-                                            stockId = Model.StockId,
-                                            returnUrl = Request.Url.PathAndQuery },
-                                            FormMethod.Post, null))
-                                        {
-                                        @Html.AntiForgeryToken()
-                                        <input type="submit" class="btn btn-default"
-                                               style="display: inline-block" value="Add to Cart" />
+                                            <text>@minOrder.Discount.Store.DefaultCurrencyType </text>
+                                            <text>@minOrder.Discount.Value</text>
                                         }
                                     </td>
                                 </tr>
                             }
                         </table>
                     </div>
-                </div>
+                }
+                @if (Model.MinQtyDiscounts.Count > 0)
+                {
+                    <div>
+                        <div>
+                            <label>Bulk Orders</label>
+                        </div>
+                        <div>
+                            <table class="table">
+                                <tr>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                    <th>
+                                        Discount
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                                @foreach (var minQty in Model.MinQtyDiscounts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <text>@minQty.MinQty Items</text>
+                                        </td>
+                                        <td>
+                                            @if (minQty.Discount.IsPercent)
+                                            {
+                                                <text>@minQty.Discount.Value</text>
+                                                <text>% Off</text>
+                                            }
+                                            else
+                                            {
+                                                <text>@minQty.Discount.Store.DefaultCurrencyType </text>
+                                                <text>@minQty.Discount.Value</text>
+                                            }
+                                        </td>
+                                        <td>
+                                            @using (Html.BeginForm("BulkOrder", "Shop", new
+                                            {
+                                                id = minQty.Id,
+                                                stockId = Model.StockId,
+                                                returnUrl = Request.Url.PathAndQuery
+                                            },
+                                                FormMethod.Post, null))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="submit" class="btn btn-default"
+                                                       style="display: inline-block" value="Add to Cart" />
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
                 }
             </div>
         </div>

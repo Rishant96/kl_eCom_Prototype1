@@ -22,11 +22,13 @@ namespace kl_eCom.Web.Controllers
             var model = new MarketIndexViewModel { Vendors = new Dictionary<string, string>() };
             foreach (var vendor in vendors)
             {
+                if (vendor is null) continue;
                 var v = db.EcomUsers
                     .Include(m => m.Stores)
                     .Include(m => m.VendorDetails)
                     .FirstOrDefault(m => m.ApplicationUserId == vendor.UserId);
-                if(v.Stores.Count > 0) 
+
+                if (v != null && v.Stores != null && v.Stores.Count > 0)
                     model.Vendors.Add(v.ApplicationUserId, 
                         v.VendorDetails.BusinessName);
             }

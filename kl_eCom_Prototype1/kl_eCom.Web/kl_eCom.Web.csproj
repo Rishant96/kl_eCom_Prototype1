@@ -293,29 +293,21 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201810010926522_Init.cs" />
-    <Compile Include="Migrations\201810010926522_Init.Designer.cs">
-      <DependentUpon>201810010926522_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201811150634366_init12.cs" />
+    <Compile Include="Migrations\201811150634366_init12.Designer.cs">
+      <DependentUpon>201811150634366_init12.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201810291045077_company_logo.cs" />
-    <Compile Include="Migrations\201810291045077_company_logo.Designer.cs">
-      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
+    <Compile Include="Migrations\201811150644399_init1.cs" />
+    <Compile Include="Migrations\201811150644399_init1.Designer.cs">
+      <DependentUpon>201811150644399_init1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201810291102389_company_logo_2.cs" />
-    <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
-      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
+    <Compile Include="Migrations\201811150728362_init11.cs" />
+    <Compile Include="Migrations\201811150728362_init11.Designer.cs">
+      <DependentUpon>201811150728362_init11.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201811010537199_trial.cs" />
-    <Compile Include="Migrations\201811010537199_trial.Designer.cs">
-      <DependentUpon>201811010537199_trial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811010616499_trial1.cs" />
-    <Compile Include="Migrations\201811010616499_trial1.Designer.cs">
-      <DependentUpon>201811010616499_trial1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811010723578_trial2.cs" />
-    <Compile Include="Migrations\201811010723578_trial2.Designer.cs">
-      <DependentUpon>201811010723578_trial2.cs</DependentUpon>
+    <Compile Include="Migrations\201811150932006_init13.cs" />
+    <Compile Include="Migrations\201811150932006_init13.Designer.cs">
+      <DependentUpon>201811150932006_init13.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -734,23 +726,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201810010926522_Init.resx">
-      <DependentUpon>201810010926522_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811150634366_init12.resx">
+      <DependentUpon>201811150634366_init12.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810291045077_company_logo.resx">
-      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811150644399_init1.resx">
+      <DependentUpon>201811150644399_init1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
-      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811150728362_init11.resx">
+      <DependentUpon>201811150728362_init11.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811010537199_trial.resx">
-      <DependentUpon>201811010537199_trial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811010616499_trial1.resx">
-      <DependentUpon>201811010616499_trial1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811010723578_trial2.resx">
-      <DependentUpon>201811010723578_trial2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811150932006_init13.resx">
+      <DependentUpon>201811150932006_init13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

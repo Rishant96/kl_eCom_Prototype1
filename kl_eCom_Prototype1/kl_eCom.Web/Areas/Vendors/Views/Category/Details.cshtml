@@ -83,7 +83,8 @@
                 Sub Categories
             </text>
             @Html.ActionLink("+ Add SubCategory", "Create", 
-                new { storeId = ViewBag.storeId, catId = Model.Category.Id })
+                new { storeId = ViewBag.storeId, catId = Model.Category.Id },
+               new { style = "text-decoration: underline; font-weight: bold; margin-left: 15px" })
         </text>
 
         @foreach (var sub in Model.Category.ChildCategories)

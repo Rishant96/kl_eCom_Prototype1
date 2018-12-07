@@ -1,9 +1,0 @@
-﻿@model kl_eCom.Web.Models.ShopKlCategoryViewModel
-<h4>Filter Categories</h4>
-<div class="col-md-offset-2">
-    @foreach (var category in Model.KL_Categories)
-    {
-        @Html.ActionLink(category.Name, "ByProducts", new { id = category.Id })<br />
-    }
-</div>
-<hr />

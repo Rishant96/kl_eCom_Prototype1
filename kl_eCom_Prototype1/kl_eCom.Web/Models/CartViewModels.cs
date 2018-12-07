@@ -14,6 +14,7 @@ namespace kl_eCom.Web.Models
         public float TotalCost { get; set; }
         public Dictionary<CartItem, string> Prices { get; set; }
         public Dictionary<CartItem, string> ProductNames { get; set; }
+        public Dictionary<CartItem, int> Product_MaxAllowed { get; set; }
     }
 
     public class CartAddViewModel
@@ -26,7 +27,7 @@ namespace kl_eCom.Web.Models
     public class CartVoucherViewModel
     {
         [Required]
-        public string VoucherName { get; set; }
+        public string VoucherName { get; set; } 
     }
 
     public class CheckoutViewModel

@@ -79,7 +79,17 @@
                     @Html.DisplayFor(m => stkProd.GST)%
                 </td>
                 <td>
-                    <p>@stkProd.Store.DefaultCurrencyType @stkProd.Price</p>
+                    @{ 
+                        var discountedPrice = stkProd.GetPrice();
+                    }
+                    @if (stkProd.Price == discountedPrice)
+                    {
+                        <p>@stkProd.Store.DefaultCurrencyType @stkProd.Price</p>
+                    }
+                    else
+                    {
+                        <p>@stkProd.Store.DefaultCurrencyType <text style="text-decoration: line-through">@stkProd.Price</text> @discountedPrice</p>
+                    }
                 </td>
                 <td>
                     @Html.ActionLink("Stock", "Stock", "Product", new { prodId = stkProd.ProductId, storeId = stkProd.StoreId }, null)

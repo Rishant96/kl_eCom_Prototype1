@@ -9,6 +9,7 @@ using kl_eCom.Web.Areas.Vendors.Models;
 using kl_eCom.Web.Utilities;
 using kl_eCom.Web.Entities;
 using System.IO;
+using Microsoft.AspNet.Identity;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 {
@@ -24,7 +25,14 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         // GET: Vendors/Category
         public ActionResult Index(int? id)
         {
-            if (id == null) return RedirectToAction("Index", controllerName: "Store");
+            var userId = User.Identity.GetUserId();
+            var ecomUser = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId);
+            if (id == null)
+                return RedirectToAction("Index", controllerName: "Store");
+            if (ecomUser == null || id != ecomUser.Id)
+            {
+                return RedirectToAction("Index", new { id = ecomUser.Id });
+            }
             ViewBag.storeId = (int)id;
             var model = db.Categories.Include(m => m.Attributes).Where(m => m.StoreId == (int)id).ToList();
             return View(model);

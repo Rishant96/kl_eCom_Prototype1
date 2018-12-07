@@ -97,7 +97,7 @@
                             using (Html.BeginForm(new { stockId = stock.Id, returnUrl = Request.Url.PathAndQuery }))
                             {
                                 @Html.AntiForgeryToken()
-                                <div class="col-md-3" style="margin-bottom: 5px; margin-top: 20px">
+                                <div class="col-md-3" style="margin-bottom: 5px; margin-top: 20px; min-height: 210px">
                                     <div>
                                         <a href="@Url.Action("ProductDetails", new { id = stock.Id, returnUrl = Request.Url.PathAndQuery })">
                                             <img class="img-thumbnail" style="min-width: @width; min-height: @height; max-width: @width; max-height: @height;"
@@ -106,17 +106,17 @@
                                     </div>
 
                                     <div>
-                                        @Html.DisplayNameFor(m => stock.Product.Name) : @Html.ActionLink(
-                                        (stock.Product.Name.Count() > 15) ?
-                                            stock.Product.Name.Substring(0, 12) + "..."
-                                        : stock.Product.Name,
+                                        @Html.ActionLink(
+                                        (stock.Product.Name.Count() < 30) ?
+                                            stock.Product.Name
+                                        :   stock.Product.Name.Substring(0, 30) + "...",
                                             "ProductDetails",
                                             new { id = stock.Id,
                                                 returnUrl = Request.Url.PathAndQuery })
                                     </div>
 
                                     <div>
-                                        @Html.DisplayNameFor(m => stock.Price) : @Model.CurrencySymbol @Html.DisplayFor(m => stock.Price)
+                                        Price : @Model.CurrencySymbol @stock.GetPrice()
                                     </div>
                                     @{
                                         var inStock = true;

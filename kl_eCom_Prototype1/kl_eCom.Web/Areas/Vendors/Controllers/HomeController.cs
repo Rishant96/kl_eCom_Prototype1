@@ -104,11 +104,40 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             return Json(cities, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Register(string id = "", string datetimestr = "")
+        public ActionResult ChooseType()
         {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChooseType(int? type)
+        {
+            if (type is null) return View("Error");
+
+            if (type == 1)
+            {
+                return RedirectToAction("Register", new { isGST = false });
+            }
+            else if (type == 2)
+            {
+                return RedirectToAction("Register", new { isGST = true });
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+
+        public ActionResult Register(string id = "", 
+                string datetimestr = "", bool? isGST = null)
+        {
+            if (isGST is null) return View("Error");
+
             // External Urls
             var datetimeparts = datetimestr.Split('_');
             DateTime? datetime = null;
+            
             try
             {
                 datetime = new DateTime(int.Parse(datetimeparts[2]),
@@ -154,7 +183,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 TimeStamp = datetime,
                 Countries = countries,
                 States = states,
-                Cities = cities
+                Cities = cities,
+                IsGST = (bool) isGST
             });
         }
 
@@ -171,35 +201,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (db.Users.FirstOrDefault(m => m.Email == model.Email) != null)
                 ModelState.AddModelError("Email", new Exception("Email address should be unique"));
 
-            if (model.IsNewAddress)
-            {
-                var country = db.Countries.FirstOrDefault(m => string.Compare(m.Name.Trim(),
-                    model.CountryName.Trim(), true) == 0);
-
-                if (country != null)
-                    model.SelectedCountry = country.Id;
-                else
-                    country = db.Countries.Add(new Country { Name = model.CountryName });
-
-                var state = db.States.FirstOrDefault(m => string.Compare(m.Name.Trim(),
-                    model.StateName.Trim(), true) == 0);
-
-                if (state != null)
-                    model.SelectedState = state.Id;
-                else
-                    state = db.States.Add(new State { Name = model.StateName,
-                                CountryId = country.Id });
-
-                var city = db.Places.FirstOrDefault(m => string.Compare(m.Name.Trim(),
-                    model.CityName.Trim(), true) == 0);
-
-                if (city != null)
-                    model.SelectedCity = city.Id;
-                else
-                    city = db.Places.Add(new Place { Name = model.CityName,
-                                StateId = state.Id});
-            }
-            
+                        
             if (ModelState.IsValid)
             {
                 // model.VendorPackageSelected = int.Parse(Request.Form["PlansList"]);
@@ -209,9 +211,12 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                 var vendor = new ApplicationUser {
                     UserName = model.UserName,
                     Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
+                    FirstName = model.BusinessOwnerFirstName,
+                    LastName = model.BusinessOwnerLastName,
                     PhoneNumber = model.Mobile,
+                    DOB = model.DOB,
+                    IsActive = false,
+                    DateCreated = DateTime.Now,
                     //PrimaryRole = "Vendor",
                     //VendorDetails = new Utilities.VendorDetails
                     //{
@@ -228,7 +233,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                     var ecomUser = db.EcomUsers.Add(new EcomUser {
                         ApplicationUserId = vendor.Id,
                         PrimaryRole = "Vendor",
-                        IsActive = true,    
+                        IsActive = false,    
                         VendorDetails = new Utilities.VendorDetails
                         {
                             BusinessName = model.BusinessName,

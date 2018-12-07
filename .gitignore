@@ -8,6 +8,8 @@
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-shm
 /kl_eCom_Prototype1/.vs/kl_eCom_Prototype1/v15/Server/sqlite3/storage.ide-wal
-/kl_eCom_Prototype1/kl_eCom.Web
-/kl_eCom_Prototype1/kl_eCom.Web/obj
+
+/kl_eCom_Prototype1/kl_eCom.Web/obj/Release/CSAutoParameterize.parameters.xml
 /kl_eCom_Prototype1/kl_eCom.Web/bin
+/kl_eCom_Prototype1/kl_eCom.Web/App_Data/Khushlife_Ecom_Local.mdf
+/kl_eCom_Prototype1/kl_eCom.Web/App_Data/Khushlife_Ecom_Local_log.ldf

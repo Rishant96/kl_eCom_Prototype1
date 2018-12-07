@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity;
 using System.Net.Mail;
 using System.Net;
+using System.Threading;
 
 namespace kl_eCom.Web.Controllers
 {
@@ -171,6 +172,155 @@ namespace kl_eCom.Web.Controllers
             }
         }
 
+        private string generateStringOTP(int len)
+        {
+            // All possible characters of my OTP 
+            string str = "abcdefghijklmnopqrstuvwxyzABCD"
+               + "EFGHIJKLMNOPQRSTUVWXYZ";
+            int n = str.Length;
+
+            // String to hold my OTP 
+            string OTP = "";
+
+            for (int i = 1; i <= len; i++)
+            {
+                OTP += (str[(new Random()).Next(n)]);
+                Thread.Sleep(100);
+            }
+
+            return (OTP);
+        }
+
+        private string generateNumericalOTP(int len)
+        {
+            // All possible characters of my OTP 
+            string str = "0123456789";
+            int n = str.Length;
+
+            // String to hold my OTP 
+            string OTP = "";
+
+            for (int i = 1; i <= len; i++)
+                OTP += (str[(new Random()).Next(n)]);
+
+            return (OTP);
+        }
+
+        public ActionResult VerifyEmail()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var ecomUser = db.EcomUsers
+                             .Include(m => m.User)
+                             .Include(m => m.VendorDetails)
+                             .Where(m => m.ApplicationUserId == userId)
+                             .FirstOrDefault();
+
+            if (ecomUser.User.EmailConfirmed)
+                return View("Error");
+
+            ecomUser.User.EmailCode = generateStringOTP(6);
+
+            FireEmail(ecomUser.User.Email,
+                "Email Verification Mail", "Please click the link below in order to verify your email,\n\n"
+                + /*"http://khushlifeecom.azurewebsites.net"*/ "http://localhost:50208"
+                + Url.Action("VerifyEmailConfirm",
+                new { userId = ecomUser.ApplicationUserId, secret = ecomUser.User.EmailCode }));
+
+            db.Entry(ecomUser).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return View();
+        }
+
+        public ActionResult VerifyEmailConfirm(string userId, string secret)
+        {
+            if (string.IsNullOrEmpty(userId) || userId != User.Identity.GetUserId())
+                return View("Error");
+
+            var ecomUser = db.EcomUsers
+                             .Include(m => m.User)
+                             .Where(m => m.ApplicationUserId == userId)
+                             .FirstOrDefault();
+
+            if (ecomUser is null) return View("Error");
+
+
+            if (string.IsNullOrEmpty(secret) || secret != ecomUser.User.EmailCode)
+                return View("Error");
+
+            ecomUser.User.EmailConfirmed = true;
+            db.Entry(ecomUser).State = EntityState.Modified;
+
+            db.SaveChanges();
+
+            return View();
+        }
+
+        public ActionResult VerifyMobile()
+        {
+
+
+            return View();
+        }
+
+        public ActionResult CustomerProfile()
+        {
+            string userId = User.Identity.GetUserId();
+
+            var ecomUser = db.EcomUsers
+                .Include(m => m.User)
+                .FirstOrDefault(m => 
+                    m.ApplicationUserId == userId);
+
+            if (ecomUser is null) return View("Error");
+
+            var model = new CustomerProfileManageViewModel {
+                FullName = ecomUser.User.FirstName + " " + ecomUser.User.LastName,
+                Email = ecomUser.User.Email,
+                MobileNumber = ecomUser.User.PhoneNumber,
+                DOB = ecomUser.User.DOB,
+                IsEmailVerified = ecomUser.User.EmailConfirmed,
+                IsMobileVerified = ecomUser.User.PhoneNumberConfirmed
+            };
+
+            return View(model);
+        }
+
+        public ActionResult EditProfile()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var ecomUser = db.EcomUsers
+                .Include(m => m.User)
+                .FirstOrDefault(m => m.ApplicationUserId == userId);
+
+            if (ecomUser is null)
+                return View("Error");
+
+            var model = new CustomerEditProfileViewModel {
+                FirstName = ecomUser.User.FirstName,
+                LastName = ecomUser.User.LastName,
+                DOB = ecomUser.User.DOB
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProfile(CustomerEditProfileViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+
+                return RedirectToAction("CustomerProfile");
+            }
+
+            return View("Error");
+        }
+
         public ActionResult Addresses()
         {
             var usrId = User.Identity.GetUserId();
@@ -272,7 +422,6 @@ namespace kl_eCom.Web.Controllers
 
             var states = db.States
                 .OrderBy(m => m.Name)
-                .Where(m => m.CountryId == addr.CountryId)
                 .Select(m => new SelectListItem
                 {
                     Value = m.Id.ToString(),
@@ -281,7 +430,6 @@ namespace kl_eCom.Web.Controllers
 
             var cities = db.Places
                 .OrderBy(m => m.Name)
-                .Where(m => m.StateId == addr.StateId)
                 .Select(m => new SelectListItem
                 {
                     Value = m.Id.ToString(),
@@ -298,7 +446,10 @@ namespace kl_eCom.Web.Controllers
                 SelectedState = addr.StateId,
                 Landmark = addr.Landmark,
                 Zip = addr.Zip,
-                SelectedCountry = addr.CountryId
+                SelectedCountry = addr.CountryId,
+                Countries = countries,
+                States = states,
+                Cities = cities
             });
         }
 

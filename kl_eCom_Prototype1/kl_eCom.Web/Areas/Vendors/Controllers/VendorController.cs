@@ -11,6 +11,9 @@ using Microsoft.AspNet.Identity.Owin;
 using kl_eCom.Web.Entities;
 using kl_eCom.Web.Utilities;
 using System.Web.ModelBinding;
+using System.Net.Mail;
+using System.Net;
+using System.Threading;
 
 namespace kl_eCom.Web.Areas.Vendors.Controllers
 { 
@@ -61,10 +64,15 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
         {
             var vendorId = User.Identity.GetUserId();
             var vendor = db.EcomUsers
+                        .Include(m => m.User)
                         .Include(m => m.VendorDetails)
                         .Include(m => m.VendorDetails.ActivePlan)
                         .FirstOrDefault(m => m.ApplicationUserId == vendorId);
-            
+
+            // Check if email and phone are verified
+            ViewBag.IsPhoneVerified = vendor.User.PhoneNumberConfirmed;
+            ViewBag.IsEmailVerified = vendor.User.EmailConfirmed;
+
             var pkg = db.VendorPlans
                         .FirstOrDefault(m => m.Id ==
                             vendor.VendorDetails.ActivePlan.VendorPlanId);
@@ -81,12 +89,136 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             if (pkg.MaxProducts < prodCount)
                 ViewBag.Flag = true;
             else
-                ViewBag.Flag = false;
+                ViewBag.Flag = false;   
 
             ViewBag.CurrProds = prods.Count;
             ViewBag.MaxProds = pkg.MaxProducts;
 
             return View(vendor);
+        }
+
+        private void FireEmail(string to, string subject, string message, bool isBodyHtml = false)
+        {
+            var klEmail = "khushlifeecommerce@gmail.com";
+            var klPass = "klEcom1234";
+
+            using (MailMessage mm = new MailMessage(klEmail, to))
+            {
+                mm.Subject = subject;
+                mm.Body = message;
+                mm.IsBodyHtml = isBodyHtml;
+
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential NetworkCred = new NetworkCredential(klEmail, klPass);
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = 587;
+                    smtp.Send(mm);
+                }
+            }
+        }
+
+        private string generateStringOTP(int len)
+        {
+            // All possible characters of my OTP 
+            string str = "abcdefghijklmnopqrstuvwxyzABCD"
+               + "EFGHIJKLMNOPQRSTUVWXYZ";
+            int n = str.Length;
+
+            // String to hold my OTP 
+            string OTP = "";
+
+            for (int i = 1; i <= len; i++)
+            {
+                OTP += (str[(new Random()).Next(n)]);
+                Thread.Sleep(100);
+            }
+
+            return (OTP);
+        }
+
+        private string generateNumericalOTP(int len)
+        {
+            // All possible characters of my OTP 
+            string str = "0123456789";
+            int n = str.Length;
+
+            // String to hold my OTP 
+            string OTP = "";
+
+            for (int i = 1; i <= len; i++)
+                OTP += (str[(new Random()).Next(n)]);
+
+            return (OTP);
+        }
+
+        public ActionResult VerifyEmail()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var ecomUser = db.EcomUsers
+                             .Include(m => m.User)
+                             .Include(m => m.VendorDetails)
+                             .Where(m => m.ApplicationUserId == userId)
+                             .FirstOrDefault();
+
+            if (ecomUser.User.EmailConfirmed)
+                return View("Error");
+
+            ecomUser.User.EmailCode = generateStringOTP(6);
+
+            FireEmail(ecomUser.User.Email,
+                "Email Verification Mail", "Please click the link below in order to verify your email,\n\n"
+                + /*"http://khushlifeecom.azurewebsites.net"*/ "http://localhost:50208"
+                + Url.Action("VerifyEmailConfirm", 
+                new { userId = ecomUser.ApplicationUserId, secret = ecomUser.User.EmailCode }));
+            
+            db.Entry(ecomUser).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return View();
+        }
+
+        public ActionResult VerifyEmailConfirm(string userId, string secret)
+        {
+            if (string.IsNullOrEmpty(userId) || userId != User.Identity.GetUserId())
+                return View("Error");
+
+            var ecomUser = db.EcomUsers
+                             .Include(m => m.User)
+                             .Where(m => m.ApplicationUserId == userId)
+                             .FirstOrDefault();
+
+            if (ecomUser is null) return View("Error");
+
+
+            if (string.IsNullOrEmpty(secret))
+                return View("Error");
+            else if (ecomUser.User.EmailConfirmed && secret == ecomUser.User.EmailCode)
+            {
+                // flag
+                return View("Error");
+            }
+            else if (secret != ecomUser.User.EmailCode)
+                return View("Error");
+
+            ecomUser.User.EmailConfirmed = true;
+            ecomUser.User.EmailCode = generateStringOTP(6);
+            db.Entry(ecomUser).State = EntityState.Modified;
+
+            db.SaveChanges();
+
+            return View();
+        }
+
+        public ActionResult VerifyMobile()
+        {
+
+
+            return View();
         }
 
         public ActionResult Details()
@@ -520,7 +652,7 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
                             EcomUserId = ecomUser.Id,
                             OldStartDate = activePlan.StartDate,
                             TimeStamp = DateTime.Now,
-                            OldVendorPlanId = currPlan.Id,
+                            //OldVendorPlanId = currPlan.Id,
                             OldPlanName = currPlan.Name,
                             NewVendorPlanId = nextPlan.Id,
                             VendorPlanPaymentDetailId = activePlan.VendorPlanPaymentDetailId,

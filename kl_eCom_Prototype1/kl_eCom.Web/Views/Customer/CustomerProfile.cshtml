@@ -1,0 +1,66 @@
+﻿@model kl_eCom.Web.Models.CustomerProfileManageViewModel
+
+@{
+    ViewBag.Title = "User Profile";
+    Layout = "~/Areas/Vendors/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Profile</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(m => m.FullName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.FullName)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(m => m.DOB)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.DOB)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(m => m.Email)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Email)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(m => m.IsEmailVerified)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.IsEmailVerified)
+
+        @if (!Model.IsEmailVerified)
+        {
+            @Html.ActionLink("verify", "VerifyEmail", null,
+                new { style = "text-decoration: underline; margin-left: 15px;" })
+        }
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(m => m.MobileNumber)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.MobileNumber)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(m => m.IsMobileVerified)
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.IsMobileVerified)
+
+        @if (!Model.IsMobileVerified)
+        {
+            @Html.ActionLink("verify", "VerifyMobile", null, 
+                new { style = "text-decoration: underline; margin-left: 15px;" })
+        }
+    </dd>
+</dl>
+
+<div class="col-md-offset-1">
+    @Html.ActionLink("Edit Profile", "EditProfile", null,
+        new { @class = "btn btn-success" })
+</div>
+
+@Html.ActionLink("Go back", "Index")

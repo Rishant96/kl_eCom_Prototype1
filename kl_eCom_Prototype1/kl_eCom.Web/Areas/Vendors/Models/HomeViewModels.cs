@@ -19,17 +19,27 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public string BusinessName { get; set; }
 
         [Required]
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
+        [Display(Name = "Business Owner First Name")]
+        public string BusinessOwnerFirstName { get; set; }
 
         [Required]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        [Display(Name = "Business Owner Last Name")]
+        public string BusinessOwnerLastName { get; set; }
+
+        [Required]
+        [Display(Name = "Date of Birth")]
+        [DataType(DataType.Date)]
+        public DateTime DOB { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress, ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
 
+        [Required]
+        public bool IsGST { get; set; }
+
+        public string GST_Number { get; set; }
+        
         [Required]
         [Display(Name = "Mobile No.")]
         [DataType(DataType.PhoneNumber, ErrorMessage = "Please enter a valid mobile number")]
@@ -75,8 +85,6 @@ namespace kl_eCom.Web.Areas.Vendors.Models
         public int SelectedState { get; set; }
         
         public int? SelectedCity { get; set; }
-        
-        public bool IsNewAddress { get; set; }
 
         public string CountryName { get; set; }
 

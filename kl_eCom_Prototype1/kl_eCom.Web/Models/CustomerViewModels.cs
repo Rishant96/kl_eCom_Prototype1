@@ -14,6 +14,33 @@ namespace kl_eCom.Web.Models
         public List<Address> Addresses { get; set; }
     }
 
+    public class CustomerProfileManageViewModel
+    {
+        public string FullName { get; set; }
+
+        public string Email { get; set; }
+
+        public bool IsEmailVerified { get; set; }
+
+        public string MobileNumber { get; set; }
+
+        public bool IsMobileVerified { get; set; }
+        
+        public DateTime DOB { get; set; }
+    }
+
+    public class CustomerEditProfileViewModel
+    {
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+        
+        [Required]
+        public DateTime DOB { get; set; }
+    }
+
     public class CustomerCreateAddressViewModel
     {
         [Display(Name = "Address Name")]

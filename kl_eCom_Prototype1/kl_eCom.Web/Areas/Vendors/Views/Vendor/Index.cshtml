@@ -26,11 +26,34 @@
         </div>
     }
 
-    @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" })
-    
+    <div>
+        @if (!ViewBag.IsPhoneVerified)
+        {
+            <text>To verify your mobile number, please click </text>
+            @Html.ActionLink("here", "VerifyMobile")
+            <br />
+        }
+    </div>
+
+    <div>
+        @if (!ViewBag.IsEmailVerified)
+        {
+            <text>To verify your email address, please click </text>
+            @Html.ActionLink("here", "VerifyEmail")
+            <br />
+        }
+    </div>
+
     <br />
     <br />
     
+    @Html.ActionLink("Manage Profile", "Details", new { area = "Vendors" }, new { style = "display: block" })
+
+    <br />
+    <br />
+
+    @Html.ActionLink("View Catalog", "Index", "Category", new { id = Model.Id }, null)
+    <text> | </text>
     @Html.ActionLink("Go to Stores", "Index", "Store")
     <text> | </text>
     @Html.ActionLink("All Products", "AllProducts", controllerName: "Product")
@@ -49,8 +72,8 @@
     <br />
     <br />
     <br />
-    
+
     @*@Html.ActionLink("Refferals", "Refferals")
-    <text> | </text>*@
-    @Html.ActionLink("Generate Exclusive Link", "ExclusiveLink")
+        <text> | </text>
+    @Html.ActionLink("Generate Exclusive Link", "ExclusiveLink")*@
 </div>

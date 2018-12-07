@@ -22,6 +22,16 @@ namespace kl_eCom.Web.Areas.KL_Admin.Models
         public VendorPlanDowngradeRecord DowngradeRequest { get; set; }
     }
 
+    public class AdminVendorsEditDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string AppUserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string BusinessName { get; set; }
+    }
+
     public class AdminVendorsDomainEditViewModel
     {
         public string Id { get; set; }

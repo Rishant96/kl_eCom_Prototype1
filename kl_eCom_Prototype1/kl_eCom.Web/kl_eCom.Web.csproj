@@ -295,43 +295,6 @@
     </Compile>
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Infrastructure\QueryOptions.cs" />
-    <Compile Include="Migrations\201810010926522_Init.cs" />
-    <Compile Include="Migrations\201810010926522_Init.Designer.cs">
-      <DependentUpon>201810010926522_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201810291045077_company_logo.cs" />
-    <Compile Include="Migrations\201810291045077_company_logo.Designer.cs">
-      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201810291102389_company_logo_2.cs" />
-    <Compile Include="Migrations\201810291102389_company_logo_2.Designer.cs">
-      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.cs" />
-    <Compile Include="Migrations\201810311048167_Downgrade_Model_Changed.Designer.cs">
-      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811010608543_more_model_channges.cs" />
-    <Compile Include="Migrations\201811010608543_more_model_channges.Designer.cs">
-      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811010625532_more_model_channges_2.cs" />
-    <Compile Include="Migrations\201811010625532_more_model_channges_2.Designer.cs">
-      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811020525049_Payment_models_changed.cs" />
-    <Compile Include="Migrations\201811020525049_Payment_models_changed.Designer.cs">
-      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.cs" />
-    <Compile Include="Migrations\201811020650564_Payment_models_changed_2.Designer.cs">
-      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811270919050_new_migration.cs" />
-    <Compile Include="Migrations\201811270919050_new_migration.Designer.cs">
-      <DependentUpon>201811270919050_new_migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CartViewModels.cs" />
     <Compile Include="Models\CustomerViewModels.cs" />
@@ -621,10 +584,16 @@
     <Content Include="Areas\VendorStore\Views\Cart\Checkout.cshtml" />
     <Content Include="Areas\VendorStore\Views\Cart\Index.cshtml" />
     <Content Include="Areas\VendorStore\Views\Cart\VoucherPartial.cshtml" />
+    <Content Include="Areas\KL_Admin\Views\Vendors\EditVendorDetails.cshtml" />
+    <Content Include="Areas\Vendors\Views\Home\ChooseType.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\VerifyEmail.cshtml" />
+    <Content Include="Areas\Vendors\Views\Vendor\VerifyEmailConfirm.cshtml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - FTP1.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - FTP2.pubxml" />
     <None Include="Properties\PublishProfiles\KhushlifeEcom - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\khushlifeecom - Web Deploy2.pubxml" />
     <None Include="Properties\PublishProfiles\KhushLifeTrial1 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\KhushLifeTrial1 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -728,6 +697,10 @@
     <Content Include="Views\Shop\ByProducts.cshtml" />
     <Content Include="Views\Shop\KL_Categories_Partial.cshtml" />
     <Content Include="Views\Blobs\Index.cshtml" />
+    <Content Include="Views\Customer\CustomerProfile.cshtml" />
+    <Content Include="Views\Customer\EditProfile.cshtml" />
+    <Content Include="Views\Customer\VerifyEmail.cshtml" />
+    <Content Include="Views\Customer\VerifyEmailConfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\" />
@@ -748,35 +721,6 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201810010926522_Init.resx">
-      <DependentUpon>201810010926522_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810291045077_company_logo.resx">
-      <DependentUpon>201810291045077_company_logo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810291102389_company_logo_2.resx">
-      <DependentUpon>201810291102389_company_logo_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810311048167_Downgrade_Model_Changed.resx">
-      <DependentUpon>201810311048167_Downgrade_Model_Changed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811010608543_more_model_channges.resx">
-      <DependentUpon>201811010608543_more_model_channges.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811010625532_more_model_channges_2.resx">
-      <DependentUpon>201811010625532_more_model_channges_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811020525049_Payment_models_changed.resx">
-      <DependentUpon>201811020525049_Payment_models_changed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811020650564_Payment_models_changed_2.resx">
-      <DependentUpon>201811020650564_Payment_models_changed_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811270919050_new_migration.resx">
-      <DependentUpon>201811270919050_new_migration.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

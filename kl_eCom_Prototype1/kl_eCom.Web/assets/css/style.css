@@ -61,7 +61,6 @@ a:hover {
 
 a, a:hover, a:active, a:focus, button:focus {
 	outline: 0;
-	border: 0;
 	text-decoration: none;
 }
 .section-padding{

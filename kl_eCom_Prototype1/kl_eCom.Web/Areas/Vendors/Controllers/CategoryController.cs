@@ -29,7 +29,8 @@ namespace kl_eCom.Web.Areas.Vendors.Controllers
             var ecomUser = db.EcomUsers.FirstOrDefault(m => m.ApplicationUserId == userId);
             if (id == null)
                 return RedirectToAction("Index", controllerName: "Store");
-            if (ecomUser == null || id != ecomUser.Id)
+            var user_store = db.Stores.FirstOrDefault(m => m.EcomUserId == ecomUser.Id);
+            if (ecomUser is null || user_store is null || id != user_store.Id)
             {
                 return RedirectToAction("Index", new { id = ecomUser.Id });
             }
